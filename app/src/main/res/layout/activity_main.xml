@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
-        tools:layout_editor_absoluteY="81dp">
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/parentPanel"
@@ -132,8 +132,7 @@
             android:id="@+id/text_inform_group"
             android:layout_width="match_parent"
             android:layout_height="90dp"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/parentPanel">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -247,14 +246,17 @@
             </LinearLayout>
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#dedede" />
+
         <LinearLayout
-            android:id="@+id/text_summary_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical"
-            android:padding="10dp"
-            app:layout_constraintTop_toBottomOf="@id/text_inform_group">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -270,14 +272,17 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#dedede" />
+
         <LinearLayout
-            android:id="@+id/text_director_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:orientation="vertical"
-            android:padding="10dp"
-            app:layout_constraintTop_toBottomOf="@id/text_summary_group">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -319,40 +324,41 @@
             </TableLayout>
         </LinearLayout>
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/text_review_group"
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#dedede" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:layout_margin="10dp"
-            android:padding="10dp"
-            app:layout_constraintTop_toBottomOf="@id/text_director_group">
+            android:padding="5dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
                 android:text="한줄평"
+                android:layout_margin="10dp"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textStyle="bold" />
 
-            <ImageView
+            <Button
+                android:id="@+id/btn_write"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="5dp"
-                android:src="@drawable/ic_review_selected"
-                app:layout_constraintRight_toLeftOf="@+id/text_write" />
-
-            <TextView
-                android:id="@+id/text_write"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:drawableStart="@drawable/ic_review_selected"
+                android:text="  작성하기"
                 android:layout_marginRight="10dp"
-                android:text="작성하기"
                 android:textColor="#ff571f"
-                android:textSize="20sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                app:layout_constraintRight_toRightOf="parent" />
+                android:background="#00ffffff"
+                android:gravity="center"/>
+
 
             <Button
                 android:id="@+id/btn_all_see"
@@ -360,18 +366,23 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_background"
                 android:text="모두 보기"
+                android:textStyle="bold"
                 android:textColor="#ba58ff"
-                app:layout_constraintBottom_toBottomOf="parent"></Button>
-        </android.support.constraint.ConstraintLayout>
+                android:layout_alignParentBottom="true">
+            </Button>
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#dedede" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp"
-            android:layout_margin="10dp"
-            app:layout_constraintTop_toBottomOf="@id/text_review_group">
+            android:padding="10dp">
 
             <ImageButton
                 android:id="@+id/btn_facebook"
@@ -391,18 +402,20 @@
 
             <Button
                 android:id="@+id/btn_ticketing"
-                android:text="예매하기"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#ffffff"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="6"
-                android:background="#e14c26"/>
-
-
+                android:background="#e14c26"
+                android:text="예매하기"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
-    </android.support.constraint.ConstraintLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:background="#dedede" />
+    </LinearLayout>
 </ScrollView>
