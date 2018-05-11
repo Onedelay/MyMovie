@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_image"
+        android:src="@drawable/user1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FFCCCCCC"/>
+
+    <TextView
+        android:id="@+id/review_user_id"
+        android:text="kym71**"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@+id/user_image"/>
+
+    <TextView
+        android:id="@+id/review_user_time"
+        android:text="10분전"
+        android:textColor="#888888"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/review_user_id"
+        app:layout_constraintStart_toStartOf="@+id/review_user_id"/>
+
+    <RatingBar
+        android:id="@+id/review_rating_bar"
+        style="?android:attr/ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:isIndicator="true"
+        android:numStars="5"
+        android:rating="5"
+        android:stepSize="1"
+        app:layout_constraintStart_toEndOf="@+id/review_user_time"
+        app:layout_constraintTop_toTopOf="@+id/review_user_time"/>
+
+    <TextView
+        android:id="@+id/review_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요."
+        android:textSize="16dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/review_user_time"
+        app:layout_constraintTop_toBottomOf="@+id/review_user_time"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/recommend"
+        android:text="추천 0"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/review_content"
+        app:layout_constraintStart_toStartOf="@id/review_content"/>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1dp"
+        android:layout_height="10dp"
+        android:background="#686868"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintTop_toTopOf="@id/recommend"
+        app:layout_constraintBottom_toBottomOf="@+id/recommend"
+        app:layout_constraintStart_toEndOf="@id/recommend"/>
+
+    <TextView
+        android:id="@+id/review_btn_declare"
+        android:text="신고하기"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@id/view"
+        app:layout_constraintTop_toTopOf="@+id/recommend"/>
+
+</android.support.constraint.ConstraintLayout>
