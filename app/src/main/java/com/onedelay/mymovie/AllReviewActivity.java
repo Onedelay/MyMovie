@@ -1,11 +1,13 @@
 package com.onedelay.mymovie;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,6 +18,12 @@ public class AllReviewActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_review);
+
+        // 앱바 제목 텍스트 변경
+        ActionBar ab = getSupportActionBar();
+        ab.setTitle("한줄평 목록");
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeButtonEnabled(true);
 
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,6 +57,5 @@ public class AllReviewActivity extends AppCompatActivity {
                 Toast.makeText(AllReviewActivity.this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
-
     }
 }

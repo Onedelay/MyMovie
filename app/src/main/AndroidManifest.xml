@@ -17,7 +17,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".WriteReviewActivity" />
-        <activity android:name=".AllReviewActivity"></activity>
+        <activity android:name=".AllReviewActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity"/>
+        </activity>
     </application>
 
 </manifest>
