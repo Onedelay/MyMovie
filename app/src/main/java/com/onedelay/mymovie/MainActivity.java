@@ -1,5 +1,6 @@
 package com.onedelay.mymovie;
 
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Parcelable;
 import android.support.constraint.ConstraintLayout;
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "작성하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, WriteReviewActivity.class);
+                startActivityForResult(intent, 100);
             }
         });
 

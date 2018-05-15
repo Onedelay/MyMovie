@@ -18,8 +18,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     ArrayList<ReviewItem> items = new ArrayList<>();
     OnItemClickListener listener;
 
-    public static interface OnItemClickListener{
-        public void onItemClick(RecyclerView.ViewHolder holder, View view, int position);
+    public interface OnItemClickListener{
+        void onItemClick(RecyclerView.ViewHolder holder, View view, int position);
     }
 
     public ReviewAdapter(Context context){

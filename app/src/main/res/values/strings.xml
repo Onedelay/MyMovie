@@ -13,4 +13,7 @@
  뭉치면 백성, 흩어지면 도적!
  망할 세상을 뒤집기 위해, 백성이 주인인 새 세상을 향해 도치를 필두로 한 군도는 백성의 적,
  조윤과 한 판 승부를 시작하는데...</string>
+    <string name="movie_title">군도</string>
+    <string name="plz_input">평점을 입력해 주세요</string>
+    <string name="review_guide">100자 이내로 작성해주세요.</string>
 </resources>
