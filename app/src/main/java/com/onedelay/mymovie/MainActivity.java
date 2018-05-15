@@ -127,7 +127,8 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_all_see).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "모두보기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, AllReviewActivity.class);
+                startActivity(intent);
             }
         });
 
