@@ -2,13 +2,18 @@ package com.onedelay.mymovie;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.Rating;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.Toast;
 
 public class WriteReviewActivity extends AppCompatActivity {
+    RatingBar ratingBar;
+    EditText contents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,10 +24,13 @@ public class WriteReviewActivity extends AppCompatActivity {
         ActionBar ab = getSupportActionBar();
         ab.setTitle("한줄평 작성");
 
+        ratingBar = findViewById(R.id.rating_bar);
+        contents = findViewById(R.id.review_content);
+
         findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(WriteReviewActivity.this, "저장하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                returnToReviewList();
             }
         });
 
@@ -34,5 +42,16 @@ public class WriteReviewActivity extends AppCompatActivity {
                 finish();
             }
         });
+    }
+
+    private void returnToReviewList(){
+        float rating = ratingBar.getRating();
+        String content = contents.getText().toString();
+
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("rating", rating);
+        returnIntent.putExtra("content", content);
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

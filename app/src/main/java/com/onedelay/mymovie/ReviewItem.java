@@ -4,11 +4,11 @@ public class ReviewItem {
     private int image;
     private String id;
     private String time;
-    private int rating;
+    private float rating;
     private String content;
     private String recommend;
 
-    public ReviewItem(int image, String id, String time, int rating, String content, String recommend) {
+    public ReviewItem(int image, String id, String time, float rating, String content, String recommend) {
         this.image = image;
         this.id = id;
         this.time = time;
@@ -41,7 +41,7 @@ public class ReviewItem {
         this.time = time;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 

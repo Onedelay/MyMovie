@@ -63,10 +63,12 @@
         android:layout_height="200dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/edit_text_border"
+        android:gravity="start"
         android:hint="@string/review_guide"
-        android:textAlignment="textStart"
+        android:maxLength="100"
         android:padding="10dp"
-        app:layout_constraintTop_toBottomOf="@+id/input_guide" />
+        app:layout_constraintTop_toBottomOf="@+id/input_guide"
+        android:textCursorDrawable="@color/colorPrimaryDark"/>
 
     <Button
         android:id="@+id/btn_save"

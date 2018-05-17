@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 public class AllReviewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
+    private ReviewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
         recyclerView = findViewById(R.id.review_list);
 
-        final ReviewAdapter adapter = new ReviewAdapter(getApplicationContext());
+        adapter = new ReviewAdapter(getApplicationContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -57,5 +58,15 @@ public class AllReviewActivity extends AppCompatActivity {
                 Toast.makeText(AllReviewActivity.this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        float rating = data.getFloatExtra("rating", 0.0f);
+        String content = data.getStringExtra("content");
+        adapter.addItem(new ReviewItem(R.drawable.user1, "su_m**", "방금", rating, content, "추천 0"));
+        adapter.notifyDataSetChanged();
     }
 }
