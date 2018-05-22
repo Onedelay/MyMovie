@@ -2,14 +2,12 @@ package com.onedelay.mymovie;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.media.Rating;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
-import android.widget.Toast;
 
 public class WriteReviewActivity extends AppCompatActivity {
     RatingBar ratingBar;
@@ -44,14 +42,23 @@ public class WriteReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void returnToReviewList(){
+    private void returnToReviewList() {
         float rating = ratingBar.getRating();
         String content = contents.getText().toString();
 
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("rating", rating);
-        returnIntent.putExtra("content", content);
-        setResult(Activity.RESULT_OK, returnIntent);
-        finish();
+        if (getIntent().getIntExtra("type", 0) == 100) { // 메인액티비티에서 작성
+            Intent intent = new Intent(this, AllReviewActivity.class);
+            intent.putExtra("rating", rating);
+            intent.putExtra("content", content);
+            intent.putExtra("type", 100);
+            startActivity(intent);
+            finish();
+        } else { // 모두보기에서 작성
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("rating", rating);
+            returnIntent.putExtra("content", content);
+            setResult(Activity.RESULT_OK, returnIntent);
+            finish();
+        }
     }
 }

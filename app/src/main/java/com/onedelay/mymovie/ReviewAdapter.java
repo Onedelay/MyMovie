@@ -72,8 +72,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         private RatingBar ratingBar;
         private TextView content;
         private TextView recommend;
-        private View line;
-        private TextView declareBtn;
 
         OnItemClickListener listener;
 
@@ -85,8 +83,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             ratingBar = itemView.findViewById(R.id.review_rating_bar);
             content = itemView.findViewById(R.id.review_content);
             recommend = userTime = itemView.findViewById(R.id.recommend);
-            line = itemView.findViewById(R.id.view);
-            declareBtn = itemView.findViewById(R.id.review_btn_declare);
 
             itemView.findViewById(R.id.review_btn_declare).setOnClickListener(new View.OnClickListener() {
                 @Override

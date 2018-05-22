@@ -1,18 +1,13 @@
 package com.onedelay.mymovie;
 
 import android.content.Intent;
-import android.graphics.Rect;
-import android.os.Parcelable;
-import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ReviewAdapter(getApplicationContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        recyclerView.setHasFixedSize(true);
 
         // 구분선
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getApplicationContext(), LinearLayoutManager.VERTICAL);
-        dividerItemDecoration.setDrawable(getApplicationContext().getResources().getDrawable(R.drawable.recyclerview_divider, getTheme()));
+        RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         adapter.addItem(new ReviewItem(R.drawable.user1, "kym71**", "10분전", 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", "추천 0"));
@@ -121,7 +116,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, WriteReviewActivity.class);
-                startActivityForResult(intent, 100);
+                intent.putExtra("type", 100);
+                startActivity(intent);
             }
         });
 
@@ -153,15 +149,5 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "예매하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        float rating = data.getFloatExtra("rating", 0.0f);
-        String content = data.getStringExtra("content");
-        adapter.addItem(new ReviewItem(R.drawable.user1, "su_m**", "방금", rating, content, "추천 0"));
-        adapter.notifyDataSetChanged();
     }
 }
