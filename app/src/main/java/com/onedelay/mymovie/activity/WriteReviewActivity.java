@@ -1,4 +1,4 @@
-package com.onedelay.mymovie;
+package com.onedelay.mymovie.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import com.onedelay.mymovie.R;
+
 public class WriteReviewActivity extends AppCompatActivity {
     RatingBar ratingBar;
-    EditText contents;
+    EditText contentsEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +25,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         ab.setTitle("한줄평 작성");
 
         ratingBar = findViewById(R.id.rating_bar);
-        contents = findViewById(R.id.review_content);
+        contentsEditText = findViewById(R.id.review_content);
 
         findViewById(R.id.btn_save).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,21 +46,12 @@ public class WriteReviewActivity extends AppCompatActivity {
 
     private void returnToReviewList() {
         float rating = ratingBar.getRating();
-        String content = contents.getText().toString();
+        String content = contentsEditText.getText().toString();
 
-        if (getIntent().getIntExtra("type", 0) == 100) { // 메인액티비티에서 작성
-            Intent intent = new Intent(this, AllReviewActivity.class);
-            intent.putExtra("rating", rating);
-            intent.putExtra("content", content);
-            intent.putExtra("type", 100);
-            startActivity(intent);
-            finish();
-        } else { // 모두보기에서 작성
-            Intent returnIntent = new Intent();
-            returnIntent.putExtra("rating", rating);
-            returnIntent.putExtra("content", content);
-            setResult(Activity.RESULT_OK, returnIntent);
-            finish();
-        }
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra("rating", rating);
+        returnIntent.putExtra("content", content);
+        setResult(Activity.RESULT_OK, returnIntent);
+        finish();
     }
 }

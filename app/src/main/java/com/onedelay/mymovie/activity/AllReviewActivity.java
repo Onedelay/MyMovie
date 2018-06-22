@@ -1,4 +1,4 @@
-package com.onedelay.mymovie;
+package com.onedelay.mymovie.activity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +10,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
+
+import com.onedelay.mymovie.utils.DividerItemDecorator;
+import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.ReviewAdapter;
+import com.onedelay.mymovie.ReviewData;
+import com.onedelay.mymovie.ReviewItem;
+
+import java.util.ArrayList;
 
 public class AllReviewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
@@ -45,16 +53,11 @@ public class AllReviewActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        adapter.addItem(new ReviewItem(R.drawable.user1, "kym71**", "10분전", 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", "추천 0"));
-        adapter.addItem(new ReviewItem(R.drawable.user1, "su_m**", "12분전", 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했습니다", "추천 0"));
+        getData();
+
         adapter.addItem(new ReviewItem(R.drawable.user1, "abc12**", "15분전", 5, "웃긴 내용보다는 좀 더 진지한 영화.", "추천 1"));
         adapter.addItem(new ReviewItem(R.drawable.user1, "bu_t**", "17분전", 3, "연기가 부족한 느낌이 드는 배우도 있지만 전체적으로 재밌다.", "추천 0"));
         adapter.addItem(new ReviewItem(R.drawable.user1, "em_r2**", "20분전", 4, "말이 필요없어요.", "추천 0"));
-
-        Intent intent = getIntent();
-        if (intent != null && intent.getIntExtra("type", 0) == 100) {
-            adapter.addItem(new ReviewItem(R.drawable.user1, "mainWrite", "20분전", intent.getFloatExtra("rating", 0.0f), intent.getStringExtra("content"), "추천 0"));
-        }
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
@@ -64,6 +67,21 @@ public class AllReviewActivity extends AppCompatActivity {
         });
     }
 
+    public void getData(){
+        Intent intent = getIntent();
+        ArrayList<ReviewData> mainList = intent.getParcelableArrayListExtra("mainList");
+        //adapter.addItems(mainList);
+        if (mainList != null) {
+            for (ReviewData data : mainList) {
+                adapter.addItem(new ReviewItem(data.image, data.id, data.time, data.rating, data.content, data.recommend));
+            }
+        }
+
+        if (intent != null && intent.getIntExtra("type", 0) == 100) {
+            adapter.addItem(new ReviewItem(R.drawable.user1, "mainWrite", "방금", intent.getFloatExtra("rating", 0.0f), intent.getStringExtra("content"), "추천 0"));
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -71,7 +89,7 @@ public class AllReviewActivity extends AppCompatActivity {
         if (data != null && resultCode != Activity.RESULT_CANCELED) {
             float rating = data.getFloatExtra("rating", 0.0f);
             String content = data.getStringExtra("content");
-            adapter.addItem(new ReviewItem(R.drawable.user1, "guest", "방금", rating, content, "추천 0"));
+            adapter.addItem(new ReviewItem(R.drawable.user1, "list", "방금", rating, content, "추천 0"));
             adapter.notifyDataSetChanged();
         }
     }

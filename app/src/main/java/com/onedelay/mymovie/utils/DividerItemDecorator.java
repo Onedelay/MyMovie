@@ -1,4 +1,4 @@
-package com.onedelay.mymovie;
+package com.onedelay.mymovie.utils;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;

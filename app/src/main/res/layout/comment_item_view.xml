@@ -17,7 +17,7 @@
 
     <TextView
         android:id="@+id/review_user_id"
-        android:text="kym71**"
+        android:text="@string/default_id"
         android:textStyle="bold"
         android:textColor="#000000"
         android:layout_width="wrap_content"
@@ -27,7 +27,7 @@
 
     <TextView
         android:id="@+id/review_user_time"
-        android:text="10분전"
+        android:text="@string/default_time"
         android:textColor="#888888"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요."
+        android:text="@string/default_review"
         android:textSize="16dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/review_user_time"
@@ -61,7 +61,7 @@
 
     <TextView
         android:id="@+id/recommend"
-        android:text="추천 0"
+        android:text="@string/default_recommend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
@@ -80,7 +80,7 @@
 
     <TextView
         android:id="@+id/review_btn_declare"
-        android:text="신고하기"
+        android:text="@string/declare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"

@@ -1,5 +1,6 @@
-package com.onedelay.mymovie;
+package com.onedelay.mymovie.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,14 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.onedelay.mymovie.utils.DividerItemDecorator;
+import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.ReviewAdapter;
+import com.onedelay.mymovie.ReviewData;
+import com.onedelay.mymovie.ReviewItem;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     private ImageButton thumbUpBtn;
@@ -25,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
 
     private int likeCount;
     private int hateCount;
+
+    private ArrayList<ReviewItem> mainList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +56,10 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        adapter.addItem(new ReviewItem(R.drawable.user1, "kym71**", "10분전", 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.", "추천 0"));
-        adapter.addItem(new ReviewItem(R.drawable.user1, "su_m**", "10분전", 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했습니다", "추천 0"));
+        mainList = new ArrayList<>();
+        mainList.add(new ReviewItem(R.drawable.user1, "kym71**", "10분전", 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요. ", "추천 0"));
+        mainList.add(new ReviewItem(R.drawable.user1, "su_m**", "10분전", 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했어요. 친구들한테도 추천할래요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "추천 0"));
+        adapter.addItems(mainList);
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
@@ -62,26 +75,7 @@ public class MainActivity extends AppCompatActivity {
         thumbUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!thumbsUpState && !thumbsDownState) {
-                    thumbsUpState = true;
-                    likeCount++;
-                    thumbUpBtn.setSelected(true);
-                } else {
-                    if (thumbsUpState) {
-                        thumbsUpState = false;
-                        likeCount--;
-                        thumbUpBtn.setSelected(false);
-                    } else {
-                        thumbsUpState = true;
-                        thumbsDownState = false;
-                        likeCount++;
-                        hateCount--;
-                        thumbUpBtn.setSelected(true);
-                        thumbDownBtn.setSelected(false);
-                    }
-                }
-                likeCountView.setText(likeCount + "");
-                hateCountView.setText(hateCount + "");
+                likeClick();
             }
         });
 
@@ -89,26 +83,7 @@ public class MainActivity extends AppCompatActivity {
         thumbDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!thumbsUpState && !thumbsDownState) {
-                    thumbsDownState = true;
-                    hateCount++;
-                    thumbDownBtn.setSelected(true);
-                } else {
-                    if (thumbsDownState) {
-                        thumbsDownState = false;
-                        hateCount--;
-                        thumbDownBtn.setSelected(false);
-                    } else {
-                        thumbsDownState = true;
-                        thumbsUpState = false;
-                        hateCount++;
-                        likeCount--;
-                        thumbDownBtn.setSelected(true);
-                        thumbUpBtn.setSelected(false);
-                    }
-                }
-                likeCountView.setText(likeCount + "");
-                hateCountView.setText(hateCount + "");
+                hateClick();
             }
         });
 
@@ -116,16 +91,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, WriteReviewActivity.class);
-                intent.putExtra("type", 100);
-                startActivity(intent);
+                startActivityForResult(intent, 100);
             }
         });
 
         findViewById(R.id.btn_all_see).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AllReviewActivity.class);
-                startActivity(intent);
+                startActivity(putMainList(mainList));
             }
         });
 
@@ -149,5 +122,76 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "예매하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    public void likeClick() {
+        if (!thumbsUpState && !thumbsDownState) {
+            thumbsUpState = true;
+            likeCount++;
+            thumbUpBtn.setSelected(true);
+        } else if (thumbsUpState) {
+            thumbsUpState = false;
+            likeCount--;
+            thumbUpBtn.setSelected(false);
+        } else {
+            thumbsUpState = true;
+            thumbsDownState = false;
+            likeCount++;
+            hateCount--;
+            thumbUpBtn.setSelected(true);
+            thumbDownBtn.setSelected(false);
+        }
+
+        likeCountView.setText(likeCount + "");
+        hateCountView.setText(hateCount + "");
+    }
+
+    public void hateClick() {
+        if (!thumbsUpState && !thumbsDownState) {
+            thumbsDownState = true;
+            hateCount++;
+            thumbDownBtn.setSelected(true);
+        } else if (thumbsDownState) {
+            thumbsDownState = false;
+            hateCount--;
+            thumbDownBtn.setSelected(false);
+        } else {
+            thumbsDownState = true;
+            thumbsUpState = false;
+            hateCount++;
+            likeCount--;
+            thumbDownBtn.setSelected(true);
+            thumbUpBtn.setSelected(false);
+        }
+
+        likeCountView.setText(likeCount + "");
+        hateCountView.setText(hateCount + "");
+    }
+
+    public Intent putMainList(ArrayList<ReviewItem> items){
+        Intent intent = new Intent(MainActivity.this, AllReviewActivity.class);
+        ArrayList<ReviewData> mainParcelList = new ArrayList<>();
+
+        for(ReviewItem item : items){
+            mainParcelList.add(new ReviewData(item.getImage(), item.getId(), item.getTime(), item.getRating(), item.getContent(), item.getRecommend()));
+        }
+
+        intent.putParcelableArrayListExtra("mainList", mainParcelList);
+        return intent;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (data != null && resultCode != Activity.RESULT_CANCELED) {
+            float rating = data.getFloatExtra("rating", 0.0f);
+            String content = data.getStringExtra("content");
+
+            mainList.remove(0);
+            mainList.add(new ReviewItem(R.drawable.user1, "main", "방금", rating, content, "추천 0"));
+            adapter.addItems(mainList);
+            adapter.notifyDataSetChanged();
+        }
     }
 }

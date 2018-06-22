@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#e9e9e9"
     android:paddingTop="10dp"
-    tools:context=".AllReviewActivity">
+    tools:context=".activity.AllReviewActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/title_container"
@@ -59,7 +59,7 @@
             android:id="@+id/score"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="8.2 (1,142명 참여)"
+            android:text="@string/default_adv_parti"
             android:layout_marginTop="20dp"
             app:layout_constraintTop_toBottomOf="@+id/movie_title"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -76,7 +76,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
-            android:text="한줄평"
+            android:text="@string/review"
             android:textSize="17dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
             android:background="#00ffffff"
             android:drawableStart="@drawable/ic_review_selected"
             android:gravity="center"
-            android:text="  작성하기"
+            android:text="@string/write"
             android:textColor="#ff571f"
             android:textSize="15sp"
             android:textStyle="bold"

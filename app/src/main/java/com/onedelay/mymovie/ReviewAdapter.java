@@ -45,7 +45,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         // 바인딩 될 시점
         holder.setItem(items.get(position));
-
         holder.setOnItemClickListener(listener);
     }
 
@@ -82,7 +81,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             userTime = itemView.findViewById(R.id.review_user_time);
             ratingBar = itemView.findViewById(R.id.review_rating_bar);
             content = itemView.findViewById(R.id.review_content);
-            recommend = userTime = itemView.findViewById(R.id.recommend);
+            recommend = itemView.findViewById(R.id.recommend);
 
             itemView.findViewById(R.id.review_btn_declare).setOnClickListener(new View.OnClickListener() {
                 @Override
