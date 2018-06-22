@@ -16,6 +16,7 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.ReviewAdapter;
 import com.onedelay.mymovie.ReviewData;
 import com.onedelay.mymovie.ReviewItem;
+import com.onedelay.mymovie.utils.TimeDescending;
 
 import java.util.ArrayList;
 
@@ -23,10 +24,14 @@ public class AllReviewActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ReviewAdapter adapter;
 
+    private ArrayList<ReviewItem> reviewList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_review);
+
+        reviewList = new ArrayList<>();
 
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
@@ -55,9 +60,12 @@ public class AllReviewActivity extends AppCompatActivity {
 
         getData();
 
-        adapter.addItem(new ReviewItem(R.drawable.user1, "abc12**", "15분전", 5, "웃긴 내용보다는 좀 더 진지한 영화.", "추천 1"));
-        adapter.addItem(new ReviewItem(R.drawable.user1, "bu_t**", "17분전", 3, "연기가 부족한 느낌이 드는 배우도 있지만 전체적으로 재밌다.", "추천 0"));
-        adapter.addItem(new ReviewItem(R.drawable.user1, "em_r2**", "20분전", 4, "말이 필요없어요.", "추천 0"));
+        reviewList.add(new ReviewItem(R.drawable.user1, "abc12**", System.currentTimeMillis()-2000000, 5, "웃긴 내용보다는 좀 더 진지한 영화.", "추천 1"));
+        reviewList.add(new ReviewItem(R.drawable.user1, "bu_t**", System.currentTimeMillis()-3000000, 3, "연기가 부족한 느낌이 드는 배우도 있지만 전체적으로 재밌다.", "추천 0"));
+        reviewList.add(new ReviewItem(R.drawable.user1, "em_r2**", System.currentTimeMillis()-4000000, 4, "말이 필요없어요.", "추천 0"));
+
+        reviewList.sort(new TimeDescending());
+        adapter.addItems(reviewList);
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
@@ -70,15 +78,10 @@ public class AllReviewActivity extends AppCompatActivity {
     public void getData(){
         Intent intent = getIntent();
         ArrayList<ReviewData> mainList = intent.getParcelableArrayListExtra("mainList");
-        //adapter.addItems(mainList);
-        if (mainList != null) {
+        if (mainList != null && mainList.size() != 0) {
             for (ReviewData data : mainList) {
-                adapter.addItem(new ReviewItem(data.image, data.id, data.time, data.rating, data.content, data.recommend));
+                reviewList.add(new ReviewItem(data.getImage(), data.getId(), data.getTime(), data.getRating(), data.getContent(), data.getRecommend()));
             }
-        }
-
-        if (intent != null && intent.getIntExtra("type", 0) == 100) {
-            adapter.addItem(new ReviewItem(R.drawable.user1, "mainWrite", "방금", intent.getFloatExtra("rating", 0.0f), intent.getStringExtra("content"), "추천 0"));
         }
     }
 
@@ -89,7 +92,8 @@ public class AllReviewActivity extends AppCompatActivity {
         if (data != null && resultCode != Activity.RESULT_CANCELED) {
             float rating = data.getFloatExtra("rating", 0.0f);
             String content = data.getStringExtra("content");
-            adapter.addItem(new ReviewItem(R.drawable.user1, "list", "방금", rating, content, "추천 0"));
+            reviewList.add(new ReviewItem(R.drawable.user1, "list", System.currentTimeMillis(), rating, content, "추천 0"));
+            reviewList.sort(new TimeDescending());
             adapter.notifyDataSetChanged();
         }
     }

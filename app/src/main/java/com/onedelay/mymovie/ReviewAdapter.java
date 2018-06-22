@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.onedelay.mymovie.utils.TimeString;
+
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -98,7 +100,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         public void setItem(ReviewItem item){
             userImage.setImageResource(item.getImage());
             userId.setText(item.getId());
-            userTime.setText(item.getTime());
+            userTime.setText(TimeString.formatTimeString(item.getTime()));
             ratingBar.setRating(item.getRating());
             content.setText(item.getContent());
             recommend.setText(item.getRecommend());

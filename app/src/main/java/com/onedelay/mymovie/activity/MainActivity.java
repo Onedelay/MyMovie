@@ -19,6 +19,8 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.ReviewAdapter;
 import com.onedelay.mymovie.ReviewData;
 import com.onedelay.mymovie.ReviewItem;
+import com.onedelay.mymovie.utils.TimeDescending;
+import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
 
@@ -42,8 +44,9 @@ public class MainActivity extends AppCompatActivity {
         hateCountView = findViewById(R.id.thumb_down_count_view);
 
         mainList = new ArrayList<>();
-        mainList.add(new ReviewItem(R.drawable.user1, "kym71**", "10분전", 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요. ", "추천 0"));
-        mainList.add(new ReviewItem(R.drawable.user1, "su_m**", "10분전", 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했어요. 친구들한테도 추천할래요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "추천 0"));
+        mainList.add(new ReviewItem(R.drawable.user1, "kym71**", System.currentTimeMillis()-500000, 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요. ", "추천 0"));
+        mainList.add(new ReviewItem(R.drawable.user1, "su_m**", System.currentTimeMillis()-1000000, 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했어요. 친구들한테도 추천할래요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "추천 0"));
+        mainList.sort(new TimeDescending());
 
         likeCount = Integer.parseInt(likeCountView.getText().toString());
         hateCount = Integer.parseInt(hateCountView.getText().toString());
@@ -64,9 +67,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // 최신이 위로 오도록!
-        setContents(findViewById(R.id.item1), mainList.get(1));
-        setContents(findViewById(R.id.item2), mainList.get(0));
+        setContents(findViewById(R.id.item1), mainList.get(0));
+        setContents(findViewById(R.id.item2), mainList.get(1));
 
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
         hateCountView.setText(hateCount + "");
     }
 
-    public void setContents(View contentView, ReviewItem data){
+    public void setContents(View contentView, ReviewItem data) {
         ImageView imageView = contentView.findViewById(R.id.user_image);
         imageView.setImageResource(data.getImage());
 
@@ -149,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         idView.setText(data.getId());
 
         TextView timeView = contentView.findViewById(R.id.review_user_time);
-        timeView.setText(data.getTime());
+        timeView.setText(TimeString.formatTimeString(data.getTime()));
 
         RatingBar ratingBar = contentView.findViewById(R.id.review_rating_bar);
         ratingBar.setRating(data.getRating());
@@ -170,11 +172,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public Intent putMainList(ArrayList<ReviewItem> items){
+    public Intent putMainList(ArrayList<ReviewItem> items) {
         Intent intent = new Intent(MainActivity.this, AllReviewActivity.class);
         ArrayList<ReviewData> mainParcelList = new ArrayList<>();
 
-        for(ReviewItem item : items){
+        for (ReviewItem item : items) {
             mainParcelList.add(new ReviewData(item.getImage(), item.getId(), item.getTime(), item.getRating(), item.getContent(), item.getRecommend()));
         }
 
@@ -190,11 +192,11 @@ public class MainActivity extends AppCompatActivity {
             float rating = data.getFloatExtra("rating", 0.0f);
             String content = data.getStringExtra("content");
 
-            mainList.remove(0);
-            mainList.add(new ReviewItem(R.drawable.user1, "main", "방금", rating, content, "추천 0"));
+            mainList.add(new ReviewItem(R.drawable.user1, "main", System.currentTimeMillis(), rating, content, "추천 0"));
+            mainList.sort(new TimeDescending());
 
-            setContents(findViewById(R.id.item1), mainList.get(1));
-            setContents(findViewById(R.id.item2), mainList.get(0));
+            setContents(findViewById(R.id.item1), mainList.get(0));
+            setContents(findViewById(R.id.item2), mainList.get(1));
         }
     }
 }

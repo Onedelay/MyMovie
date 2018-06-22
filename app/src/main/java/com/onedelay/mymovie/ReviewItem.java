@@ -3,12 +3,12 @@ package com.onedelay.mymovie;
 public class ReviewItem {
     private int image;
     private String id;
-    private String time;
+    private long time;
     private float rating;
     private String content;
     private String recommend;
 
-    public ReviewItem(int image, String id, String time, float rating, String content, String recommend) {
+    public ReviewItem(int image, String id, long time, float rating, String content, String recommend) {
         this.image = image;
         this.id = id;
         this.time = time;
@@ -33,11 +33,11 @@ public class ReviewItem {
         this.id = id;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

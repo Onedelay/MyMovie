@@ -6,12 +6,12 @@ import android.os.Parcelable;
 public class ReviewData implements Parcelable {
     public int image;
     public String id;
-    public String time;
+    public long time;
     public float rating;
     public String content;
     public String recommend;
 
-    public ReviewData(int image, String id, String time, float rating, String content, String recommend) {
+    public ReviewData(int image, String id, long time, float rating, String content, String recommend) {
         this.image = image;
         this.id = id;
         this.time = time;
@@ -23,7 +23,7 @@ public class ReviewData implements Parcelable {
     public ReviewData(Parcel src){
         image = src.readInt();
         id = src.readString();
-        time = src.readString();
+        time = src.readLong();
         rating = src.readFloat();
         content = src.readString();
         recommend = src.readString();
@@ -50,7 +50,7 @@ public class ReviewData implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(image);
         parcel.writeString(id);
-        parcel.writeString(time);
+        parcel.writeLong(time);
         parcel.writeFloat(rating);
         parcel.writeString(content);
         parcel.writeString(recommend);
@@ -64,7 +64,7 @@ public class ReviewData implements Parcelable {
         return id;
     }
 
-    public String getTime() {
+    public long getTime() {
         return time;
     }
 
