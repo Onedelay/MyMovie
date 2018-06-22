@@ -29,9 +29,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ReviewAdapter adapter;
 
-    private boolean thumbsUpState = false;
-    private boolean thumbsDownState = false;
-
     private int likeCount;
     private int hateCount;
 
@@ -125,17 +122,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void likeClick() {
-        if (!thumbsUpState && !thumbsDownState) {
-            thumbsUpState = true;
+        if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
             likeCount++;
             thumbUpBtn.setSelected(true);
-        } else if (thumbsUpState) {
-            thumbsUpState = false;
+        } else if (thumbUpBtn.isSelected()) {
             likeCount--;
             thumbUpBtn.setSelected(false);
         } else {
-            thumbsUpState = true;
-            thumbsDownState = false;
             likeCount++;
             hateCount--;
             thumbUpBtn.setSelected(true);
@@ -147,17 +140,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void hateClick() {
-        if (!thumbsUpState && !thumbsDownState) {
-            thumbsDownState = true;
+        if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
             hateCount++;
             thumbDownBtn.setSelected(true);
-        } else if (thumbsDownState) {
-            thumbsDownState = false;
+        } else if (thumbDownBtn.isSelected()) {
             hateCount--;
             thumbDownBtn.setSelected(false);
         } else {
-            thumbsDownState = true;
-            thumbsUpState = false;
             hateCount++;
             likeCount--;
             thumbDownBtn.setSelected(true);
