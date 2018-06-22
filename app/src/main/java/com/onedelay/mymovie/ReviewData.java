@@ -55,4 +55,28 @@ public class ReviewData implements Parcelable {
         parcel.writeString(content);
         parcel.writeString(recommend);
     }
+
+    public int getImage() {
+        return image;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getRecommend() {
+        return recommend;
+    }
 }
