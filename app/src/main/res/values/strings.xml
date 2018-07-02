@@ -44,4 +44,11 @@
     <string name="default_review">적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요.</string>
     <string name="default_recommend">추천 0</string>
     <string name="declare">신고하기</string>
+    <string name="title_activity_movie_list">MovieListActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Delay</string>
+    <string name="nav_header_subtitle">Onedelay@gmail.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
 </resources>
