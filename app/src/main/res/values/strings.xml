@@ -51,4 +51,8 @@
     <string name="nav_header_subtitle">Onedelay@gmail.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string name="list_rate">예매율 61.6%</string>
+    <string name="list_level">15세 관람가</string>
+    <string name="list_d_day">D-1</string>
+    <string name="detail">상세보기</string>
 </resources>

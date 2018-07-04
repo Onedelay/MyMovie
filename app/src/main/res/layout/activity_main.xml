@@ -20,9 +20,8 @@
             <ImageView
                 android:id="@+id/movie_image"
                 android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_height="200dp"
                 android:src="@drawable/image11" />
-
 
             <TextView
                 android:id="@+id/movie_title"

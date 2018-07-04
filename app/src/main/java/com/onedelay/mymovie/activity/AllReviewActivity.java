@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.onedelay.mymovie.utils.DividerItemDecorator;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.ReviewAdapter;
+import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.ReviewData;
 import com.onedelay.mymovie.ReviewItem;
 import com.onedelay.mymovie.utils.TimeDescending;

@@ -1,4 +1,4 @@
-package com.onedelay.mymovie;
+package com.onedelay.mymovie.adapter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.ReviewItem;
 import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
