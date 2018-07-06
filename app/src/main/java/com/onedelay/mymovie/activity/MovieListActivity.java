@@ -28,12 +28,14 @@ public class MovieListActivity extends AppCompatActivity
     private ViewPagerFragment viewPagerFragment;
     private DetailFragment detailFragment;
 
+    Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("영화 목록");
         setSupportActionBar(toolbar);
 
@@ -68,6 +70,7 @@ public class MovieListActivity extends AppCompatActivity
 
         if (id == R.id.nav_list) {
             getSupportFragmentManager().beginTransaction().replace(R.id.container, new ViewPagerFragment()).commit();
+            toolbar.setTitle("영화 목록");
         } else if (id == R.id.nav_api) {
 
         } else if (id == R.id.nav_book) {
@@ -84,6 +87,7 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public void onChangeFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).commit();
+        toolbar.setTitle("영화 상세");
     }
 
     @Override

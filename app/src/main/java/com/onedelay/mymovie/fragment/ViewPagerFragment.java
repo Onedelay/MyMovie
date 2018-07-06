@@ -24,8 +24,6 @@ public class ViewPagerFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_viewpager, container, false);
         ViewPager viewPager = rootView.findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(3);
-        viewPager.setPadding(100, 0, 100, 0);
-        viewPager.setClipToPadding(false);
 
         MovieListPagerAdapter adapter = new MovieListPagerAdapter(getFragmentManager());
 //        adapter.addItem(new PosterFragment());
