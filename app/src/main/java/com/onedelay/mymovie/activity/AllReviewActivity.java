@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,7 +22,6 @@ import com.onedelay.mymovie.utils.TimeDescending;
 import java.util.ArrayList;
 
 public class AllReviewActivity extends AppCompatActivity {
-    private RecyclerView recyclerView;
     private ReviewAdapter adapter;
 
     private ArrayList<ReviewItem> reviewList;
@@ -35,9 +35,11 @@ public class AllReviewActivity extends AppCompatActivity {
 
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("한줄평 목록");
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeButtonEnabled(true);
+        if (ab != null) {
+            ab.setTitle("한줄평 목록");
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setHomeButtonEnabled(true);
+        }
 
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,7 +49,7 @@ public class AllReviewActivity extends AppCompatActivity {
             }
         });
 
-        recyclerView = findViewById(R.id.review_list);
+        RecyclerView recyclerView = findViewById(R.id.review_list);
 
         adapter = new ReviewAdapter(getApplicationContext());
         recyclerView.setAdapter(adapter);
@@ -96,5 +98,15 @@ public class AllReviewActivity extends AppCompatActivity {
             reviewList.sort(new TimeDescending());
             adapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 }

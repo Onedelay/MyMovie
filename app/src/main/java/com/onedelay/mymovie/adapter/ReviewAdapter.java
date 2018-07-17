@@ -18,9 +18,9 @@ import java.util.ArrayList;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
-    Context context;
-    ArrayList<ReviewItem> items = new ArrayList<>();
-    OnItemClickListener listener;
+    private Context context;
+    private ArrayList<ReviewItem> items = new ArrayList<>();
+    private OnItemClickListener listener;
 
     public interface OnItemClickListener{
         void onItemClick(RecyclerView.ViewHolder holder, View view, int position);
@@ -40,7 +40,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         // item을 위한 뷰홀더 객체가 만들어지는 시점에서 자동 호출, 재사용될 수 있는 상태에서는 호출되지 않음.
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater.inflate(R.layout.comment_item_view, parent, false);  // parent - item의 최상위 레이아웃
+        View itemView = inflater != null ? inflater.inflate(R.layout.comment_item_view, parent, false) : null;  // parent - item의 최상위 레이아웃
 
         return new ViewHolder(itemView);
     }
@@ -78,7 +78,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
         OnItemClickListener listener;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.user_image);
             userId = itemView.findViewById(R.id.review_user_id);
@@ -108,7 +108,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             recommend.setText(item.getRecommend());
         }
 
-        public void setOnItemClickListener(OnItemClickListener listener){
+        void setOnItemClickListener(OnItemClickListener listener){
             this.listener = listener;
         }
     }

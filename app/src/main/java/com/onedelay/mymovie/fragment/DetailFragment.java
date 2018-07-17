@@ -19,12 +19,12 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.ReviewData;
 import com.onedelay.mymovie.ReviewItem;
 import com.onedelay.mymovie.activity.AllReviewActivity;
-import com.onedelay.mymovie.activity.MainActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.utils.TimeDescending;
 import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DetailFragment extends Fragment {
     private ViewGroup rootView;
@@ -50,7 +50,7 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             imageView.setImageResource(bundle.getInt("image"));
-            textView.setText(bundle.getString("title").substring(3));
+            textView.setText(Objects.requireNonNull(bundle.getString("title")).substring(3));
         }
 
         likeCountView = rootView.findViewById(R.id.thumb_up_count_view);
@@ -136,8 +136,8 @@ public class DetailFragment extends Fragment {
             thumbDownBtn.setSelected(false);
         }
 
-        likeCountView.setText(likeCount + "");
-        hateCountView.setText(hateCount + "");
+        likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+        hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
     public void hateClick() {
@@ -154,8 +154,8 @@ public class DetailFragment extends Fragment {
             thumbUpBtn.setSelected(false);
         }
 
-        likeCountView.setText(String.format("%d", likeCount));
-        hateCountView.setText(hateCount + "");
+        likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+        hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
     public Intent putMainList(ArrayList<ReviewItem> items) {

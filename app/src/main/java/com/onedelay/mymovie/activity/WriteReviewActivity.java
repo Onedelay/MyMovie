@@ -22,7 +22,9 @@ public class WriteReviewActivity extends AppCompatActivity {
 
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
-        ab.setTitle("한줄평 작성");
+        if (ab != null) {
+            ab.setTitle("한줄평 작성");
+        }
 
         ratingBar = findViewById(R.id.rating_bar);
         contentsEditText = findViewById(R.id.review_content);

@@ -1,6 +1,7 @@
 package com.onedelay.mymovie.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +18,6 @@ import com.onedelay.mymovie.fragment.ViewPagerFragment;
 
 public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PosterFragment.PosterFragmentCallback {
-    private ViewPagerFragment viewPagerFragment;
     private DetailFragment detailFragment;
 
     private Toolbar toolbar;
@@ -27,11 +27,11 @@ public class MovieListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("영화 목록");
         setSupportActionBar(toolbar);
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        final DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -53,7 +53,7 @@ public class MovieListActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        viewPagerFragment = new ViewPagerFragment();
+        ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
         detailFragment = new DetailFragment();
         getSupportFragmentManager().beginTransaction().add(R.id.container, viewPagerFragment).commit();
     }
@@ -70,7 +70,7 @@ public class MovieListActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_list) {
@@ -84,7 +84,7 @@ public class MovieListActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
