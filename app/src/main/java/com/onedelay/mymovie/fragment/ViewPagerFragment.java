@@ -33,7 +33,7 @@ public class ViewPagerFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_viewpager, container, false);
         ViewPager viewPager = rootView.findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(5);
-        //viewPager.setPageMargin(dpToPx(5)); // 리뷰어님이 이거로 하라하셨는데 적용이 안됩니다!ㅠㅠ
+        //viewPager.setPageMargin(dpToPx(5)); // 리뷰어님께서 이거로 하라하셨는데 적용이 안됩니다!ㅠㅠ
         viewPager.setPadding(dpToPx(45), 0, dpToPx(45), 0);
 
         if (AppHelper.requestQueue == null)
@@ -56,7 +56,6 @@ public class ViewPagerFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getContext(), "응답 받음", Toast.LENGTH_SHORT).show();
                         processResponse(response);
                     }
                 },
@@ -96,7 +95,7 @@ public class ViewPagerFragment extends Fragment {
         bundle.putString("title", title);
         bundle.putFloat("rate", rate);
         bundle.putInt("grade",grade);
-        bundle.putString("data", date);
+        bundle.putString("date", date);
         fragment.setArguments(bundle);
         return fragment;
     }

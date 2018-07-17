@@ -64,4 +64,10 @@
     <string name="list_fragment_title">%d. %s</string>
     <string name="list_fragment_rate">예매율 %.1f%%</string>
     <string name="list_fragment_grade">%d세 관람가</string>
+    <string name="detail_fragment_date">%s 개봉</string>
+    <string name="detail_fragment_genre_time">%s / %d분</string>
+    <string name="float_value">%.1f</string>
+    <string name="detail_fragment_rank">%d위</string>
+    <string name="detail_fragment_audience">%,d명</string>
+    <string name="detail_fragment_rate">%.1f%%</string>
 </resources>

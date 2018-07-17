@@ -20,7 +20,7 @@ public class PosterFragment extends Fragment {
 
     public interface PosterFragmentCallback {
         void onChangeFragment();
-        void setData(int resId, String title);
+        void setData(int id);
     }
 
     @Nullable
@@ -48,7 +48,7 @@ public class PosterFragment extends Fragment {
                 callback.onChangeFragment();
                 if(getArguments() != null) {
                     Bundle bundle = getArguments();
-                    callback.setData(bundle.getInt("image"), bundle.getString("title"));
+                    callback.setData(bundle.getInt("id"));
                 }
             }
         });

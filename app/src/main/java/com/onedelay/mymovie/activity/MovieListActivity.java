@@ -91,15 +91,14 @@ public class MovieListActivity extends AppCompatActivity
 
     @Override
     public void onChangeFragment() {
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).addToBackStack(null).commit();
         toolbar.setTitle("영화 상세");
     }
 
     @Override
-    public void setData(int resId, String title) {
+    public void setData(int id) {
         Bundle bundle = new Bundle();
-        bundle.putInt("image", resId);
-        bundle.putString("title", title);
+        bundle.putInt("id", id);
         detailFragment.setArguments(bundle);
     }
 }
