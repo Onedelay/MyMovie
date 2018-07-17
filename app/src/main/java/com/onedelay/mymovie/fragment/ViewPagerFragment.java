@@ -24,7 +24,7 @@ public class ViewPagerFragment extends Fragment {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_viewpager, container, false);
         ViewPager viewPager = rootView.findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(5);
-        //viewPager.setPageMargin(dpToPx(5)); // 리뷰어님이 이거로 하라하셨는데 적용이 안됩니다!
+        //viewPager.setPageMargin(dpToPx(5)); // 리뷰어님이 이거로 하라하셨는데 적용이 안됩니다!ㅠㅠ
         viewPager.setPadding(dpToPx(45), 0, dpToPx(45), 0);
 
         MovieListPagerAdapter adapter = new MovieListPagerAdapter(getFragmentManager());
