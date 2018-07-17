@@ -31,7 +31,7 @@
             android:id="@+id/level"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"
             android:src="@drawable/ic_15"
             app:layout_constraintStart_toEndOf="@+id/movie_title" />
 
@@ -47,7 +47,7 @@
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
+            android:layout_marginEnd="5dp"
             android:isIndicator="true"
             android:numStars="5"
             android:rating="4.1"
@@ -77,7 +77,7 @@
 
         <TextView
             android:text="@string/review"
-            android:textSize="17dp"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,9 +89,9 @@
             android:id="@+id/btn_write"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:background="#00ffffff"
             android:drawableStart="@drawable/ic_review_selected"
             android:gravity="center"
@@ -107,7 +107,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_below="@+id/btn_write"
-            android:layout_above="@+id/btn_all_see"
             android:layout_marginTop="5dp"
             app:layout_constraintTop_toBottomOf="@+id/btn_write"
             app:layout_constraintBottom_toBottomOf="parent"/>

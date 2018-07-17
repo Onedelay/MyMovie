@@ -23,7 +23,7 @@
         android:id="@+id/level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:src="@drawable/ic_15"
         app:layout_constraintStart_toEndOf="@+id/movie_title" />
 
@@ -73,7 +73,7 @@
         android:id="@+id/btn_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:background="@drawable/button_background"
         android:text="@string/save"
         app:layout_constraintEnd_toStartOf="@+id/btn_cancel"

@@ -39,7 +39,7 @@
         style="?android:attr/ratingBarStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         android:isIndicator="true"
         android:numStars="5"
         android:rating="5"
@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="@string/default_review"
-        android:textSize="16dp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/review_user_time"
         app:layout_constraintTop_toBottomOf="@+id/review_user_time"
@@ -73,7 +73,7 @@
         android:layout_width="1dp"
         android:layout_height="10dp"
         android:background="#686868"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintTop_toTopOf="@id/recommend"
         app:layout_constraintBottom_toBottomOf="@+id/recommend"
         app:layout_constraintStart_toEndOf="@id/recommend"/>
@@ -83,7 +83,7 @@
         android:text="@string/declare"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
         app:layout_constraintStart_toEndOf="@id/view"
         app:layout_constraintTop_toTopOf="@+id/recommend"/>
 

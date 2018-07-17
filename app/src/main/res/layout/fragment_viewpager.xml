@@ -11,16 +11,5 @@
         android:paddingStart="35dp"
         android:paddingEnd="35dp"
         android:clipToPadding="false">
-
-        <!--
-        <android.support.v4.view.PagerTitleStrip
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
-            android:gravity="bottom"/>
-            -->
     </android.support.v4.view.ViewPager>
 </FrameLayout>
