@@ -154,7 +154,7 @@ public class DetailFragment extends Fragment {
             thumbUpBtn.setSelected(false);
         }
 
-        likeCountView.setText(likeCount + "");
+        likeCountView.setText(String.format("%d", likeCount));
         hateCountView.setText(hateCount + "");
     }
 

@@ -9,13 +9,13 @@
 
     <ImageView
         android:id="@+id/list_image"
-        android:layout_width="350dp"
+        android:layout_width="match_parent"
         android:layout_height="360dp"
         android:layout_gravity="center"
         app:srcCompat="@drawable/image1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:id="@+id/list_title"
