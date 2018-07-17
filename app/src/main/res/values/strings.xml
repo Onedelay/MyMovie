@@ -61,4 +61,7 @@
     <string name="str_reservation">예매하기</string>
     <string name="str_setting">설정</string>
     <string name="str_users_setting">사용자 설정</string>
+    <string name="list_fragment_title">%d. %s</string>
+    <string name="list_fragment_rate">예매율 %.1f%%</string>
+    <string name="list_fragment_grade">%d세 관람가</string>
 </resources>

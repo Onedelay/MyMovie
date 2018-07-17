@@ -50,7 +50,7 @@ public class DetailFragment extends Fragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             imageView.setImageResource(bundle.getInt("image"));
-            textView.setText(Objects.requireNonNull(bundle.getString("title")).substring(3));
+            textView.setText(bundle.getString("title").toString());
         }
 
         likeCountView = rootView.findViewById(R.id.thumb_up_count_view);

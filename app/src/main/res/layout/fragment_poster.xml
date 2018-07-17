@@ -64,25 +64,25 @@
             android:background="#ffffff" />
 
         <TextView
-            android:id="@+id/level"
+            android:id="@+id/grade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="@string/list_level"
             android:textColor="#ffffff" />
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="13dp"
-            android:layout_marginEnd="10dp"
-            android:background="#ffffff" />
+        <!--<View-->
+            <!--android:layout_width="1dp"-->
+            <!--android:layout_height="13dp"-->
+            <!--android:layout_marginEnd="10dp"-->
+            <!--android:background="#ffffff" />-->
 
-        <TextView
-            android:id="@+id/d_day"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/list_d_day"
-            android:textColor="#ffffff" />
+        <!--<TextView-->
+            <!--android:id="@+id/d_day"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:text="@string/list_d_day"-->
+            <!--android:textColor="#ffffff" />-->
     </LinearLayout>
 
     <Button
