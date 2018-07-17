@@ -42,7 +42,7 @@ public class DetailFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        rootView = (ViewGroup) inflater.inflate(R.layout.activity_main, container, false);
+        rootView = (ViewGroup) inflater.inflate(R.layout.fragment_detail, container, false);
 
         ImageView imageView = rootView.findViewById(R.id.movie_image);
         TextView textView = rootView.findViewById(R.id.movie_title);

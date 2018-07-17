@@ -56,4 +56,9 @@
     <string name="list_d_day">D-1</string>
     <string name="detail">상세보기</string>
     <string name="int_value">%d</string>
+    <string name="str_movie_list">영화 목록</string>
+    <string name="str_movie_api">영화 API</string>
+    <string name="str_reservation">예매하기</string>
+    <string name="str_setting">설정</string>
+    <string name="str_users_setting">사용자 설정</string>
 </resources>
