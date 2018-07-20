@@ -1,37 +1,41 @@
 package com.onedelay.mymovie.activity;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.onedelay.mymovie.utils.DividerItemDecorator;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
-import com.onedelay.mymovie.ReviewData;
-import com.onedelay.mymovie.ReviewItem;
-import com.onedelay.mymovie.utils.TimeDescending;
+import com.onedelay.mymovie.api.AppHelper;
+import com.onedelay.mymovie.api.data.ResponseInfo;
+import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.api.data.ReviewList;
+import com.onedelay.mymovie.utils.DividerItemDecorator;
 
 import java.util.ArrayList;
 
 public class AllReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
 
-    private ArrayList<ReviewItem> reviewList;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_review);
-
-        reviewList = new ArrayList<>();
 
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
@@ -60,14 +64,35 @@ public class AllReviewActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        getData();
+        requestAllReview(getIntent().getIntExtra("id", 0));
 
-        reviewList.add(new ReviewItem(R.drawable.user1, "abc12**", System.currentTimeMillis()-2000000, 5, "웃긴 내용보다는 좀 더 진지한 영화.", "추천 1"));
-        reviewList.add(new ReviewItem(R.drawable.user1, "bu_t**", System.currentTimeMillis()-3000000, 3, "연기가 부족한 느낌이 드는 배우도 있지만 전체적으로 재밌다.", "추천 0"));
-        reviewList.add(new ReviewItem(R.drawable.user1, "em_r2**", System.currentTimeMillis()-4000000, 4, "말이 필요없어요.", "추천 0"));
+        TextView textView = findViewById(R.id.movie_title);
+        textView.setText(getIntent().getStringExtra("title"));
 
-        reviewList.sort(new TimeDescending());
-        adapter.addItems(reviewList);
+        ImageView imageView = findViewById(R.id.level);
+        int grade = getIntent().getIntExtra("grade",12);
+
+        switch (grade) {
+            case 12:
+                imageView.setImageResource(R.drawable.ic_12);
+                break;
+            case 15:
+                imageView.setImageResource(R.drawable.ic_15);
+                break;
+            case 19:
+                imageView.setImageResource(R.drawable.ic_19);
+                break;
+            default:
+                imageView.setImageResource(R.drawable.ic_all);
+        }
+
+        float rate = getIntent().getFloatExtra("rating", 0.0f);
+
+        RatingBar ratingBar = findViewById(R.id.rating_bar);
+        ratingBar.setRating(rate);
+
+        TextView score = findViewById(R.id.score);
+        score.setText(String.format(getString(R.string.all_review_score), rate, 1111));
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
@@ -77,32 +102,44 @@ public class AllReviewActivity extends AppCompatActivity {
         });
     }
 
-    public void getData(){
-        Intent intent = getIntent();
-        ArrayList<ReviewData> mainList = intent.getParcelableArrayListExtra("mainList");
-        if (mainList != null && mainList.size() != 0) {
-            for (ReviewData data : mainList) {
-                reviewList.add(new ReviewItem(data.getImage(), data.getId(), data.getTime(), data.getRating(), data.getContent(), data.getRecommend()));
-            }
-        }
+    private void requestAllReview(int id) {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList?id=" + id;
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        processReviewResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(AllReviewActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    private void processReviewResponse(String response) {
+        Gson gson = new Gson();
 
-        if (data != null && resultCode != Activity.RESULT_CANCELED) {
-            float rating = data.getFloatExtra("rating", 0.0f);
-            String content = data.getStringExtra("content");
-            reviewList.add(new ReviewItem(R.drawable.user1, "list", System.currentTimeMillis(), rating, content, "추천 0"));
-            reviewList.sort(new TimeDescending());
+        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
+        if (info.getCode() == 200) {
+            ReviewList reviewList = gson.fromJson(response, ReviewList.class);
+            adapter.addItems(reviewList);
             adapter.notifyDataSetChanged();
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 break;

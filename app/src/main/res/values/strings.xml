@@ -70,4 +70,6 @@
     <string name="detail_fragment_rank">%d위</string>
     <string name="detail_fragment_audience">%,d명</string>
     <string name="detail_fragment_rate">%.1f%%</string>
+    <string name="detail_review_recommend">추천 %d</string>
+    <string name="all_review_score">%.1f (%,d명 참여)</string>
 </resources>

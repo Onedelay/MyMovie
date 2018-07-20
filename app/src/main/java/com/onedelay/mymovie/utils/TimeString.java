@@ -1,11 +1,11 @@
 package com.onedelay.mymovie.utils;
 
 public class TimeString {
-    public static final int SEC = 60;
-    public static final int MIN = 60;
-    public static final int HOUR = 24;
-    public static final int DAY = 30;
-    public static final int MONTH = 12;
+    private static final int SEC = 60;
+    private static final int MIN = 60;
+    private static final int HOUR = 24;
+    private static final int DAY = 30;
+    private static final int MONTH = 12;
 
     public static String formatTimeString(long regTime) {
         long curTime = System.currentTimeMillis();

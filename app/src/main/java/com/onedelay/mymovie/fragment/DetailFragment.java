@@ -1,6 +1,5 @@
 package com.onedelay.mymovie.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -23,21 +22,15 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.ReviewData;
-import com.onedelay.mymovie.ReviewItem;
 import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.api.AppHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.MovieList;
 import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.utils.TimeDescending;
+import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.TimeString;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class DetailFragment extends Fragment {
     private ViewGroup rootView;
@@ -49,8 +42,6 @@ public class DetailFragment extends Fragment {
 
     private int likeCount;
     private int hateCount;
-
-    private ArrayList<ReviewItem> mainList;
 
     private ImageView imageView;
     private TextView textView;
@@ -65,6 +56,11 @@ public class DetailFragment extends Fragment {
     private TextView synopsis;
     private TextView director;
     private TextView actor;
+
+    private int id;
+    private String title;
+    private int grade;
+    private float rating;
 
     @Nullable
     @Override
@@ -92,15 +88,16 @@ public class DetailFragment extends Fragment {
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
-            requestMovieDetail(bundle.getInt("id"));
+            id = bundle.getInt("id");
+            title = bundle.getString("title");
+            grade = bundle.getInt("grade");
+            rating = bundle.getFloat("rating");
+            requestMovieDetail(id);
+            requestLatestReview(id);
         } else {
             Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
         }
 
-        mainList = new ArrayList<>();
-        mainList.add(new ReviewItem(R.drawable.user1, "kym71**", System.currentTimeMillis() - 500000, 4, "적당히 재밌다. 오랜만에 잠 안오는 영화 봤네요. ", "추천 0"));
-        mainList.add(new ReviewItem(R.drawable.user1, "su_m**", System.currentTimeMillis() - 1000000, 5, "완전 재밌고 흥미진진하네요! 다음에 또 보고싶습니다. 배우들의 연기력에도 감탄했어요. 친구들한테도 추천할래요~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", "추천 0"));
-        mainList.sort(new TimeDescending());
 
         thumbUpBtn = rootView.findViewById(R.id.btn_thumb_up);
         thumbUpBtn.setOnClickListener(new View.OnClickListener() {
@@ -118,9 +115,6 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        setContents(rootView.findViewById(R.id.item1), mainList.get(0));
-        setContents(rootView.findViewById(R.id.item2), mainList.get(1));
-
         rootView.findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,7 +126,12 @@ public class DetailFragment extends Fragment {
         rootView.findViewById(R.id.btn_all_see).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(putMainList(mainList));
+                Intent intent = new Intent(getActivity(), AllReviewActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("title", title);
+                intent.putExtra("grade", grade);
+                intent.putExtra("rating", rating);
+                startActivity(intent);
             }
         });
 
@@ -157,7 +156,34 @@ public class DetailFragment extends Fragment {
             }
         });
 
+        if (AppHelper.requestQueue == null)
+            AppHelper.requestQueue = Volley.newRequestQueue(getContext());
+
         return rootView;
+    }
+
+    private void requestLatestReview(int id) {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList?id=" + id + "&limit=2";
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        processReviewResponse(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
     }
 
     public void requestMovieDetail(int id) {
@@ -185,7 +211,19 @@ public class DetailFragment extends Fragment {
         AppHelper.requestQueue.add(request);
     }
 
-    public void processResponse(String response) {
+    private void processReviewResponse(String response) {
+        Gson gson = new Gson();
+
+        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
+        if (info.getCode() == 200) {
+            ReviewList reviewList = gson.fromJson(response, ReviewList.class);
+
+            setContents(rootView.findViewById(R.id.item1), reviewList.getResult().get(0));
+            setContents(rootView.findViewById(R.id.item2), reviewList.getResult().get(1));
+        }
+    }
+
+    private void processResponse(String response) {
         Gson gson = new Gson();
 
         ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
@@ -267,36 +305,25 @@ public class DetailFragment extends Fragment {
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
-    public Intent putMainList(ArrayList<ReviewItem> items) {
-        Intent intent = new Intent(getActivity(), AllReviewActivity.class);
-        ArrayList<ReviewData> mainParcelList = new ArrayList<>();
-
-        for (ReviewItem item : items) {
-            mainParcelList.add(new ReviewData(item.getImage(), item.getId(), item.getTime(), item.getRating(), item.getContent(), item.getRecommend()));
-        }
-
-        intent.putParcelableArrayListExtra("mainList", mainParcelList);
-        return intent;
-    }
-
-    public void setContents(View contentView, ReviewItem data) {
+    public void setContents(View contentView, ReviewInfo data) {
         ImageView imageView = contentView.findViewById(R.id.user_image);
-        imageView.setImageResource(data.getImage());
+        if (data.getWriter_image() != null)
+            Glide.with(this).load(data.getWriter_image()).into(imageView);
 
         TextView idView = contentView.findViewById(R.id.review_user_id);
-        idView.setText(data.getId());
+        idView.setText(data.getWriter());
 
         TextView timeView = contentView.findViewById(R.id.review_user_time);
-        timeView.setText(TimeString.formatTimeString(data.getTime()));
+        timeView.setText(TimeString.formatTimeString(data.getTimestamp()));
 
         RatingBar ratingBar = contentView.findViewById(R.id.review_rating_bar);
         ratingBar.setRating(data.getRating());
 
         TextView ContentView = contentView.findViewById(R.id.review_content);
-        ContentView.setText(data.getContent());
+        ContentView.setText(data.getContents());
 
         TextView recommendView = contentView.findViewById(R.id.recommend);
-        recommendView.setText(data.getRecommend());
+        recommendView.setText(String.format(getString(R.string.detail_review_recommend), data.getRecommend()));
 
         TextView declareBtn = contentView.findViewById(R.id.review_btn_declare);
         declareBtn.setText("신고하기");
@@ -306,21 +333,5 @@ public class DetailFragment extends Fragment {
                 Toast.makeText(getActivity(), "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (data != null && resultCode != Activity.RESULT_CANCELED) {
-            float rating = data.getFloatExtra("rating", 0.0f);
-            String content = data.getStringExtra("content");
-
-            mainList.add(new ReviewItem(R.drawable.user1, "main", System.currentTimeMillis(), rating, content, "추천 0"));
-            mainList.sort(new TimeDescending());
-
-            setContents(rootView.findViewById(R.id.item1), mainList.get(0));
-            setContents(rootView.findViewById(R.id.item2), mainList.get(1));
-        }
     }
 }

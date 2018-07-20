@@ -9,8 +9,11 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.ReviewItem;
+import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
@@ -19,7 +22,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<ReviewItem> items = new ArrayList<>();
+    private ReviewList items = new ReviewList();
     private OnItemClickListener listener;
 
     public interface OnItemClickListener{
@@ -52,15 +55,15 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         holder.setOnItemClickListener(listener);
     }
 
-    public void addItem(ReviewItem item){
+    public void addItem(ReviewInfo item){
         items.add(item);
     }
 
-    public void addItems(ArrayList<ReviewItem> items){
+    public void addItems(ReviewList items){
         this.items = items;
     }
 
-    public ReviewItem getItem(int position){
+    public ReviewInfo getItem(int position){
         return items.get(position);
     }
 
@@ -99,13 +102,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             });
         }
 
-        public void setItem(ReviewItem item){
-            userImage.setImageResource(item.getImage());
-            userId.setText(item.getId());
-            userTime.setText(TimeString.formatTimeString(item.getTime()));
+        public void setItem(ReviewInfo item){
+            if (item.getWriter_image() != null)
+                //Glide.with(context).load(item.getWriter_image()).into(userImage);
+            userId.setText(item.getWriter());
+            userTime.setText(TimeString.formatTimeString(item.getTimestamp()));
             ratingBar.setRating(item.getRating());
-            content.setText(item.getContent());
-            recommend.setText(item.getRecommend());
+            content.setText(item.getContents());
+            recommend.setText(String.format("추천 %d", item.getRecommend())); // 뷰홀더에서 getString 을 어떻게 호출하나요?
         }
 
         void setOnItemClickListener(OnItemClickListener listener){

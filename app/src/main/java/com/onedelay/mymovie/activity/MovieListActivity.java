@@ -96,9 +96,12 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     @Override
-    public void setData(int id) {
+    public void setData(int id, String title, int grade, float rating) {
         Bundle bundle = new Bundle();
         bundle.putInt("id", id);
+        bundle.putString("title", title);
+        bundle.putInt("grade", grade);
+        bundle.putFloat("rating", rating);
         detailFragment.setArguments(bundle);
     }
 }

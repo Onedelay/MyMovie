@@ -46,7 +46,7 @@ public class ViewPagerFragment extends Fragment {
         return rootView;
     }
 
-    public void requestMovieList() {
+    private void requestMovieList() {
         String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
 
@@ -71,7 +71,7 @@ public class ViewPagerFragment extends Fragment {
         AppHelper.requestQueue.add(request);
     }
 
-    public void processResponse(String response) {
+    private void processResponse(String response) {
         Gson gson = new Gson();
 
         ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
