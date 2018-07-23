@@ -119,6 +119,9 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
+                intent.putExtra("id", id);
+                intent.putExtra("title", title);
+                intent.putExtra("grade", grade);
                 startActivityForResult(intent, 100);
             }
         });
@@ -333,5 +336,12 @@ public class DetailFragment extends Fragment {
                 Toast.makeText(getActivity(), "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        requestLatestReview(id);
     }
 }

@@ -1,5 +1,6 @@
 package com.onedelay.mymovie.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -23,11 +24,8 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.AppHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.api.data.ReviewInfo;
 import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
-
-import java.util.ArrayList;
 
 public class AllReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
@@ -49,6 +47,9 @@ public class AllReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
+                intent.putExtra("id", getIntent().getIntExtra("id", 0));
+                intent.putExtra("grade", getIntent().getIntExtra("grade",12));
+                intent.putExtra("title", getIntent().getStringExtra("title"));
                 startActivityForResult(intent, 100);
             }
         });
@@ -139,11 +140,14 @@ public class AllReviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
+        if(item.getItemId() == android.R.id.home) finish();
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        requestAllReview(getIntent().getIntExtra("id", 0));
     }
 }

@@ -16,7 +16,7 @@ public class ReviewInfo {
     }
 
     public String getWriter() {
-        return writer;
+        return writer.substring(0, writer.length() - 2) + "**";
     }
 
     public int getMovieId() {
@@ -32,7 +32,7 @@ public class ReviewInfo {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return timestamp*1000L;
     }
 
     public float getRating() {

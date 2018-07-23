@@ -7,23 +7,61 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.google.gson.Gson;
 import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.api.AppHelper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WriteReviewActivity extends AppCompatActivity {
-    RatingBar ratingBar;
-    EditText contentsEditText;
+    private RatingBar ratingBar;
+    private EditText contentsEditText;
+
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_review);
 
+        id = getIntent().getIntExtra("id", 0);
+
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
             ab.setTitle("한줄평 작성");
+        }
+
+        TextView textView = findViewById(R.id.movie_title);
+        textView.setText(getIntent().getStringExtra("title"));
+
+        ImageView imageView = findViewById(R.id.level);
+
+        int grade = getIntent().getIntExtra("grade",12);
+
+        switch (grade) {
+            case 12:
+                imageView.setImageResource(R.drawable.ic_12);
+                break;
+            case 15:
+                imageView.setImageResource(R.drawable.ic_15);
+                break;
+            case 19:
+                imageView.setImageResource(R.drawable.ic_19);
+                break;
+            default:
+                imageView.setImageResource(R.drawable.ic_all);
         }
 
         ratingBar = findViewById(R.id.rating_bar);
@@ -47,12 +85,40 @@ public class WriteReviewActivity extends AppCompatActivity {
     }
 
     private void returnToReviewList() {
-        float rating = ratingBar.getRating();
-        String content = contentsEditText.getText().toString();
+        String url = "http://"+ AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
+
+        StringRequest request = new StringRequest(
+                Request.Method.POST,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(WriteReviewActivity.this, response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(WriteReviewActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id",String.valueOf(id));
+                params.put("writer","onedelay");
+                params.put("rating",String.valueOf(ratingBar.getRating()));
+                params.put("contents",contentsEditText.getText().toString());
+
+                return params;
+            }
+        };
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
 
         Intent returnIntent = new Intent();
-        returnIntent.putExtra("rating", rating);
-        returnIntent.putExtra("content", content);
         setResult(Activity.RESULT_OK, returnIntent);
         finish();
     }

@@ -11,12 +11,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.ReviewItem;
 import com.onedelay.mymovie.api.data.ReviewInfo;
 import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.TimeString;
-
-import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -25,11 +22,11 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     private ReviewList items = new ReviewList();
     private OnItemClickListener listener;
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(RecyclerView.ViewHolder holder, View view, int position);
     }
 
-    public ReviewAdapter(Context context){
+    public ReviewAdapter(Context context) {
         this.context = context;
     }
 
@@ -55,19 +52,19 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         holder.setOnItemClickListener(listener);
     }
 
-    public void addItem(ReviewInfo item){
+    public void addItem(ReviewInfo item) {
         items.add(item);
     }
 
-    public void addItems(ReviewList items){
+    public void addItems(ReviewList items) {
         this.items = items;
     }
 
-    public ReviewInfo getItem(int position){
+    public ReviewInfo getItem(int position) {
         return items.get(position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 
@@ -95,16 +92,17 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 public void onClick(View view) {
                     int position = getAdapterPosition();
 
-                    if(listener != null){
+                    if (listener != null) {
                         listener.onItemClick(ViewHolder.this, view, position);
                     }
                 }
             });
         }
 
-        public void setItem(ReviewInfo item){
-            if (item.getWriter_image() != null)
-                //Glide.with(context).load(item.getWriter_image()).into(userImage);
+        public void setItem(ReviewInfo item) {
+//            if (item.getWriter_image() != null) {
+//                Glide.with(context).load(item.getWriter_image()).into(userImage);
+//            }
             userId.setText(item.getWriter());
             userTime.setText(TimeString.formatTimeString(item.getTimestamp()));
             ratingBar.setRating(item.getRating());
@@ -112,7 +110,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             recommend.setText(String.format("추천 %d", item.getRecommend())); // 뷰홀더에서 getString 을 어떻게 호출하나요?
         }
 
-        void setOnItemClickListener(OnItemClickListener listener){
+        void setOnItemClickListener(OnItemClickListener listener) {
             this.listener = listener;
         }
     }
