@@ -87,13 +87,13 @@ public class AllReviewActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.ic_all);
         }
 
-        float rate = getIntent().getFloatExtra("rating", 0.0f);
+        float rating = getIntent().getFloatExtra("rating", 0.0f);
 
         RatingBar ratingBar = findViewById(R.id.rating_bar);
-        ratingBar.setRating(rate);
+        ratingBar.setRating(rating/2);
 
         TextView score = findViewById(R.id.score);
-        score.setText(String.format(getString(R.string.all_review_score), rate, 1111));
+        score.setText(String.format(getString(R.string.all_review_score), rating, 1111));
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override

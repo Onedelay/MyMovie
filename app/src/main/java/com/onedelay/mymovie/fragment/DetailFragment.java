@@ -1,5 +1,6 @@
 package com.onedelay.mymovie.fragment;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -61,6 +62,12 @@ public class DetailFragment extends Fragment {
     private String title;
     private int grade;
     private float rating;
+
+    private OnBackPress listener;
+
+    public interface OnBackPress {
+        void onBackPressListener();
+    }
 
     @Nullable
     @Override
@@ -238,11 +245,11 @@ public class DetailFragment extends Fragment {
             Glide.with(this).load(movieInfo.getThumb()).into(imageView);
             textView.setText(movieInfo.getTitle());
             setIcon(movieInfo.getGrade());
-            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movieInfo.getDate()));
+            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movieInfo.getDate().replace('-','.')));
             textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movieInfo.getGenre(), movieInfo.getDuration()));
             textRank.setText(String.format(getString(R.string.detail_fragment_rank), movieInfo.getReservation_grade()));
             textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movieInfo.getReservation_rate()));
-            ratingBar.setRating(movieInfo.getAudience_rating());
+            ratingBar.setRating(movieInfo.getAudience_rating()/2);
             totalRate.setText(String.format(getString(R.string.float_value), movieInfo.getAudience_rating()));
             totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movieInfo.getAudience()));
             synopsis.setText(movieInfo.getSynopsis());
@@ -343,5 +350,20 @@ public class DetailFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         requestLatestReview(id);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof OnBackPress){
+            listener = (OnBackPress) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener.onBackPressListener();
+        if (listener != null) listener = null;
     }
 }

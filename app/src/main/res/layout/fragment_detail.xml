@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white">
 
     <LinearLayout
@@ -20,14 +21,14 @@
                 android:id="@+id/movie_image"
                 android:layout_width="150dp"
                 android:layout_height="200dp"
-                android:src="@drawable/image11" />
+                tools:src="@drawable/image11" />
 
             <TextView
                 android:id="@+id/movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="55dp"
-                android:text="@string/default_title"
+                tools:text="@string/default_title"
                 android:textColor="#ffffff"
                 android:textSize="20sp"
                 android:textStyle="bold"
@@ -40,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginStart="7dp"
-                android:src="@drawable/ic_15"
+                tools:src="@drawable/ic_15"
                 app:layout_constraintBottom_toBottomOf="@+id/movie_title"
                 app:layout_constraintStart_toEndOf="@id/movie_title"
                 app:layout_constraintTop_toTopOf="@id/movie_title" />
@@ -50,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="@string/default_date"
+                tools:text="@string/default_date"
                 android:textColor="#ffffff"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="@id/movie_title"
@@ -61,7 +62,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="@string/default_genre_time"
+                tools:text="@string/default_genre_time"
                 android:textColor="#ffffff"
                 android:textSize="15sp"
                 app:layout_constraintStart_toStartOf="@id/text_release"
@@ -87,7 +88,7 @@
                     android:id="@+id/thumb_up_count_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="15"
+                    tools:text="15"
                     android:textColor="#ffffff"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -104,7 +105,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:text="1"
+                    tools:text="1"
                     android:textColor="#ffffff"
                     android:textSize="15sp"
                     android:textStyle="bold" />
@@ -139,7 +140,7 @@
                         android:id="@+id/text_rank"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/default_ranking"
+                        tools:text="@string/default_ranking"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
@@ -148,7 +149,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:text="@string/default_adv_rate"
+                        tools:text="@string/default_adv_rate"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -187,14 +188,13 @@
                         android:layout_marginEnd="5dp"
                         android:isIndicator="true"
                         android:numStars="5"
-                        android:rating="10"
                         android:stepSize="0.1" />
 
                     <TextView
                         android:id="@+id/totalRate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/default_grade"
+                        tools:text="@string/default_grade"
                         android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -223,7 +223,7 @@
                     android:id="@+id/totalAudience"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/default_acc_audience"
+                    tools:text="@string/default_acc_audience"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
@@ -253,7 +253,7 @@
                 android:id="@+id/synopsis"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/data"
+                tools:text="@string/data"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -293,7 +293,7 @@
                     <TextView
                         android:id="@+id/director"
                         android:layout_height="wrap_content"
-                        android:text="@string/default_director"
+                        tools:text="@string/default_director"
                         android:textSize="15sp" />
                 </TableRow>
 
@@ -306,7 +306,7 @@
 
                     <TextView
                         android:id="@+id/actor"
-                        android:text="@string/default_cast"
+                        tools:text="@string/default_cast"
                         android:textSize="15sp" />
                 </TableRow>
             </TableLayout>
