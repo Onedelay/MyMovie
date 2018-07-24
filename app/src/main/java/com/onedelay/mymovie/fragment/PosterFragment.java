@@ -20,6 +20,7 @@ public class PosterFragment extends Fragment {
 
     public interface PosterFragmentCallback {
         void onChangeFragment();
+
         void setData(int id, String title, int grade, float rating);
     }
 
@@ -34,7 +35,7 @@ public class PosterFragment extends Fragment {
         TextView grade = rootView.findViewById(R.id.grade);
         //TextView Dday = rootView.findViewById(R.id.d_day);
 
-        if(getArguments() != null) {
+        if (getArguments() != null) {
             Bundle bundle = getArguments();
             Glide.with(this).load(bundle.getString("imageUrl")).into(imageView);
             title.setText(String.format(getString(R.string.list_fragment_title), bundle.getInt("index"), bundle.getString("title")));
@@ -46,7 +47,7 @@ public class PosterFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 callback.onChangeFragment();
-                if(getArguments() != null) {
+                if (getArguments() != null) {
                     Bundle bundle = getArguments();
                     callback.setData(bundle.getInt("id"), bundle.getString("title"), bundle.getInt("grade"), bundle.getFloat("rating"));
                 }

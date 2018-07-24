@@ -245,11 +245,11 @@ public class DetailFragment extends Fragment {
             Glide.with(this).load(movieInfo.getThumb()).into(imageView);
             textView.setText(movieInfo.getTitle());
             setIcon(movieInfo.getGrade());
-            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movieInfo.getDate().replace('-','.')));
+            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movieInfo.getDate().replace('-', '.')));
             textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movieInfo.getGenre(), movieInfo.getDuration()));
             textRank.setText(String.format(getString(R.string.detail_fragment_rank), movieInfo.getReservation_grade()));
             textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movieInfo.getReservation_rate()));
-            ratingBar.setRating(movieInfo.getAudience_rating()/2);
+            ratingBar.setRating(movieInfo.getAudience_rating() / 2);
             totalRate.setText(String.format(getString(R.string.float_value), movieInfo.getAudience_rating()));
             totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movieInfo.getAudience()));
             synopsis.setText(movieInfo.getSynopsis());
@@ -280,28 +280,55 @@ public class DetailFragment extends Fragment {
     }
 
     public void likeClick() {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&likeyn=";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
+            url += "Y";
             likeCount++;
             thumbUpBtn.setSelected(true);
         } else if (thumbUpBtn.isSelected()) {
+            url += "N";
             likeCount--;
             thumbUpBtn.setSelected(false);
         } else {
+            // 동시에는 서버에 요청할 수 없음
             likeCount++;
             hateCount--;
             thumbUpBtn.setSelected(true);
             thumbDownBtn.setSelected(false);
         }
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
     public void hateClick() {
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&dislikeyn=";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
+            url += "Y";
             hateCount++;
             thumbDownBtn.setSelected(true);
         } else if (thumbDownBtn.isSelected()) {
+            url += "N";
             hateCount--;
             thumbDownBtn.setSelected(false);
         } else {
@@ -310,6 +337,26 @@ public class DetailFragment extends Fragment {
             thumbDownBtn.setSelected(true);
             thumbUpBtn.setSelected(false);
         }
+
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        request.setShouldCache(false);
+        AppHelper.requestQueue.add(request);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -355,7 +402,7 @@ public class DetailFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if(context instanceof OnBackPress){
+        if (context instanceof OnBackPress) {
             listener = (OnBackPress) context;
         }
     }

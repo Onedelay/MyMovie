@@ -92,7 +92,7 @@ public class MovieListActivity extends AppCompatActivity
         bundle.putString("imageUrl", imageUrl);
         bundle.putString("title", title);
         bundle.putFloat("rate", rate);
-        bundle.putInt("grade",grade);
+        bundle.putInt("grade", grade);
         bundle.putString("date", date);
         bundle.putFloat("rating", rating);
         fragment.setArguments(bundle);
@@ -160,7 +160,9 @@ public class MovieListActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_list) {
-            getSupportFragmentManager().beginTransaction().remove(detailFragment).commit();
+            for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+                getSupportFragmentManager().popBackStack();
+            }
             toolbar.setTitle("영화 목록");
             viewPager.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_api) {

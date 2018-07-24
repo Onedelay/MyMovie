@@ -48,7 +48,7 @@ public class AllReviewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
                 intent.putExtra("id", getIntent().getIntExtra("id", 0));
-                intent.putExtra("grade", getIntent().getIntExtra("grade",12));
+                intent.putExtra("grade", getIntent().getIntExtra("grade", 12));
                 intent.putExtra("title", getIntent().getStringExtra("title"));
                 startActivityForResult(intent, 100);
             }
@@ -71,7 +71,7 @@ public class AllReviewActivity extends AppCompatActivity {
         textView.setText(getIntent().getStringExtra("title"));
 
         ImageView imageView = findViewById(R.id.level);
-        int grade = getIntent().getIntExtra("grade",12);
+        int grade = getIntent().getIntExtra("grade", 12);
 
         switch (grade) {
             case 12:
@@ -90,7 +90,7 @@ public class AllReviewActivity extends AppCompatActivity {
         float rating = getIntent().getFloatExtra("rating", 0.0f);
 
         RatingBar ratingBar = findViewById(R.id.rating_bar);
-        ratingBar.setRating(rating/2);
+        ratingBar.setRating(rating / 2);
 
         TextView score = findViewById(R.id.score);
         score.setText(String.format(getString(R.string.all_review_score), rating, 1111));
@@ -140,7 +140,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId() == android.R.id.home) finish();
         return true;
     }
 

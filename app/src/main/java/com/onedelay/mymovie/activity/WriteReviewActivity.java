@@ -48,7 +48,7 @@ public class WriteReviewActivity extends AppCompatActivity {
 
         ImageView imageView = findViewById(R.id.level);
 
-        int grade = getIntent().getIntExtra("grade",12);
+        int grade = getIntent().getIntExtra("grade", 12);
 
         switch (grade) {
             case 12:
@@ -85,7 +85,7 @@ public class WriteReviewActivity extends AppCompatActivity {
     }
 
     private void returnToReviewList() {
-        String url = "http://"+ AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
+        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -102,14 +102,14 @@ public class WriteReviewActivity extends AppCompatActivity {
                         Toast.makeText(WriteReviewActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
-        ){
+        ) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("id",String.valueOf(id));
-                params.put("writer","onedelay");
-                params.put("rating",String.valueOf(ratingBar.getRating()));
-                params.put("contents",contentsEditText.getText().toString());
+                params.put("id", String.valueOf(id));
+                params.put("writer", "onedelay");
+                params.put("rating", String.valueOf(ratingBar.getRating()));
+                params.put("contents", contentsEditText.getText().toString());
 
                 return params;
             }
