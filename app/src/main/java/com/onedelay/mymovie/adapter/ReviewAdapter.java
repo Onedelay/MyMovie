@@ -9,17 +9,18 @@ import android.view.ViewGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.api.data.ReviewInfo;
-import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.TimeString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context context;
-    private ReviewList items = new ReviewList();
+    private ArrayList<ReviewInfo> items = new ArrayList<>();
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -56,8 +57,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         items.add(item);
     }
 
-    public void addItems(ReviewList items) {
-        this.items = items;
+    public void addItems(List<ReviewInfo> items) {
+        this.items.addAll(items);
     }
 
     public ReviewInfo getItem(int position) {

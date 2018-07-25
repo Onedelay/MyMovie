@@ -20,14 +20,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
 import com.onedelay.mymovie.api.AppHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
-import com.onedelay.mymovie.api.data.MovieList;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.fragment.DetailFragment;
 import com.onedelay.mymovie.fragment.PosterFragment;
+
+import java.util.List;
 
 public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PosterFragment.PosterFragmentCallback, DetailFragment.OnBackPress {
@@ -127,12 +129,10 @@ public class MovieListActivity extends AppCompatActivity
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
+        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response,new TypeToken<ResponseInfo<List<MovieInfo>>>(){}.getType());
         if (info.getCode() == 200) {
-            MovieList movieList = gson.fromJson(response, MovieList.class);
-
-            for (int i = 0; i < movieList.getResult().size(); i++) {
-                MovieInfo movieInfo = movieList.getResult().get(i);
+            for (int i = 0; i < info.getResult().size(); i++) {
+                MovieInfo movieInfo = info.getResult().get(i);
                 adapter.addItem(setData(i + 1, movieInfo.getId(), movieInfo.getImage(), movieInfo.getTitle(), movieInfo.getReservation_rate(), movieInfo.getGrade(), movieInfo.getDate(), movieInfo.getAudience_rating()));
                 adapter.notifyDataSetChanged();
             }

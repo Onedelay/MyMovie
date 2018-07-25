@@ -22,16 +22,17 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.api.AppHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
-import com.onedelay.mymovie.api.data.MovieList;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.api.data.ReviewInfo;
-import com.onedelay.mymovie.api.data.ReviewList;
 import com.onedelay.mymovie.utils.TimeString;
+
+import java.util.List;
 
 public class DetailFragment extends Fragment {
     private ViewGroup rootView;
@@ -224,23 +225,21 @@ public class DetailFragment extends Fragment {
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
+        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>(){}.getType());
         if (info.getCode() == 200) {
-            ReviewList reviewList = gson.fromJson(response, ReviewList.class);
 
-            setContents(rootView.findViewById(R.id.item1), reviewList.getResult().get(0));
-            setContents(rootView.findViewById(R.id.item2), reviewList.getResult().get(1));
+            setContents(rootView.findViewById(R.id.item1), info.getResult().get(0));
+            setContents(rootView.findViewById(R.id.item2), info.getResult().get(1));
         }
     }
 
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
-        if (info.getCode() == 200) {
-            MovieList movieList = gson.fromJson(response, MovieList.class);
+        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>(){}.getType());
 
-            MovieInfo movieInfo = movieList.getResult().get(0);
+        if (info.getCode() == 200) {
+            MovieInfo movieInfo = info.getResult().get(0);
 
             Glide.with(this).load(movieInfo.getThumb()).into(imageView);
             textView.setText(movieInfo.getTitle());

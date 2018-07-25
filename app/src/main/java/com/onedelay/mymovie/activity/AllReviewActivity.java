@@ -1,6 +1,5 @@
 package com.onedelay.mymovie.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -20,12 +19,15 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.AppHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.api.data.ReviewList;
+import com.onedelay.mymovie.api.data.ReviewInfo;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
+
+import java.util.List;
 
 public class AllReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
@@ -129,11 +131,9 @@ public class AllReviewActivity extends AppCompatActivity {
 
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
-
-        ResponseInfo info = gson.fromJson(response, ResponseInfo.class);
+        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>(){}.getType());
         if (info.getCode() == 200) {
-            ReviewList reviewList = gson.fromJson(response, ReviewList.class);
-            adapter.addItems(reviewList);
+            adapter.addItems(info.getResult());
             adapter.notifyDataSetChanged();
         }
     }
