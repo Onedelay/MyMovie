@@ -76,10 +76,6 @@ public class DetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_detail, container, false);
 
-        if (AppHelper.requestQueue == null) {
-            AppHelper.requestQueue = Volley.newRequestQueue(getContext());
-        }
-
         imageView = rootView.findViewById(R.id.movie_image);
         textView = rootView.findViewById(R.id.movie_title);
         viewGrade = rootView.findViewById(R.id.view_level);

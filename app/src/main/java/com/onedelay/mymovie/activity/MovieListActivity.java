@@ -18,7 +18,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
@@ -77,10 +76,6 @@ public class MovieListActivity extends AppCompatActivity
         viewPager.setOffscreenPageLimit(3);
         viewPager.setPadding(dpToPx(45), 0, dpToPx(45), 0);
 
-        if (AppHelper.requestQueue == null) {
-            AppHelper.requestQueue = Volley.newRequestQueue(getBaseContext());
-        }
-
         adapter = new MovieListPagerAdapter(getSupportFragmentManager());
         requestMovieList();
         viewPager.setAdapter(adapter);
@@ -136,8 +131,8 @@ public class MovieListActivity extends AppCompatActivity
             for (int i = 0; i < info.getResult().size(); i++) {
                 MovieInfo movieInfo = info.getResult().get(i);
                 adapter.addItem(setData(i + 1, movieInfo.getId(), movieInfo.getImage(), movieInfo.getTitle(), movieInfo.getReservation_rate(), movieInfo.getGrade(), movieInfo.getDate(), movieInfo.getAudience_rating()));
-                adapter.notifyDataSetChanged();
             }
+            adapter.notifyDataSetChanged();
         }
     }
 
