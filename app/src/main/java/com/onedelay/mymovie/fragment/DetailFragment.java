@@ -1,5 +1,6 @@
 package com.onedelay.mymovie.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -128,7 +129,7 @@ public class DetailFragment extends Fragment {
                 intent.putExtra(Constants.KEY_MOVIE_ID, id);
                 intent.putExtra(Constants.KEY_TITLE, title);
                 intent.putExtra(Constants.KEY_GRADE, grade);
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, Constants.WRITE_REQUEST);
             }
         });
 
@@ -164,10 +165,6 @@ public class DetailFragment extends Fragment {
                 Toast.makeText(getActivity(), "예매하기 버튼 클릭", Toast.LENGTH_SHORT).show();
             }
         });
-
-        if (AppHelper.requestQueue == null) {
-            AppHelper.requestQueue = Volley.newRequestQueue(getContext());
-        }
 
         return rootView;
     }
@@ -396,7 +393,9 @@ public class DetailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        requestLatestReview(id);
+        if(requestCode == Constants.WRITE_REQUEST && resultCode != Activity.RESULT_CANCELED) {
+            requestLatestReview(id);
+        }
     }
 
     @Override

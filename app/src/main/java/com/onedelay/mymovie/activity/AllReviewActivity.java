@@ -1,5 +1,6 @@
 package com.onedelay.mymovie.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
@@ -53,7 +54,7 @@ public class AllReviewActivity extends AppCompatActivity {
                 intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
                 intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra(Constants.KEY_GRADE, 12));
                 intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra(Constants.KEY_TITLE));
-                startActivityForResult(intent, 100);
+                startActivityForResult(intent, Constants.WRITE_REQUEST);
             }
         });
 
@@ -150,6 +151,8 @@ public class AllReviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+        if(requestCode == Constants.WRITE_REQUEST && resultCode != Activity.RESULT_CANCELED) {
+            requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+        }
     }
 }

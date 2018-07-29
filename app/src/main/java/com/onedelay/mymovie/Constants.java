@@ -11,4 +11,6 @@ public class Constants {
     public static final String KEY_RATING = "RATING";
     public static final String KEY_WRITER = "WRITER";
     public static final String KEY_CONTENT = "CONTENT";
+
+    public static final int WRITE_REQUEST = 100;
 }
