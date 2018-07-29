@@ -40,7 +40,7 @@ public class AllReviewActivity extends AppCompatActivity {
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setTitle("한줄평 목록");
+            ab.setTitle(getString(R.string.appbar_review_list));
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setHomeButtonEnabled(true);
         }

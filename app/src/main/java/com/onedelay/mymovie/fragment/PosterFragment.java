@@ -33,7 +33,6 @@ public class PosterFragment extends Fragment {
         TextView title = rootView.findViewById(R.id.list_title);
         TextView rate = rootView.findViewById(R.id.rate);
         TextView grade = rootView.findViewById(R.id.grade);
-        //TextView Dday = rootView.findViewById(R.id.d_day);
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();

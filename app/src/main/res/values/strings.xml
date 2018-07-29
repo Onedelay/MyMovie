@@ -72,4 +72,7 @@
     <string name="detail_fragment_rate">%.1f%%</string>
     <string name="detail_review_recommend">추천 %d</string>
     <string name="all_review_score">%.1f (%,d명 참여)</string>
+    <string name="appbar_review_list">한줄평 목록</string>
+    <string name="appbar_review_write">한줄평 작성</string>
+    <string name="appbar_movie_detail">영화 상세</string>
 </resources>

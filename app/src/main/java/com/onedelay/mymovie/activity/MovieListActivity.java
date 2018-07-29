@@ -47,7 +47,7 @@ public class MovieListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_list);
 
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("영화 목록");
+        toolbar.setTitle(getString(R.string.str_movie_list));
         setSupportActionBar(toolbar);
 
         final DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -163,7 +163,7 @@ public class MovieListActivity extends AppCompatActivity
             for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
-            toolbar.setTitle("영화 목록");
+            toolbar.setTitle(getString(R.string.str_movie_list));
             viewPager.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_api) {
 
@@ -181,7 +181,7 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public void onChangeFragment() {
         getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).addToBackStack(null).commit();
-        toolbar.setTitle("영화 상세");
+        toolbar.setTitle(getString(R.string.appbar_movie_detail));
         viewPager.setVisibility(View.GONE);
     }
 
@@ -197,7 +197,7 @@ public class MovieListActivity extends AppCompatActivity
 
     @Override
     public void onBackPressListener() {
-        toolbar.setTitle("영화 목록");
+        toolbar.setTitle(getString(R.string.str_movie_list));
         viewPager.setVisibility(View.VISIBLE);
     }
 }

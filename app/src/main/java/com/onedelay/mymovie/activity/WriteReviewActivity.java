@@ -40,7 +40,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setTitle("한줄평 작성");
+            ab.setTitle(getString(R.string.appbar_review_write));
         }
 
         TextView textView = findViewById(R.id.movie_title);
