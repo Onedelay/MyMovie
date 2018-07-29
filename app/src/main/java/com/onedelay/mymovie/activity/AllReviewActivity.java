@@ -50,9 +50,9 @@ public class AllReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
-                intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra("id", 0));
-                intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra("grade", 12));
-                intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra("title"));
+                intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+                intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra(Constants.KEY_GRADE, 12));
+                intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra(Constants.KEY_TITLE));
                 startActivityForResult(intent, 100);
             }
         });
