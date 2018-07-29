@@ -100,10 +100,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             });
         }
 
-        public void setItem(ReviewInfo item) {
-//            if (item.getWriter_image() != null) {
-//                Glide.with(context).load(item.getWriter_image()).into(userImage);
-//            }
+        void setItem(ReviewInfo item) {
             userId.setText(item.getWriter());
             userTime.setText(TimeString.formatTimeString(item.getTimestamp()));
             ratingBar.setRating(item.getRating());

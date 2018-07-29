@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.api.AppHelper;
 
@@ -35,7 +36,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_review);
 
-        id = getIntent().getIntExtra("id", 0);
+        id = getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0);
 
         // 앱바 제목 텍스트 변경
         ActionBar ab = getSupportActionBar();
@@ -44,11 +45,11 @@ public class WriteReviewActivity extends AppCompatActivity {
         }
 
         TextView textView = findViewById(R.id.movie_title);
-        textView.setText(getIntent().getStringExtra("title"));
+        textView.setText(getIntent().getStringExtra(Constants.KEY_TITLE));
 
         ImageView imageView = findViewById(R.id.level);
 
-        int grade = getIntent().getIntExtra("grade", 12);
+        int grade = getIntent().getIntExtra(Constants.KEY_GRADE, 12);
 
         switch (grade) {
             case 12:
@@ -106,10 +107,10 @@ public class WriteReviewActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put("id", String.valueOf(id));
-                params.put("writer", "onedelay");
-                params.put("rating", String.valueOf(ratingBar.getRating()));
-                params.put("contents", contentsEditText.getText().toString());
+                params.put(Constants.KEY_MOVIE_ID, String.valueOf(id));
+                params.put(Constants.KEY_WRITER, "onedelay");
+                params.put(Constants.KEY_RATING, String.valueOf(ratingBar.getRating()));
+                params.put(Constants.KEY_CONTENT, contentsEditText.getText().toString());
 
                 return params;
             }

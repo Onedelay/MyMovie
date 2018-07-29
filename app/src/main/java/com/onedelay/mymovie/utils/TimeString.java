@@ -10,7 +10,7 @@ public class TimeString {
     public static String formatTimeString(long regTime) {
         long curTime = System.currentTimeMillis();
         long diffTime = (curTime - regTime) / 1000;
-        String msg = null;
+        String msg;
 
         if (diffTime < TimeString.SEC) {
             msg = "방금";

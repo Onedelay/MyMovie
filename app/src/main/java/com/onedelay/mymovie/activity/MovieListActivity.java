@@ -21,6 +21,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
 import com.onedelay.mymovie.api.AppHelper;
@@ -89,14 +90,14 @@ public class MovieListActivity extends AppCompatActivity
     public PosterFragment setData(int index, int id, String imageUrl, String title, float rate, int grade, String date, float rating) {
         PosterFragment fragment = new PosterFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("index", index);
-        bundle.putInt("id", id);
-        bundle.putString("imageUrl", imageUrl);
-        bundle.putString("title", title);
-        bundle.putFloat("rate", rate);
-        bundle.putInt("grade", grade);
-        bundle.putString("date", date);
-        bundle.putFloat("rating", rating);
+        bundle.putInt(Constants.KEY_INDEX, index);
+        bundle.putInt(Constants.KEY_MOVIE_ID, id);
+        bundle.putString(Constants.KEY_IMAGE_URL, imageUrl);
+        bundle.putString(Constants.KEY_TITLE, title);
+        bundle.putFloat(Constants.KEY_RATE, rate); // 예매율
+        bundle.putInt(Constants.KEY_GRADE, grade);
+        bundle.putString(Constants.KEY_DATE, date);
+        bundle.putFloat(Constants.KEY_RATING, rating);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -188,10 +189,10 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public void setData(int id, String title, int grade, float rating) {
         Bundle bundle = new Bundle();
-        bundle.putInt("id", id);
-        bundle.putString("title", title);
-        bundle.putInt("grade", grade);
-        bundle.putFloat("rating", rating);
+        bundle.putInt(Constants.KEY_MOVIE_ID, id);
+        bundle.putString(Constants.KEY_TITLE, title);
+        bundle.putInt(Constants.KEY_GRADE, grade);
+        bundle.putFloat(Constants.KEY_RATING, rating);
         detailFragment.setArguments(bundle);
     }
 

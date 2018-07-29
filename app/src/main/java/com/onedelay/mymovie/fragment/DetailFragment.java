@@ -23,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
@@ -96,10 +97,10 @@ public class DetailFragment extends Fragment {
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
-            id = bundle.getInt("id");
-            title = bundle.getString("title");
-            grade = bundle.getInt("grade");
-            rating = bundle.getFloat("rating");
+            id = bundle.getInt(Constants.KEY_MOVIE_ID);
+            title = bundle.getString(Constants.KEY_TITLE);
+            grade = bundle.getInt(Constants.KEY_GRADE);
+            rating = bundle.getFloat(Constants.KEY_RATING);
             requestMovieDetail(id);
             requestLatestReview(id);
         } else {
@@ -127,9 +128,9 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("title", title);
-                intent.putExtra("grade", grade);
+                intent.putExtra(Constants.KEY_MOVIE_ID, id);
+                intent.putExtra(Constants.KEY_TITLE, title);
+                intent.putExtra(Constants.KEY_GRADE, grade);
                 startActivityForResult(intent, 100);
             }
         });
@@ -138,10 +139,10 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), AllReviewActivity.class);
-                intent.putExtra("id", id);
-                intent.putExtra("title", title);
-                intent.putExtra("grade", grade);
-                intent.putExtra("rating", rating);
+                intent.putExtra(Constants.KEY_MOVIE_ID, id);
+                intent.putExtra(Constants.KEY_TITLE, title);
+                intent.putExtra(Constants.KEY_GRADE, grade);
+                intent.putExtra(Constants.KEY_RATING, rating);
                 startActivity(intent);
             }
         });
@@ -382,7 +383,7 @@ public class DetailFragment extends Fragment {
         recommendView.setText(String.format(getString(R.string.detail_review_recommend), data.getRecommend()));
 
         TextView declareBtn = contentView.findViewById(R.id.review_btn_declare);
-        declareBtn.setText("신고하기");
+        declareBtn.setText(getString(R.string.declare));
         declareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -20,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.AppHelper;
@@ -49,9 +50,9 @@ public class AllReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
-                intent.putExtra("id", getIntent().getIntExtra("id", 0));
-                intent.putExtra("grade", getIntent().getIntExtra("grade", 12));
-                intent.putExtra("title", getIntent().getStringExtra("title"));
+                intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra("id", 0));
+                intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra("grade", 12));
+                intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra("title"));
                 startActivityForResult(intent, 100);
             }
         });
@@ -67,13 +68,13 @@ public class AllReviewActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        requestAllReview(getIntent().getIntExtra("id", 0));
+        requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
 
         TextView textView = findViewById(R.id.movie_title);
-        textView.setText(getIntent().getStringExtra("title"));
+        textView.setText(getIntent().getStringExtra(Constants.KEY_TITLE));
 
         ImageView imageView = findViewById(R.id.level);
-        int grade = getIntent().getIntExtra("grade", 12);
+        int grade = getIntent().getIntExtra(Constants.KEY_GRADE, 12);
 
         switch (grade) {
             case 12:
@@ -89,7 +90,7 @@ public class AllReviewActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.ic_all);
         }
 
-        float rating = getIntent().getFloatExtra("rating", 0.0f);
+        float rating = getIntent().getFloatExtra(Constants.KEY_RATING, 0.0f);
 
         RatingBar ratingBar = findViewById(R.id.rating_bar);
         ratingBar.setRating(rating / 2);
@@ -148,6 +149,6 @@ public class AllReviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        requestAllReview(getIntent().getIntExtra("id", 0));
+        requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
     }
 }
