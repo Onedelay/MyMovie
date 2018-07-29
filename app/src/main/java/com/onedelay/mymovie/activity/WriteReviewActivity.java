@@ -107,10 +107,10 @@ public class WriteReviewActivity extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-                params.put(Constants.KEY_MOVIE_ID, String.valueOf(id));
-                params.put(Constants.KEY_WRITER, "onedelay");
-                params.put(Constants.KEY_RATING, String.valueOf(ratingBar.getRating()));
-                params.put(Constants.KEY_CONTENT, contentsEditText.getText().toString());
+                params.put("id", String.valueOf(id));
+                params.put("writer", "onedelay");
+                params.put("rating", String.valueOf(ratingBar.getRating()));
+                params.put("contents", contentsEditText.getText().toString());
 
                 return params;
             }

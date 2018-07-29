@@ -151,7 +151,7 @@ public class AllReviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Constants.WRITE_REQUEST && resultCode != Activity.RESULT_CANCELED) {
+        if(requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
             requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         }
     }
