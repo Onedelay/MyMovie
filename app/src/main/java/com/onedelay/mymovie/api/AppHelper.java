@@ -1,19 +1,18 @@
 package com.onedelay.mymovie.api;
 
-import android.app.Application;
-
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
+import com.android.volley.toolbox.StringRequest;
 
-public class AppHelper extends Application{
+public class AppHelper {
     public static RequestQueue requestQueue;
 
     public static String host = "boostcourse-appapi.connect.or.kr";
     public static int port = 10000;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        AppHelper.requestQueue = Volley.newRequestQueue(getBaseContext());
+    public static void add(StringRequest request) {
+        request.setShouldCache(false);
+        if (requestQueue != null) {
+            requestQueue.add(request);
+        }
     }
 }

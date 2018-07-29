@@ -192,8 +192,7 @@ public class DetailFragment extends Fragment {
                 }
         );
 
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        AppHelper.add(request);
     }
 
     public void requestMovieDetail(int id) {

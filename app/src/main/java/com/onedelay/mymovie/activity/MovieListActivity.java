@@ -119,8 +119,7 @@ public class MovieListActivity extends AppCompatActivity
                 }
         );
 
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        AppHelper.add(request);
     }
 
     private void processResponse(String response) {

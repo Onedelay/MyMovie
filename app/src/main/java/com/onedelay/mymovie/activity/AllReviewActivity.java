@@ -126,8 +126,7 @@ public class AllReviewActivity extends AppCompatActivity {
                 }
         );
 
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        AppHelper.add(request);
     }
 
     private void processReviewResponse(String response) {

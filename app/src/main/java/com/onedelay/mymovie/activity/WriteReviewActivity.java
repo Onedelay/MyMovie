@@ -116,8 +116,7 @@ public class WriteReviewActivity extends AppCompatActivity {
             }
         };
 
-        request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        AppHelper.add(request);
 
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);
