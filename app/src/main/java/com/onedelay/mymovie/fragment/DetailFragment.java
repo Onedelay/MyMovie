@@ -76,8 +76,9 @@ public class DetailFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = (ViewGroup) inflater.inflate(R.layout.fragment_detail, container, false);
 
-        if (AppHelper.requestQueue == null)
+        if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getContext());
+        }
 
         imageView = rootView.findViewById(R.id.movie_image);
         textView = rootView.findViewById(R.id.movie_title);
@@ -168,8 +169,9 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        if (AppHelper.requestQueue == null)
+        if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getContext());
+        }
 
         return rootView;
     }
@@ -226,7 +228,8 @@ public class DetailFragment extends Fragment {
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>(){}.getType());
+        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>() {
+        }.getType());
         if (info.getCode() == 200) {
 
             setContents(rootView.findViewById(R.id.item1), info.getResult().get(0));
@@ -237,7 +240,8 @@ public class DetailFragment extends Fragment {
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>(){}.getType());
+        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>() {
+        }.getType());
 
         if (info.getCode() == 200) {
             MovieInfo movieInfo = info.getResult().get(0);
@@ -364,8 +368,9 @@ public class DetailFragment extends Fragment {
 
     public void setContents(View contentView, ReviewInfo data) {
         ImageView imageView = contentView.findViewById(R.id.user_image);
-        if (data.getWriter_image() != null)
+        if (data.getWriter_image() != null) {
             Glide.with(this).load(data.getWriter_image()).into(imageView);
+        }
 
         TextView idView = contentView.findViewById(R.id.review_user_id);
         idView.setText(data.getWriter());
@@ -411,6 +416,8 @@ public class DetailFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         listener.onBackPressListener();
-        if (listener != null) listener = null;
+        if (listener != null) {
+            listener = null;
+        }
     }
 }

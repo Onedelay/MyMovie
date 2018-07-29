@@ -16,11 +16,11 @@ public class ReviewInfo {
     }
 
     public String getWriter() {
-        if(writer.length() > 1) // 끝 두자리 * 처리
+        if (writer.length() > 1) { // 끝 두자리 * 처리
             return writer.substring(0, writer.length() - 2) + "**";
-        else // ID 길이가 1
+        } else { // ID 길이가 1
             return "*";
-
+        }
     }
 
     public int getMovieId() {
@@ -36,7 +36,7 @@ public class ReviewInfo {
     }
 
     public long getTimestamp() {
-        return timestamp*1000L;
+        return timestamp * 1000L;
     }
 
     public float getRating() {

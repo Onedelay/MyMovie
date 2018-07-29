@@ -61,8 +61,9 @@ public class PosterFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        if (context instanceof PosterFragmentCallback)
+        if (context instanceof PosterFragmentCallback) {
             callback = (PosterFragmentCallback) context;
+        }
     }
 
     @Override

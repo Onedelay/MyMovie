@@ -77,8 +77,9 @@ public class MovieListActivity extends AppCompatActivity
         viewPager.setOffscreenPageLimit(3);
         viewPager.setPadding(dpToPx(45), 0, dpToPx(45), 0);
 
-        if (AppHelper.requestQueue == null)
+        if (AppHelper.requestQueue == null) {
             AppHelper.requestQueue = Volley.newRequestQueue(getBaseContext());
+        }
 
         adapter = new MovieListPagerAdapter(getSupportFragmentManager());
         requestMovieList();

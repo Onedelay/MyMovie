@@ -141,7 +141,9 @@ public class AllReviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) finish();
+        if (item.getItemId() == android.R.id.home){
+            finish();
+        }
         return true;
     }
 
