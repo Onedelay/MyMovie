@@ -38,7 +38,7 @@ public class PosterFragment extends Fragment {
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             Glide.with(this).load(bundle.getString(Constants.KEY_IMAGE_URL)).into(imageView);
-            title.setText(String.format(getString(R.string.list_fragment_title), bundle.getInt(Constants.KEY_INDEX), bundle.getString("title")));
+            title.setText(String.format(getString(R.string.list_fragment_title), bundle.getInt(Constants.KEY_INDEX), bundle.getString(Constants.KEY_TITLE)));
             rate.setText(String.format(getString(R.string.list_fragment_rate), bundle.getFloat(Constants.KEY_RATE)));
             grade.setText(String.format(getString(R.string.list_fragment_grade), bundle.getInt(Constants.KEY_GRADE)));
         }
