@@ -147,7 +147,7 @@ public class AllReviewActivity extends AppCompatActivity {
         }.getType());
         if (info.getCode() == 200) {
             score.setText(String.format(getString(R.string.all_review_score), rating, info.getResult().size()));
-            adapter.addItems(info.getResult());
+            adapter.setItems(info.getResult());
             adapter.notifyDataSetChanged();
         }
     }

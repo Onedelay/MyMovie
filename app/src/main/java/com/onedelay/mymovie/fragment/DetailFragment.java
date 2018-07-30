@@ -35,6 +35,8 @@ import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.api.data.ReviewInfo;
 import com.onedelay.mymovie.utils.TimeString;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 public class DetailFragment extends Fragment {
@@ -62,7 +64,6 @@ public class DetailFragment extends Fragment {
     private TextView synopsis;
     private TextView director;
     private TextView actor;
-    private TextView recommend;
 
     private int id;
     private String title;
@@ -277,7 +278,7 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    private void requestProcess(String url) {
+    private void processReviewRecommend(String url) {
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
@@ -313,7 +314,7 @@ public class DetailFragment extends Fragment {
             hateCount--;
             thumbUpBtn.setSelected(true);
             thumbDownBtn.setSelected(false);
-            requestProcess(url.replace("likeyn","dislikeyn")+"N");
+            processReviewRecommend(url.replace("likeyn","dislikeyn")+"N");
             url += "Y";
             try {
                 Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
@@ -322,7 +323,7 @@ public class DetailFragment extends Fragment {
             }
         }
 
-        requestProcess(url);
+        processReviewRecommend(url);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -343,7 +344,7 @@ public class DetailFragment extends Fragment {
             likeCount--;
             thumbDownBtn.setSelected(true);
             thumbUpBtn.setSelected(false);
-            requestProcess(url.replace("dislikeyn", "likeyn")+"N");
+            processReviewRecommend(url.replace("dislikeyn", "likeyn")+"N");
             url += "Y";
             try {
                 Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
@@ -352,7 +353,7 @@ public class DetailFragment extends Fragment {
             }
         }
 
-        requestProcess(url);
+        processReviewRecommend(url);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -376,7 +377,9 @@ public class DetailFragment extends Fragment {
         TextView ContentView = contentView.findViewById(R.id.review_content);
         ContentView.setText(data.getContents());
 
-        recommend = contentView.findViewById(R.id.recommend);
+        // 클래스 멤버변수로 선언하고 사용하면 추천이 이상하게 되었습니다.
+        // 그래서 final 키워드를 붙였더니 제대로 동작하는데 이유가 뭘까요?
+        final TextView recommend = contentView.findViewById(R.id.recommend);
         recommend.setText(String.format(getString(R.string.detail_review_recommend), data.getRecommend()));
         recommend.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -387,12 +390,12 @@ public class DetailFragment extends Fragment {
             }
         });
 
-        TextView declareBtn = contentView.findViewById(R.id.review_btn_declare);
+        final TextView declareBtn = contentView.findViewById(R.id.review_btn_declare);
         declareBtn.setText(getString(R.string.declare));
         declareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), data.getWriter()+"님을 신고합니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }

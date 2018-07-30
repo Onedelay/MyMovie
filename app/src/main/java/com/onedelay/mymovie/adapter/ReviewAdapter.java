@@ -58,7 +58,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         items.add(item);
     }
 
-    public void addItems(List<ReviewInfo> items) {
+    public void setItems(List<ReviewInfo> items) {
+        this.items.clear();
         this.items.addAll(items);
     }
 
