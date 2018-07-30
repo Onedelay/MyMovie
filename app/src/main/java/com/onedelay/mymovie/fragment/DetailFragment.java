@@ -1,11 +1,13 @@
 package com.onedelay.mymovie.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +38,7 @@ import com.onedelay.mymovie.utils.TimeString;
 import java.util.List;
 
 public class DetailFragment extends Fragment {
+    private static final String TAG = "serverTest";
     private ViewGroup rootView;
 
     private ImageButton thumbUpBtn;
@@ -274,6 +277,27 @@ public class DetailFragment extends Fragment {
         }
     }
 
+    private void requestProcess(String url) {
+        StringRequest request = new StringRequest(
+                Request.Method.GET,
+                url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        VolleyHelper.add(request);
+    }
+
     public void likeClick() {
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&likeyn=";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
@@ -285,32 +309,20 @@ public class DetailFragment extends Fragment {
             likeCount--;
             thumbUpBtn.setSelected(false);
         } else {
-            // 동시에는 서버에 요청할 수 없음
             likeCount++;
             hateCount--;
             thumbUpBtn.setSelected(true);
             thumbDownBtn.setSelected(false);
+            requestProcess(url.replace("likeyn","dislikeyn")+"N");
+            url += "Y";
+            try {
+                Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        request.setShouldCache(false);
-        VolleyHelper.requestQueue.add(request);
+        requestProcess(url);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -331,27 +343,16 @@ public class DetailFragment extends Fragment {
             likeCount--;
             thumbDownBtn.setSelected(true);
             thumbUpBtn.setSelected(false);
+            requestProcess(url.replace("dislikeyn", "likeyn")+"N");
+            url += "Y";
+            try {
+                Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(getContext(), response, Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        request.setShouldCache(false);
-        VolleyHelper.requestQueue.add(request);
+        requestProcess(url);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -400,8 +401,9 @@ public class DetailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        
-        requestLatestReview(id);
+        if (requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
+            requestLatestReview(id);
+        }
     }
 
     @Override
