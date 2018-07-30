@@ -12,15 +12,13 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.api.AppHelper;
+import com.onedelay.mymovie.api.VolleyHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +84,7 @@ public class WriteReviewActivity extends AppCompatActivity {
     }
 
     private void returnToReviewList() {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/createComment";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
 
         StringRequest request = new StringRequest(
                 Request.Method.POST,
@@ -116,7 +114,7 @@ public class WriteReviewActivity extends AppCompatActivity {
             }
         };
 
-        AppHelper.add(request);
+        VolleyHelper.add(request);
 
         Intent returnIntent = new Intent();
         setResult(Activity.RESULT_OK, returnIntent);

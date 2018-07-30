@@ -24,7 +24,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(RecyclerView.ViewHolder holder, View view, int position);
+        void onItemClick(int position);
+        void onRecommendClick(int position);
     }
 
     public ReviewAdapter(Context context) {
@@ -79,7 +80,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
         OnItemClickListener listener;
 
-        ViewHolder(View itemView) {
+        ViewHolder(final View itemView) {
             super(itemView);
             userImage = itemView.findViewById(R.id.user_image);
             userId = itemView.findViewById(R.id.review_user_id);
@@ -94,7 +95,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                     int position = getAdapterPosition();
 
                     if (listener != null) {
-                        listener.onItemClick(ViewHolder.this, view, position);
+                        listener.onItemClick(position);
+                    }
+                }
+            });
+
+            recommend.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    int v = Integer.parseInt(recommend.getText().toString().substring(3));
+                    recommend.setText(String.format("추천 %d", v+1));
+
+                    if (listener != null) {
+                        listener.onRecommendClick(position);
                     }
                 }
             });

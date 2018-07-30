@@ -24,15 +24,22 @@ import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
-import com.onedelay.mymovie.api.AppHelper;
+import com.onedelay.mymovie.api.RequestProvider;
+import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.api.data.ReviewInfo;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AllReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
+
+    private float rating;
+
+    private TextView score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,24 +98,28 @@ public class AllReviewActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.ic_all);
         }
 
-        float rating = getIntent().getFloatExtra(Constants.KEY_RATING, 0.0f);
+        rating = getIntent().getFloatExtra(Constants.KEY_RATING, 0.0f);
 
         RatingBar ratingBar = findViewById(R.id.rating_bar);
         ratingBar.setRating(rating / 2);
 
-        TextView score = findViewById(R.id.score);
-        score.setText(String.format(getString(R.string.all_review_score), rating, 1111));
+        score = findViewById(R.id.score);
 
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(RecyclerView.ViewHolder holder, View view, int position) {
+            public void onItemClick(int position) {
                 Toast.makeText(AllReviewActivity.this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onRecommendClick(int position) {
+                RequestProvider.requestRecommend(String.valueOf(adapter.getItem(position).getId()), "onedelay");
             }
         });
     }
 
     private void requestAllReview(int id) {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList?id=" + id;
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id;
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -127,13 +138,15 @@ public class AllReviewActivity extends AppCompatActivity {
                 }
         );
 
-        AppHelper.add(request);
+        VolleyHelper.add(request);
     }
 
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
-        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>(){}.getType());
+        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>() {
+        }.getType());
         if (info.getCode() == 200) {
+            score.setText(String.format(getString(R.string.all_review_score), rating, info.getResult().size()));
             adapter.addItems(info.getResult());
             adapter.notifyDataSetChanged();
         }
@@ -141,7 +154,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
@@ -151,7 +164,7 @@ public class AllReviewActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
+        if (requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
             requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         }
     }

@@ -23,7 +23,7 @@ import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
-import com.onedelay.mymovie.api.AppHelper;
+import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.fragment.DetailFragment;
@@ -99,7 +99,7 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     private void requestMovieList() {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovieList";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
 
         StringRequest request = new StringRequest(
@@ -119,7 +119,7 @@ public class MovieListActivity extends AppCompatActivity
                 }
         );
 
-        AppHelper.add(request);
+        VolleyHelper.add(request);
     }
 
     private void processResponse(String response) {

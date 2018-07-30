@@ -1,6 +1,5 @@
 package com.onedelay.mymovie.fragment;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +26,8 @@ import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
-import com.onedelay.mymovie.api.AppHelper;
+import com.onedelay.mymovie.api.RequestProvider;
+import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.api.data.ReviewInfo;
@@ -60,6 +59,7 @@ public class DetailFragment extends Fragment {
     private TextView synopsis;
     private TextView director;
     private TextView actor;
+    private TextView recommend;
 
     private int id;
     private String title;
@@ -105,7 +105,6 @@ public class DetailFragment extends Fragment {
             Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
         }
 
-
         thumbUpBtn = rootView.findViewById(R.id.btn_thumb_up);
         thumbUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +117,7 @@ public class DetailFragment extends Fragment {
         thumbDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hateClick();
+                dislikeClick();
             }
         });
 
@@ -170,7 +169,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void requestLatestReview(int id) {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readCommentList?id=" + id + "&limit=2";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id + "&limit=2";
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -189,11 +188,11 @@ public class DetailFragment extends Fragment {
                 }
         );
 
-        AppHelper.add(request);
+        VolleyHelper.add(request);
     }
 
     public void requestMovieDetail(int id) {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/readMovie";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovie";
         url += "?" + "id=" + id;
 
         StringRequest request = new StringRequest(
@@ -214,7 +213,7 @@ public class DetailFragment extends Fragment {
         );
 
         request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        VolleyHelper.requestQueue.add(request);
     }
 
     private void processReviewResponse(String response) {
@@ -276,7 +275,7 @@ public class DetailFragment extends Fragment {
     }
 
     public void likeClick() {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&likeyn=";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&likeyn=";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
             url += "Y";
             likeCount++;
@@ -311,14 +310,14 @@ public class DetailFragment extends Fragment {
         );
 
         request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        VolleyHelper.requestQueue.add(request);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
-    public void hateClick() {
-        String url = "http://" + AppHelper.host + ":" + AppHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&dislikeyn=";
+    public void dislikeClick() {
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&dislikeyn=";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
             url += "Y";
             hateCount++;
@@ -352,13 +351,13 @@ public class DetailFragment extends Fragment {
         );
 
         request.setShouldCache(false);
-        AppHelper.requestQueue.add(request);
+        VolleyHelper.requestQueue.add(request);
 
         likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
         hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
-    public void setContents(View contentView, ReviewInfo data) {
+    public void setContents(View contentView, final ReviewInfo data) {
         ImageView imageView = contentView.findViewById(R.id.user_image);
         if (data.getWriter_image() != null) {
             Glide.with(this).load(data.getWriter_image()).into(imageView);
@@ -376,8 +375,16 @@ public class DetailFragment extends Fragment {
         TextView ContentView = contentView.findViewById(R.id.review_content);
         ContentView.setText(data.getContents());
 
-        TextView recommendView = contentView.findViewById(R.id.recommend);
-        recommendView.setText(String.format(getString(R.string.detail_review_recommend), data.getRecommend()));
+        recommend = contentView.findViewById(R.id.recommend);
+        recommend.setText(String.format(getString(R.string.detail_review_recommend), data.getRecommend()));
+        recommend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int v = Integer.parseInt(recommend.getText().toString().substring(3));
+                recommend.setText(String.format(getString(R.string.detail_review_recommend), v+1));
+                RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter());
+            }
+        });
 
         TextView declareBtn = contentView.findViewById(R.id.review_btn_declare);
         declareBtn.setText(getString(R.string.declare));
@@ -393,9 +400,8 @@ public class DetailFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
-            requestLatestReview(id);
-        }
+        
+        requestLatestReview(id);
     }
 
     @Override
