@@ -46,6 +46,7 @@ public class PosterFragment extends Fragment {
         rootView.findViewById(R.id.detailButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 상세보기 버튼을 클릭하면 viewPager 를 숨기고 DetailFragment 를 띄우도록 콜백 메소드를 호출한다.
                 callback.onChangeFragment();
                 if (getArguments() != null) {
                     Bundle bundle = getArguments();

@@ -114,8 +114,13 @@ public class AllReviewActivity extends AppCompatActivity {
             @Override
             public void onRecommendClick(final int position, final int value) {
                 RequestProvider.requestRecommend(String.valueOf(adapter.getItem(position).getId()), "onedelay", new Runnable() {
+                    // 서버로부터 성공적인 응답이 왔을 경우 호출되는 콜백메소드
                     @Override
                     public void run() {
+                        /* 현재 아이템의 객체를 가져와서 value 값을 갱신한 다음,
+                         * changeItem 메소드를 이용해 adapter 의 데이터를 변경한 후
+                         * notify 메소드를 호출하여 리사이클러뷰에 적용한다.
+                         * 이때, 해당 아이템이 깜빡이는데 이유는 모르겠다, */
                         ReviewInfo item = adapter.getItem(position);
                         item.setRecommend(value);
                         adapter.changeItem(position, item);

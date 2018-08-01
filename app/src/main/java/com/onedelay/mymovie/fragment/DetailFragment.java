@@ -454,6 +454,8 @@ public class DetailFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+        // 액티비티에서 영화 상세보기 프래그먼트가 분리될 때 툴바의 이름을 바꾸고, viewpager 를 보여주기 위함.
         listener.onBackPressListener();
         if (listener != null) {
             listener = null;

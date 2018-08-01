@@ -105,6 +105,8 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 }
             });
 
+            /* 리사이클러뷰 아이템의 추천을 눌렀을 경우,
+             * 추천수+1 한 값과 현재 아이템의 position 을 콜백메소드에 전달한다. */
             recommend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

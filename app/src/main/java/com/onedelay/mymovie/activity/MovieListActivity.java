@@ -156,6 +156,9 @@ public class MovieListActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_list) {
+            /* 백스택에는 DetailFragment 가 있을 것.
+             * 후에 또 다른 프래그먼트들이 백스택에 추가될 경우를 대비하여
+             * 메인화면(영화목록)으로 갈 수 있도록 백스택에 남은 프래그먼트를 모두 팝하도록 했다. */
             for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
                 getSupportFragmentManager().popBackStack();
             }
