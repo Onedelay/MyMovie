@@ -114,10 +114,9 @@ public class WriteReviewActivity extends AppCompatActivity {
             }
         };
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
 
-        Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_OK, returnIntent);
+        setResult(Activity.RESULT_OK);
         finish();
     }
 }

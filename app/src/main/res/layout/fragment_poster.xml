@@ -1,52 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingTop="20dp"
+    android:padding="10dp"
     tools:background="@drawable/main_background">
 
     <ImageView
         android:id="@+id/list_image"
-        android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        app:srcCompat="@drawable/image1"
-        app:layout_constraintTop_toTopOf="parent"
+        android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/list_title"
+        app:layout_constraintDimensionRatio="W 9:16"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/image1" />
 
     <TextView
         android:id="@+id/list_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:gravity="center"
-        tools:text="1. 군도"
         android:textColor="#ffffff"
         android:textSize="20sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/list_image"/>
+        app:layout_constraintBottom_toTopOf="@+id/view"
+        tools:text="1. 군도" />
 
     <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="15dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/home_slider1"
-        app:layout_constraintTop_toBottomOf="@+id/list_title"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/container"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/container"/>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/list_title"
         app:layout_constraintBottom_toTopOf="@+id/detailButton">
 
         <TextView
@@ -72,30 +75,32 @@
             android:textColor="#ffffff" />
 
         <!--<View-->
-            <!--android:layout_width="1dp"-->
-            <!--android:layout_height="13dp"-->
-            <!--android:layout_marginEnd="10dp"-->
-            <!--android:background="#ffffff" />-->
+        <!--android:layout_width="1dp"-->
+        <!--android:layout_height="13dp"-->
+        <!--android:layout_marginEnd="10dp"-->
+        <!--android:background="#ffffff" />-->
 
         <!--<TextView-->
-            <!--android:id="@+id/d_day"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="@string/list_d_day"-->
-            <!--android:textColor="#ffffff" />-->
+        <!--android:id="@+id/d_day"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/list_d_day"-->
+        <!--android:textColor="#ffffff" />-->
     </LinearLayout>
 
     <Button
         android:id="@+id/detailButton"
-        android:layout_width="140dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/background_detail_button"
+        android:paddingEnd="50dp"
+        android:paddingStart="50dp"
         android:text="@string/detail"
         android:textColor="#ffffff"
         android:textSize="17sp"
-        app:layout_constraintTop_toBottomOf="@id/container"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent" />
 </android.support.constraint.ConstraintLayout>

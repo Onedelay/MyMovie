@@ -138,7 +138,7 @@ public class AllReviewActivity extends AppCompatActivity {
                 }
         );
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
     }
 
     private void processReviewResponse(String response) {

@@ -42,6 +42,6 @@ public class RequestProvider {
             }
         };
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
     }
 }

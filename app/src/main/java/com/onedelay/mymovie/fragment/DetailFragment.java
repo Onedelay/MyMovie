@@ -192,7 +192,7 @@ public class DetailFragment extends Fragment {
                 }
         );
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
     }
 
     public void requestMovieDetail(int id) {
@@ -216,8 +216,7 @@ public class DetailFragment extends Fragment {
                 }
         );
 
-        request.setShouldCache(false);
-        VolleyHelper.requestQueue.add(request);
+        VolleyHelper.requestServer(request);
     }
 
     private void processReviewResponse(String response) {
@@ -296,7 +295,7 @@ public class DetailFragment extends Fragment {
                 }
         );
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
     }
 
     public void likeClick() {

@@ -119,7 +119,7 @@ public class MovieListActivity extends AppCompatActivity
                 }
         );
 
-        VolleyHelper.add(request);
+        VolleyHelper.requestServer(request);
     }
 
     private void processResponse(String response) {
