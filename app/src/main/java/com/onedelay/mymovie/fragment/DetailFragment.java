@@ -225,7 +225,6 @@ public class DetailFragment extends Fragment {
         ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>() {
         }.getType());
         if (info.getCode() == 200) {
-
             setContents(rootView.findViewById(R.id.item1), info.getResult().get(0));
             setContents(rootView.findViewById(R.id.item2), info.getResult().get(1));
         }
@@ -277,14 +276,24 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    private void processReviewRecommend(String url) {
+    private void requestRecommend(boolean check, String string, final Runnable runnable){
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&"+string+"=";
+        url += check ? "Y" : "N";
         StringRequest request = new StringRequest(
                 Request.Method.GET,
                 url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getActivity(), response, Toast.LENGTH_SHORT).show();
+                        Gson gson = new Gson();
+                        ResponseInfo<String> info = gson.fromJson(response, new TypeToken<ResponseInfo<String>>() {
+                        }.getType());
+
+                        if(info.getCode() == 200) {
+                            runnable.run();
+                        } else {
+                            Toast.makeText(getContext(), "서버 요청 실패. response code : " + info.getCode(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 },
                 new Response.ErrorListener() {
@@ -299,63 +308,84 @@ public class DetailFragment extends Fragment {
     }
 
     public void likeClick() {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&likeyn=";
+        String str = "likeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            url += "Y";
-            likeCount++;
-            thumbUpBtn.setSelected(true);
+            requestRecommend(true, str, new Runnable() {
+                @Override
+                public void run() {
+                    likeCount++;
+                    thumbUpBtn.setSelected(true);
+                    likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+                }
+            });
         } else if (thumbUpBtn.isSelected()) {
-            url += "N";
-            likeCount--;
-            thumbUpBtn.setSelected(false);
+            requestRecommend(false, str, new Runnable() {
+                @Override
+                public void run() {
+                    likeCount--;
+                    thumbUpBtn.setSelected(false);
+                    likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+                }
+            });
+
         } else {
-            likeCount++;
-            hateCount--;
-            thumbUpBtn.setSelected(true);
-            thumbDownBtn.setSelected(false);
-            processReviewRecommend(url.replace("likeyn","dislikeyn")+"N");
-            url += "Y";
-            try {
-                Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            requestRecommend(true, str, new Runnable() {
+                @Override
+                public void run() {
+                    requestRecommend(false, "dislikeyn", new Runnable() {
+                        @Override
+                        public void run() {
+                            hateCount--;
+                            thumbDownBtn.setSelected(false);
+                            hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
+                            likeCount++;
+                            thumbUpBtn.setSelected(true);
+                            likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+                        }
+                    });
+                }
+            });
         }
-
-        processReviewRecommend(url);
-
-        likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
-        hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
     public void dislikeClick() {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&dislikeyn=";
+        String str = "dislikeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            url += "Y";
-            hateCount++;
-            thumbDownBtn.setSelected(true);
+            requestRecommend(true, str, new Runnable() {
+                @Override
+                public void run() {
+                    hateCount++;
+                    thumbDownBtn.setSelected(true);
+                    hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
+                }
+            });
         } else if (thumbDownBtn.isSelected()) {
-            url += "N";
-            hateCount--;
-            thumbDownBtn.setSelected(false);
+            requestRecommend(false, str, new Runnable() {
+                @Override
+                public void run() {
+                    hateCount--;
+                    thumbDownBtn.setSelected(false);
+                    hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
+                }
+            });
         } else {
-            hateCount++;
-            likeCount--;
-            thumbDownBtn.setSelected(true);
-            thumbUpBtn.setSelected(false);
-            processReviewRecommend(url.replace("dislikeyn", "likeyn")+"N");
-            url += "Y";
-            try {
-                Thread.sleep(500L); // 서버에 거의 동시에 보내면 적용이 안돼서 추가했습니다.
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            requestRecommend(true, str, new Runnable() {
+                @Override
+                public void run() {
+                    requestRecommend(false, "likeyn", new Runnable() {
+                        @Override
+                        public void run() {
+                            likeCount--;
+                            thumbUpBtn.setSelected(false);
+                            likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
+                            thumbDownBtn.setSelected(true);
+                            hateCount++;
+                            hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
+                        }
+                    });
+                }
+            });
         }
-
-        processReviewRecommend(url);
-
-        likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
-        hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
     }
 
     public void setContents(View contentView, final ReviewInfo data) {
@@ -384,7 +414,7 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 int v = Integer.parseInt(recommend.getText().toString().substring(3));
-                recommend.setText(String.format(getString(R.string.detail_review_recommend), v+1));
+                recommend.setText(String.format(getString(R.string.detail_review_recommend), v + 1));
                 RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter());
             }
         });
@@ -394,7 +424,7 @@ public class DetailFragment extends Fragment {
         declareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), data.getWriter()+"님을 신고합니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), data.getWriter() + "님을 신고합니다.", Toast.LENGTH_SHORT).show();
             }
         });
     }
