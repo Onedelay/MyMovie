@@ -25,7 +25,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-        void onRecommendClick(int position);
+        void onRecommendClick(int position, int value);
     }
 
     public ReviewAdapter(Context context) {
@@ -56,6 +56,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
     public void addItem(ReviewInfo item) {
         items.add(item);
+    }
+
+    public void changeItem(int position, ReviewInfo item){
+        items.set(position, item);
     }
 
     public void setItems(List<ReviewInfo> items) {
@@ -106,10 +110,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
                 public void onClick(View view) {
                     int position = getAdapterPosition();
                     int v = Integer.parseInt(recommend.getText().toString().substring(3));
-                    recommend.setText(String.format("추천 %d", v+1));
 
                     if (listener != null) {
-                        listener.onRecommendClick(position);
+                        listener.onRecommendClick(position, v+1);
                     }
                 }
             });

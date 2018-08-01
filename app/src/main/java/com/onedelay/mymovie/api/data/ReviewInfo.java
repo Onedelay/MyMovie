@@ -50,4 +50,8 @@ public class ReviewInfo {
     public int getRecommend() {
         return recommend;
     }
+
+    public void setRecommend(int recommend) {
+        this.recommend = recommend;
+    }
 }

@@ -112,8 +112,16 @@ public class AllReviewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onRecommendClick(int position) {
-                RequestProvider.requestRecommend(String.valueOf(adapter.getItem(position).getId()), "onedelay");
+            public void onRecommendClick(final int position, final int value) {
+                RequestProvider.requestRecommend(String.valueOf(adapter.getItem(position).getId()), "onedelay", new Runnable() {
+                    @Override
+                    public void run() {
+                        ReviewInfo item = adapter.getItem(position);
+                        item.setRecommend(value);
+                        adapter.changeItem(position, item);
+                        adapter.notifyItemChanged(position);
+                    }
+                });
             }
         });
     }

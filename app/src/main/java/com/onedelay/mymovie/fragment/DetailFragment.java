@@ -415,7 +415,12 @@ public class DetailFragment extends Fragment {
             public void onClick(View view) {
                 int v = Integer.parseInt(recommend.getText().toString().substring(3));
                 recommend.setText(String.format(getString(R.string.detail_review_recommend), v + 1));
-                RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter());
+                RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter(), new Runnable() {
+                    @Override
+                    public void run() {
+                        // Do nothing
+                    }
+                });
             }
         });
 

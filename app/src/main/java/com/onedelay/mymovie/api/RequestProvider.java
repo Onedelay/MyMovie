@@ -13,7 +13,7 @@ import java.util.Map;
 public class RequestProvider {
     static final String TAG = "Onedelay";
 
-    public static void requestRecommend(final String reviewId, final String writer) {
+    public static void requestRecommend(final String reviewId, final String writer, final Runnable runnable) {
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseRecommend";
 
         StringRequest request = new StringRequest(
@@ -22,7 +22,7 @@ public class RequestProvider {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // Do - nothing
+                        runnable.run();
                     }
                 },
                 new Response.ErrorListener() {
