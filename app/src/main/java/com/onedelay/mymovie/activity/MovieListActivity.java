@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -33,6 +34,9 @@ import java.util.List;
 
 public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PosterFragment.PosterFragmentCallback, DetailFragment.OnBackPress {
+    private final static String VIEWPAGER_POSITION = "viewpagerPosition";
+    private final static String TAG = "TEST#####";
+
     private DetailFragment detailFragment;
 
     private Toolbar toolbar;
@@ -42,7 +46,7 @@ public class MovieListActivity extends AppCompatActivity
     private MovieListPagerAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
@@ -77,8 +81,25 @@ public class MovieListActivity extends AppCompatActivity
         viewPager.setPadding(dpToPx(45), 0, dpToPx(45), 0);
 
         adapter = new MovieListPagerAdapter(getSupportFragmentManager());
-        requestMovieList();
-        viewPager.setAdapter(adapter);
+
+        /* 세로화면에서 가로화면으로 전환하였을 경우 onCreate()가 다시 호출된다.
+         * 그래서 현재 viewPager 의 position 을 받아 현재 액티비티에 저장한다. (맨 아래 onSaveInstanceState 메소드 오버라이드)
+         * 만약 저장된 position 이 있을 경우 (null 이 아닐 경우) viewPager 의 현재 위치를 그 값으로 변경한다.
+         * 하지만 서버 요청이 되기 전에 이전 값을 불러오기때문에 (비동기로 동작하기 때문에) adapter 에 저장된 데이터가 없어서
+         * 0번째 요소를 set 해주는 것 같아서 callback 메소드를 통해 순서대로 처리할 수 있도록 했다.
+         * 근데 이 방법 뿐일까? */
+        requestMovieList(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setAdapter(adapter);
+
+                if(savedInstanceState != null){
+                    int position = savedInstanceState.getInt(VIEWPAGER_POSITION);
+                    viewPager.setCurrentItem(position);
+                    Log.v(TAG, "savedInstanceState 복원. 현재 position : "+viewPager.getCurrentItem());
+                }
+            }
+        });
 
         detailFragment = new DetailFragment();
     }
@@ -98,7 +119,7 @@ public class MovieListActivity extends AppCompatActivity
         return fragment;
     }
 
-    private void requestMovieList() {
+    private void requestMovieList(final Runnable runnable) {
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
 
@@ -109,6 +130,7 @@ public class MovieListActivity extends AppCompatActivity
                     @Override
                     public void onResponse(String response) {
                         processResponse(response);
+                        runnable.run();
                     }
                 },
                 new Response.ErrorListener() {
@@ -198,5 +220,14 @@ public class MovieListActivity extends AppCompatActivity
     public void onBackPressListener() {
         toolbar.setTitle(getString(R.string.str_movie_list));
         viewPager.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        Log.v(TAG, "onSaveInstanceState 호출됨. 현재 position : "+viewPager.getCurrentItem());
+
+        outState.putInt(VIEWPAGER_POSITION, viewPager.getCurrentItem());
     }
 }
