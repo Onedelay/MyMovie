@@ -76,6 +76,10 @@ public class DetailFragment extends Fragment {
         void onBackPressListener();
     }
 
+    interface RecommendCallback {
+        void UpdateData();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -276,8 +280,8 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    private void requestRecommend(boolean check, String string, final Runnable runnable){
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&"+string+"=";
+    private void requestRecommend(boolean check, String string, final RecommendCallback callback) {
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&" + string + "=";
         url += check ? "Y" : "N";
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -289,8 +293,8 @@ public class DetailFragment extends Fragment {
                         ResponseInfo<String> info = gson.fromJson(response, new TypeToken<ResponseInfo<String>>() {
                         }.getType());
 
-                        if(info.getCode() == 200) {
-                            runnable.run();
+                        if (info.getCode() == 200) {
+                            callback.UpdateData();
                         } else {
                             Toast.makeText(getContext(), "서버 요청 실패. response code : " + info.getCode(), Toast.LENGTH_SHORT).show();
                         }
@@ -310,18 +314,18 @@ public class DetailFragment extends Fragment {
     public void likeClick() {
         String str = "likeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            requestRecommend(true, str, new Runnable() {
+            requestRecommend(true, str, new RecommendCallback() {
                 @Override
-                public void run() {
+                public void UpdateData() {
                     likeCount++;
                     thumbUpBtn.setSelected(true);
                     likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
                 }
             });
         } else if (thumbUpBtn.isSelected()) {
-            requestRecommend(false, str, new Runnable() {
+            requestRecommend(false, str, new RecommendCallback() {
                 @Override
-                public void run() {
+                public void UpdateData() {
                     likeCount--;
                     thumbUpBtn.setSelected(false);
                     likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
@@ -329,12 +333,12 @@ public class DetailFragment extends Fragment {
             });
 
         } else {
-            requestRecommend(true, str, new Runnable() {
+            requestRecommend(true, str, new RecommendCallback() {
                 @Override
-                public void run() {
-                    requestRecommend(false, "dislikeyn", new Runnable() {
+                public void UpdateData() {
+                    requestRecommend(false, "dislikeyn", new RecommendCallback() {
                         @Override
-                        public void run() {
+                        public void UpdateData() {
                             hateCount--;
                             thumbDownBtn.setSelected(false);
                             hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
@@ -351,30 +355,30 @@ public class DetailFragment extends Fragment {
     public void dislikeClick() {
         String str = "dislikeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            requestRecommend(true, str, new Runnable() {
+            requestRecommend(true, str, new RecommendCallback() {
                 @Override
-                public void run() {
+                public void UpdateData() {
                     hateCount++;
                     thumbDownBtn.setSelected(true);
                     hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
                 }
             });
         } else if (thumbDownBtn.isSelected()) {
-            requestRecommend(false, str, new Runnable() {
+            requestRecommend(false, str, new RecommendCallback() {
                 @Override
-                public void run() {
+                public void UpdateData() {
                     hateCount--;
                     thumbDownBtn.setSelected(false);
                     hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
                 }
             });
         } else {
-            requestRecommend(true, str, new Runnable() {
+            requestRecommend(true, str, new RecommendCallback() {
                 @Override
-                public void run() {
-                    requestRecommend(false, "likeyn", new Runnable() {
+                public void UpdateData() {
+                    requestRecommend(false, "likeyn", new RecommendCallback() {
                         @Override
-                        public void run() {
+                        public void UpdateData() {
                             likeCount--;
                             thumbUpBtn.setSelected(false);
                             likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
