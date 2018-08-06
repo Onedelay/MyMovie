@@ -24,17 +24,20 @@ import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
+import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.ResponseInfo;
+import com.onedelay.mymovie.database.AppDatabase;
+import com.onedelay.mymovie.database.Movie;
 import com.onedelay.mymovie.fragment.DetailFragment;
 import com.onedelay.mymovie.fragment.PosterFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PosterFragment.PosterFragmentCallback, DetailFragment.OnBackPress {
-    private final static String VIEWPAGER_POSITION = "viewpagerPosition";
     private final static String TAG = "TEST#####";
 
     private DetailFragment detailFragment;
@@ -45,10 +48,14 @@ public class MovieListActivity extends AppCompatActivity
 
     private MovieListPagerAdapter adapter;
 
+    private AppDatabase database;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+
+        database = AppDatabase.getInstance(getBaseContext());
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.str_movie_list));
@@ -82,26 +89,31 @@ public class MovieListActivity extends AppCompatActivity
 
         adapter = new MovieListPagerAdapter(getSupportFragmentManager());
 
-        /* 세로화면에서 가로화면으로 전환하였을 경우 onCreate()가 다시 호출된다.
-         * 그래서 현재 viewPager 의 position 을 받아 현재 액티비티에 저장한다. (맨 아래 onSaveInstanceState 메소드 오버라이드)
-         * 만약 저장된 position 이 있을 경우 (null 이 아닐 경우) viewPager 의 현재 위치를 그 값으로 변경한다.
-         * 하지만 서버 요청이 되기 전에 이전 값을 불러오기때문에 (비동기로 동작하기 때문에) adapter 에 저장된 데이터가 없어서
-         * 0번째 요소를 set 해주는 것 같아서 callback 메소드를 통해 순서대로 처리할 수 있도록 했다.
-         * 근데 이 방법 뿐일까? */
-        requestMovieList(new Runnable() {
-            @Override
-            public void run() {
-                viewPager.setAdapter(adapter);
+        // 인터넷이 연결되었을 경우 서버로부터 데이터를 다운로드하여 내부 DB 에 저장
+        if (RequestProvider.isNetworkConnected(this)) {
+            Toast.makeText(this, "서버로부터 데이터를 요청합니다.", Toast.LENGTH_SHORT).show();
+            requestMovieList();
+        }
 
-                if(savedInstanceState != null){
-                    int position = savedInstanceState.getInt(VIEWPAGER_POSITION);
-                    viewPager.setCurrentItem(position);
-                    Log.v(TAG, "savedInstanceState 복원. 현재 position : "+viewPager.getCurrentItem());
-                }
-            }
-        });
+        // DB 로부터 데이터 로드
+        selectMovies();
 
         detailFragment = new DetailFragment();
+    }
+
+    private void selectMovies() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                List<Movie> movies = database.movieDao().selectMovies();
+                Movie movie;
+                for (int i = 0; i < movies.size(); i++) {
+                    movie = movies.get(i);
+                    adapter.addItem(setData(i + 1, movie.getId(), movie.getImage(), movie.getTitle(), movie.getReservationRate(), movie.getGrade(), movie.getDate(), movie.getAudienceRating()));
+                }
+                viewPager.setAdapter(adapter);
+            }
+        }).start();
     }
 
     public PosterFragment setData(int index, int id, String imageUrl, String title, float rate, int grade, String date, float rating) {
@@ -119,7 +131,7 @@ public class MovieListActivity extends AppCompatActivity
         return fragment;
     }
 
-    private void requestMovieList(final Runnable runnable) {
+    private void requestMovieList() {
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList";
         url += "?" + "type=1";
 
@@ -130,7 +142,6 @@ public class MovieListActivity extends AppCompatActivity
                     @Override
                     public void onResponse(String response) {
                         processResponse(response);
-                        runnable.run();
                     }
                 },
                 new Response.ErrorListener() {
@@ -147,13 +158,18 @@ public class MovieListActivity extends AppCompatActivity
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response,new TypeToken<ResponseInfo<List<MovieInfo>>>(){}.getType());
+        final ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>() {
+        }.getType());
         if (info.getCode() == 200) {
-            for (int i = 0; i < info.getResult().size(); i++) {
-                MovieInfo movieInfo = info.getResult().get(i);
-                adapter.addItem(setData(i + 1, movieInfo.getId(), movieInfo.getImage(), movieInfo.getTitle(), movieInfo.getReservation_rate(), movieInfo.getGrade(), movieInfo.getDate(), movieInfo.getAudience_rating()));
-            }
-            adapter.notifyDataSetChanged();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < info.getResult().size(); i++) {
+                        MovieInfo movieInfo = info.getResult().get(i);
+                        database.movieDao().updateMovies(new Movie(movieInfo));
+                    }
+                }
+            }).start();
         }
     }
 
@@ -220,14 +236,5 @@ public class MovieListActivity extends AppCompatActivity
     public void onBackPressListener() {
         toolbar.setTitle(getString(R.string.str_movie_list));
         viewPager.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        Log.v(TAG, "onSaveInstanceState 호출됨. 현재 position : "+viewPager.getCurrentItem());
-
-        outState.putInt(VIEWPAGER_POSITION, viewPager.getCurrentItem());
     }
 }

@@ -15,7 +15,7 @@ public interface MovieDao {
     @Update
     void updateMovies(Movie... movies);
 
-    @Query("SELECT id, title, reservationRate, grade, image FROM Movies")
+    @Query("SELECT * FROM Movies")
     List<Movie> selectMovies();
 
     @Query("SELECT * FROM Movies WHERE id = :id")

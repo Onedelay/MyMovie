@@ -3,6 +3,8 @@ package com.onedelay.mymovie.database;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.onedelay.mymovie.api.data.MovieInfo;
+
 @Entity(tableName = "Movies")
 public class Movie {
     @PrimaryKey
@@ -42,6 +44,26 @@ public class Movie {
         this.actor = actor;
         this.image = image;
         this.thumb = thumb;
+    }
+
+    public Movie(MovieInfo movieInfo) {
+        this.id = movieInfo.getId();
+        this.title = movieInfo.getTitle();
+        this.reservationRate = movieInfo.getReservation_rate();
+        this.reservationGrade = movieInfo.getReservation_grade();
+        this.grade = movieInfo.getGrade();
+        this.date = movieInfo.getDate();
+        this.genre = movieInfo.getGenre();
+        this.duration = movieInfo.getDuration();
+        this.like = movieInfo.getLike();
+        this.dislike = movieInfo.getDislike();
+        this.audienceRating = movieInfo.getAudience_rating();
+        this.audience = movieInfo.getAudience();
+        this.synopsis = movieInfo.getSynopsis();
+        this.director = movieInfo.getDirector();
+        this.actor = movieInfo.getActor();
+        this.image = movieInfo.getImage();
+        this.thumb = movieInfo.getThumb();
     }
 
     public int getId() {
