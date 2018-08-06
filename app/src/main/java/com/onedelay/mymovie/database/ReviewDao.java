@@ -13,7 +13,7 @@ public interface ReviewDao {
     void insertReviews(Review... reviews);
 
     @Update
-    void updateReives(Review... reviews);
+    void updateReivews(Review... reviews);
 
     @Query("SELECT * FROM reviews")
     List<Review> selectReviews();

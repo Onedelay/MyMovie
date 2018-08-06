@@ -1,5 +1,8 @@
 package com.onedelay.mymovie.api;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -45,5 +48,11 @@ public class RequestProvider {
         };
 
         VolleyHelper.requestServer(request);
+    }
+
+    public static boolean isNetworkConnected(Context context){
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm != null ? cm.getActiveNetworkInfo() : null;
+        return activeNetwork != null;
     }
 }
