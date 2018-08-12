@@ -19,10 +19,6 @@ public class MovieListPagerAdapter extends FragmentStatePagerAdapter {
         items.add(fragment);
     }
 
-    public void addItems(ArrayList<PosterFragment> fragments){
-        items.addAll(fragments);
-    }
-
     @Override
     public Fragment getItem(int position) {
         return items.get(position);

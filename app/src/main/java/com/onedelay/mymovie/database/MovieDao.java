@@ -19,5 +19,5 @@ public interface MovieDao {
     List<Movie> selectMovies();
 
     @Query("SELECT * FROM Movies WHERE id = :id")
-    List<Movie> selectMovieDetail(int id);
+    Movie selectMovieDetail(int id);
 }
