@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,12 +29,10 @@ import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
-import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.database.MovieEntity;
+import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -226,7 +223,7 @@ public class DetailFragment extends Fragment {
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>() {
+        ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
         }.getType());
         if (info.getCode() == 200) {
             setContents(rootView.findViewById(R.id.item1), info.getResult().get(0));
@@ -237,27 +234,27 @@ public class DetailFragment extends Fragment {
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>() {
+        ResponseInfo<List<MovieEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
         }.getType());
 
         if (info.getCode() == 200) {
-            MovieInfo movieInfo = info.getResult().get(0);
+            MovieEntity movie = info.getResult().get(0);
 
-            Glide.with(this).load(movieInfo.getThumb()).into(imageView);
-            textView.setText(movieInfo.getTitle());
-            setIcon(movieInfo.getGrade());
-            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movieInfo.getDate().replace('-', '.')));
-            textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movieInfo.getGenre(), movieInfo.getDuration()));
-            textRank.setText(String.format(getString(R.string.detail_fragment_rank), movieInfo.getReservation_grade()));
-            textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movieInfo.getReservation_rate()));
-            ratingBar.setRating(movieInfo.getAudience_rating() / 2);
-            totalRate.setText(String.format(getString(R.string.float_value), movieInfo.getAudience_rating()));
-            totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movieInfo.getAudience()));
-            synopsis.setText(movieInfo.getSynopsis());
-            director.setText(movieInfo.getDirector());
-            actor.setText(movieInfo.getActor());
-            likeCountView.setText(String.format(getString(R.string.int_value), movieInfo.getLike()));
-            hateCountView.setText(String.format(getString(R.string.int_value), movieInfo.getDislike()));
+            Glide.with(this).load(movie.getThumb()).into(imageView);
+            textView.setText(movie.getTitle());
+            setIcon(movie.getGrade());
+            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movie.getDate().replace('-', '.')));
+            textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movie.getGenre(), movie.getDuration()));
+            textRank.setText(String.format(getString(R.string.detail_fragment_rank), movie.getReservation_grade()));
+            textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movie.getReservation_rate()));
+            ratingBar.setRating(movie.getAudience_rating() / 2);
+            totalRate.setText(String.format(getString(R.string.float_value), movie.getAudience_rating()));
+            totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movie.getAudience()));
+            synopsis.setText(movie.getSynopsis());
+            director.setText(movie.getDirector());
+            actor.setText(movie.getActor());
+            likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
+            hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
 
             likeCount = Integer.parseInt(likeCountView.getText().toString());
             hateCount = Integer.parseInt(hateCountView.getText().toString());
@@ -392,7 +389,7 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    public void setContents(View contentView, final ReviewInfo data) {
+    public void setContents(View contentView, final ReviewEntity data) {
         ImageView imageView = contentView.findViewById(R.id.user_image);
         if (data.getWriter_image() != null) {
             Glide.with(this).load(data.getWriter_image()).into(imageView);

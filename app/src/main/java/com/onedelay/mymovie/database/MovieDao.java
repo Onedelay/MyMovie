@@ -10,14 +10,14 @@ import java.util.List;
 @Dao
 public interface MovieDao {
     @Insert
-    void insertMovies(Movie... movies);
+    void insertMovies(MovieEntity... movieEntities);
 
     @Update
-    void updateMovies(Movie... movies);
+    void updateMovies(MovieEntity... movieEntities);
 
     @Query("SELECT * FROM Movies")
-    List<Movie> selectMovies();
+    List<MovieEntity> selectMovies();
 
     @Query("SELECT * FROM Movies WHERE id = :id")
-    Movie selectMovieDetail(int id);
+    MovieEntity selectMovieDetail(int id);
 }

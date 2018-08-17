@@ -10,7 +10,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -26,14 +25,12 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
-import com.onedelay.mymovie.api.data.MovieInfo;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
-import com.onedelay.mymovie.database.Movie;
+import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.fragment.DetailFragment;
 import com.onedelay.mymovie.fragment.PosterFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MovieListActivity extends AppCompatActivity
@@ -105,11 +102,11 @@ public class MovieListActivity extends AppCompatActivity
         new Thread(new Runnable() {
             @Override
             public void run() {
-                List<Movie> movies = database.movieDao().selectMovies();
-                Movie movie;
-                for (int i = 0; i < movies.size(); i++) {
-                    movie = movies.get(i);
-                    adapter.addItem(setData(i + 1, movie.getId(), movie.getImage(), movie.getTitle(), movie.getReservationRate(), movie.getGrade(), movie.getDate(), movie.getAudienceRating()));
+                List<MovieEntity> movieEntities = database.movieDao().selectMovies();
+                MovieEntity movie;
+                for (int i = 0; i < movieEntities.size(); i++) {
+                    movie = movieEntities.get(i);
+                    adapter.addItem(setData(i + 1, movie.getId(), movie.getImage(), movie.getTitle(), movie.getReservation_rate(), movie.getGrade(), movie.getDate(), movie.getAudience_rating()));
                 }
                 viewPager.setAdapter(adapter);
             }
@@ -158,15 +155,15 @@ public class MovieListActivity extends AppCompatActivity
     private void processResponse(String response) {
         Gson gson = new Gson();
 
-        final ResponseInfo<List<MovieInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieInfo>>>() {
+        final ResponseInfo<List<MovieEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
         }.getType());
         if (info.getCode() == 200) {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     for (int i = 0; i < info.getResult().size(); i++) {
-                        MovieInfo movieInfo = info.getResult().get(i);
-                        database.movieDao().updateMovies(new Movie(movieInfo));
+                        MovieEntity movie = info.getResult().get(i);
+                        database.movieDao().updateMovies(movie);
                     }
                 }
             }).start();

@@ -27,12 +27,10 @@ import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class AllReviewActivity extends AppCompatActivity {
     private ReviewAdapter adapter;
@@ -121,7 +119,7 @@ public class AllReviewActivity extends AppCompatActivity {
                          * changeItem 메소드를 이용해 adapter 의 데이터를 변경한 후
                          * notify 메소드를 호출하여 리사이클러뷰에 적용한다.
                          * 이때, 해당 아이템이 깜빡이는데 이유는 모르겠다, */
-                        ReviewInfo item = adapter.getItem(position);
+                        ReviewEntity item = adapter.getItem(position);
                         item.setRecommend(value);
                         adapter.changeItem(position, item);
                         adapter.notifyItemChanged(position);
@@ -156,7 +154,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
-        ResponseInfo<List<ReviewInfo>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewInfo>>>() {
+        ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
         }.getType());
         if (info.getCode() == 200) {
             score.setText(String.format(getString(R.string.all_review_score), rating, info.getResult().size()));

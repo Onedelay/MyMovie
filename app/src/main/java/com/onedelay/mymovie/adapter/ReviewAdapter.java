@@ -10,7 +10,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.api.data.ReviewInfo;
+import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Context context;
-    private ArrayList<ReviewInfo> items = new ArrayList<>();
+    private ArrayList<ReviewEntity> items = new ArrayList<>();
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
@@ -54,20 +54,20 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         holder.setOnItemClickListener(listener);
     }
 
-    public void addItem(ReviewInfo item) {
+    public void addItem(ReviewEntity item) {
         items.add(item);
     }
 
-    public void changeItem(int position, ReviewInfo item){
+    public void changeItem(int position, ReviewEntity item){
         items.set(position, item);
     }
 
-    public void setItems(List<ReviewInfo> items) {
+    public void setItems(List<ReviewEntity> items) {
         this.items.clear();
         this.items.addAll(items);
     }
 
-    public ReviewInfo getItem(int position) {
+    public ReviewEntity getItem(int position) {
         return items.get(position);
     }
 
@@ -120,7 +120,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
             });
         }
 
-        void setItem(ReviewInfo item) {
+        void setItem(ReviewEntity item) {
             userId.setText(item.getWriter());
             userTime.setText(TimeString.formatTimeString(item.getTimestamp()));
             ratingBar.setRating(item.getRating());

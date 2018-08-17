@@ -10,11 +10,11 @@ import java.util.List;
 @Dao
 public interface ReviewDao {
     @Insert
-    void insertReviews(Review... reviews);
+    void insertReviews(ReviewEntity... reviews);
 
     @Update
-    void updateReivews(Review... reviews);
+    void updateReivews(ReviewEntity... reviews);
 
-    @Query("SELECT * FROM reviews")
-    List<Review> selectReviews();
+    @Query("SELECT * FROM Reviews")
+    List<ReviewEntity> selectReviews();
 }
