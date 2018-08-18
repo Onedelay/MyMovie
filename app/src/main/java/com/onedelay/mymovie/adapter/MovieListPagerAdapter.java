@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.onedelay.mymovie.fragment.PosterFragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MovieListPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<PosterFragment> items = new ArrayList<>();
@@ -29,4 +30,7 @@ public class MovieListPagerAdapter extends FragmentStatePagerAdapter {
         return items.size();
     }
 
+    public void itemClear(){
+        items.clear();
+    }
 }

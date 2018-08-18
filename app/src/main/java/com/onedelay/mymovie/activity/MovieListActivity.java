@@ -1,7 +1,11 @@
 package com.onedelay.mymovie.activity;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
@@ -30,6 +34,7 @@ import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.fragment.DetailFragment;
 import com.onedelay.mymovie.fragment.PosterFragment;
+import com.onedelay.mymovie.viewmodel.MovieListViewModel;
 
 import java.util.List;
 
@@ -37,12 +42,9 @@ public class MovieListActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, PosterFragment.PosterFragmentCallback, DetailFragment.OnBackPress {
     private final static String TAG = "TEST#####";
 
-    private DetailFragment detailFragment;
-
     private Toolbar toolbar;
-
     private ViewPager viewPager;
-
+    private DetailFragment detailFragment;
     private MovieListPagerAdapter adapter;
 
     private AppDatabase database;
@@ -53,6 +55,23 @@ public class MovieListActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_list);
 
         database = AppDatabase.getInstance(getBaseContext());
+
+        /* ViewModel 은 자체적으로 어떤 기능도 포함하고 있지 않기때문에, 일반적인 객체처럼 new 키워드로 생성하는 것은 아무런 의미가 없다.
+         * 따라서 ViewModelProvider 를 통해 객체를 생성해야 한다. */
+        MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
+
+        /* ViewModel 의 멤버 LiveData 를 observe 하도록 한다.
+         * 데이터 변화가 감지되었을 때, UI 의 내용을 갱신하도록 onChanged 메소드를 오버라이드한다. */
+        viewModel.getData().observe(this, new Observer<List<MovieEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                adapter.itemClear();
+                for (int i = 0; i < (movieEntities != null ? movieEntities.size() : 0); i++) {
+                    adapter.addItem(PosterFragment.newInstance(i + 1, movieEntities.get(i)));
+                }
+                viewPager.setAdapter(adapter);
+            }
+        });
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.str_movie_list));
@@ -128,10 +147,12 @@ public class MovieListActivity extends AppCompatActivity
             new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    final MovieEntity[] array = new MovieEntity[info.getResult().size()];
                     for (int i = 0; i < info.getResult().size(); i++) {
-                        MovieEntity movie = info.getResult().get(i);
-                        database.movieDao().updateMovies(movie);
+                        array[i] = info.getResult().get(i);
                     }
+                    database.movieDao().clear();
+                    database.movieDao().insertMovies(array);
                 }
             }).start();
         }
