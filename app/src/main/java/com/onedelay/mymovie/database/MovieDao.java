@@ -20,7 +20,7 @@ public interface MovieDao {
     LiveData<List<MovieEntity>> selectMovies();
 
     @Query("SELECT * FROM Movies WHERE id = :id")
-    MovieEntity selectMovieDetail(int id);
+    LiveData<MovieEntity> selectMovieDetail(int id);
 
     @Query("DELETE FROM Movies")
     void clear();

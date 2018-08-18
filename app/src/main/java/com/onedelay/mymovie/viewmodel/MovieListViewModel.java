@@ -27,4 +27,17 @@ public class MovieListViewModel extends AndroidViewModel {
     public LiveData<List<MovieEntity>> getData() {
         return data;
     }
+
+    public void updateMovieDetail(final MovieEntity movie){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().updateMovies(movie);
+            }
+        }).start();
+    }
+
+    public LiveData<MovieEntity> getData(int id){
+        return AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(id);
+    }
 }
