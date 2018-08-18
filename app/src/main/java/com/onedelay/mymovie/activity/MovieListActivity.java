@@ -1,6 +1,5 @@
 package com.onedelay.mymovie.activity;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -58,18 +57,22 @@ public class MovieListActivity extends AppCompatActivity
 
         /* ViewModel 은 자체적으로 어떤 기능도 포함하고 있지 않기때문에, 일반적인 객체처럼 new 키워드로 생성하는 것은 아무런 의미가 없다.
          * 따라서 ViewModelProvider 를 통해 객체를 생성해야 한다. */
-        MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
+        final MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
 
         /* ViewModel 의 멤버 LiveData 를 observe 하도록 한다.
          * 데이터 변화가 감지되었을 때, UI 의 내용을 갱신하도록 onChanged 메소드를 오버라이드한다. */
         viewModel.getData().observe(this, new Observer<List<MovieEntity>>() {
             @Override
             public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                /* Movies 테이블이 갱신될때마다(LiveData 가 변경될때마다) 호출되어 viewPager 의 position 을 잃게 되므로
+                 * 현재 position 을 저장해두고 복원하여 position 을 유지하도록 했다. */
+                int position = viewPager.getCurrentItem();
                 adapter.itemClear();
                 for (int i = 0; i < (movieEntities != null ? movieEntities.size() : 0); i++) {
                     adapter.addItem(PosterFragment.newInstance(i + 1, movieEntities.get(i)));
                 }
                 viewPager.setAdapter(adapter);
+                viewPager.setCurrentItem(position);
             }
         });
 
