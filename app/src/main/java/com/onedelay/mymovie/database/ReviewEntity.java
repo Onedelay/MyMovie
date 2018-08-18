@@ -57,7 +57,7 @@ public class ReviewEntity {
     }
 
     public long getTimestamp() {
-        return timestamp;
+        return timestamp * 1000L;
     }
 
     public int getRecommend() {
