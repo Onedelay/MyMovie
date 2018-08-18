@@ -1,6 +1,8 @@
 package com.onedelay.mymovie.fragment;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,21 +35,20 @@ import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
+import com.onedelay.mymovie.viewmodel.MovieListViewModel;
 
 import java.util.List;
 
 public class DetailFragment extends Fragment {
     private static final String TAG = "serverTest";
-    private ViewGroup rootView;
 
+    private MovieListViewModel viewModel;
+
+    private ViewGroup rootView;
     private ImageButton thumbUpBtn;
     private ImageButton thumbDownBtn;
     private TextView likeCountView;
     private TextView hateCountView;
-
-    private int likeCount;
-    private int hateCount;
-
     private ImageView imageView;
     private TextView textView;
     private ImageView viewGrade;
@@ -61,6 +62,9 @@ public class DetailFragment extends Fragment {
     private TextView synopsis;
     private TextView director;
     private TextView actor;
+
+    private int likeCount;
+    private int hateCount;
 
     private int id;
     private String title;
@@ -98,14 +102,48 @@ public class DetailFragment extends Fragment {
         likeCountView = rootView.findViewById(R.id.thumb_up_count_view);
         hateCountView = rootView.findViewById(R.id.thumb_down_count_view);
 
+        viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
+
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             id = bundle.getInt(Constants.KEY_MOVIE_ID);
             title = bundle.getString(Constants.KEY_TITLE);
             grade = bundle.getInt(Constants.KEY_GRADE);
             rating = bundle.getFloat(Constants.KEY_RATING);
-            requestMovieDetail(id);
-            requestLatestReview(id);
+
+            // 네트워크가 연결되어있으면 데이터 다운로드
+            if(RequestProvider.isNetworkConnected(getContext())){
+                Toast.makeText(getContext(), "데이터를 DB 에 저장했습니다.", Toast.LENGTH_SHORT).show();
+                requestMovieDetail(id);
+                requestLatestReview(id);
+            }
+
+            viewModel.getData(id).observe(this, new Observer<MovieEntity>() {
+                @Override
+                public void onChanged(@Nullable MovieEntity movie) {
+                    // DB 로부터 읽어온 데이터를 UI 에 set
+                    if(movie != null) {
+                        Glide.with(getActivity()).load(movie.getThumb()).into(imageView);
+                        textView.setText(movie.getTitle());
+                        setIcon(movie.getGrade());
+                        textRelease.setText(String.format(getString(R.string.detail_fragment_date), movie.getDate().replace('-', '.')));
+                        textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movie.getGenre(), movie.getDuration()));
+                        textRank.setText(String.format(getString(R.string.detail_fragment_rank), movie.getReservation_grade()));
+                        textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movie.getReservation_rate()));
+                        ratingBar.setRating(movie.getAudience_rating() / 2);
+                        totalRate.setText(String.format(getString(R.string.float_value), movie.getAudience_rating()));
+                        totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movie.getAudience()));
+                        synopsis.setText(movie.getSynopsis());
+                        director.setText(movie.getDirector());
+                        actor.setText(movie.getActor());
+                        likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
+                        hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
+                    }
+
+                    likeCount = Integer.parseInt(likeCountView.getText().toString());
+                    hateCount = Integer.parseInt(hateCountView.getText().toString());
+                }
+            });
         } else {
             Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
         }
@@ -239,25 +277,7 @@ public class DetailFragment extends Fragment {
 
         if (info.getCode() == 200) {
             MovieEntity movie = info.getResult().get(0);
-
-            Glide.with(this).load(movie.getThumb()).into(imageView);
-            textView.setText(movie.getTitle());
-            setIcon(movie.getGrade());
-            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movie.getDate().replace('-', '.')));
-            textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movie.getGenre(), movie.getDuration()));
-            textRank.setText(String.format(getString(R.string.detail_fragment_rank), movie.getReservation_grade()));
-            textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movie.getReservation_rate()));
-            ratingBar.setRating(movie.getAudience_rating() / 2);
-            totalRate.setText(String.format(getString(R.string.float_value), movie.getAudience_rating()));
-            totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movie.getAudience()));
-            synopsis.setText(movie.getSynopsis());
-            director.setText(movie.getDirector());
-            actor.setText(movie.getActor());
-            likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
-            hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
-
-            likeCount = Integer.parseInt(likeCountView.getText().toString());
-            hateCount = Integer.parseInt(hateCountView.getText().toString());
+            viewModel.updateMovieDetail(movie);
         }
     }
 
