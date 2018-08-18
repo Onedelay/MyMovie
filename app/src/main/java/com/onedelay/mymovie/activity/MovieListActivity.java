@@ -92,40 +92,7 @@ public class MovieListActivity extends AppCompatActivity
             requestMovieList();
         }
 
-        // DB 로부터 데이터 로드
-        selectMovies();
-
         detailFragment = new DetailFragment();
-    }
-
-    private void selectMovies() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                List<MovieEntity> movieEntities = database.movieDao().selectMovies();
-                MovieEntity movie;
-                for (int i = 0; i < movieEntities.size(); i++) {
-                    movie = movieEntities.get(i);
-                    adapter.addItem(setData(i + 1, movie.getId(), movie.getImage(), movie.getTitle(), movie.getReservation_rate(), movie.getGrade(), movie.getDate(), movie.getAudience_rating()));
-                }
-                viewPager.setAdapter(adapter);
-            }
-        }).start();
-    }
-
-    public PosterFragment setData(int index, int id, String imageUrl, String title, float rate, int grade, String date, float rating) {
-        PosterFragment fragment = new PosterFragment();
-        Bundle bundle = new Bundle();
-        bundle.putInt(Constants.KEY_INDEX, index);
-        bundle.putInt(Constants.KEY_MOVIE_ID, id);
-        bundle.putString(Constants.KEY_IMAGE_URL, imageUrl);
-        bundle.putString(Constants.KEY_TITLE, title);
-        bundle.putFloat(Constants.KEY_RATE, rate); // 예매율
-        bundle.putInt(Constants.KEY_GRADE, grade);
-        bundle.putString(Constants.KEY_DATE, date);
-        bundle.putFloat(Constants.KEY_RATING, rating);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     private void requestMovieList() {

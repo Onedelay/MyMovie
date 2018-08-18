@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.database.MovieEntity;
 
 public class PosterFragment extends Fragment {
     PosterFragmentCallback callback;
@@ -23,6 +24,21 @@ public class PosterFragment extends Fragment {
         void onChangeFragment();
 
         void setData(int id, String title, int grade, float rating);
+    }
+
+    public static PosterFragment newInstance(int index, MovieEntity item) {
+        PosterFragment fragment = new PosterFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Constants.KEY_INDEX, index);
+        bundle.putInt(Constants.KEY_MOVIE_ID, item.getId());
+        bundle.putString(Constants.KEY_IMAGE_URL, item.getImage());
+        bundle.putString(Constants.KEY_TITLE, item.getTitle());
+        bundle.putFloat(Constants.KEY_RATE, item.getReservation_rate()); // 예매율
+        bundle.putInt(Constants.KEY_GRADE, item.getGrade());
+        bundle.putString(Constants.KEY_DATE, item.getDate());
+        bundle.putFloat(Constants.KEY_RATING, item.getAudience_rating());
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     @Nullable
