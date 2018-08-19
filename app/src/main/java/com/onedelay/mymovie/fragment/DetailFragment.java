@@ -32,10 +32,12 @@ import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
+import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
 import com.onedelay.mymovie.viewmodel.MovieListViewModel;
+import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 
 import java.util.List;
 
@@ -43,6 +45,7 @@ public class DetailFragment extends Fragment {
     private static final String TAG = "serverTest";
 
     private MovieListViewModel viewModel;
+    private ReviewListViewModel reviewViewModel;
 
     private ViewGroup rootView;
     private ImageButton thumbUpBtn;
@@ -103,6 +106,7 @@ public class DetailFragment extends Fragment {
         hateCountView = rootView.findViewById(R.id.thumb_down_count_view);
 
         viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
+        reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();
@@ -112,17 +116,28 @@ public class DetailFragment extends Fragment {
             rating = bundle.getFloat(Constants.KEY_RATING);
 
             // 네트워크가 연결되어있으면 데이터 다운로드
-            if(RequestProvider.isNetworkConnected(getContext())){
+            if (RequestProvider.isNetworkConnected(getContext())) {
                 Toast.makeText(getContext(), "데이터를 DB 에 저장했습니다.", Toast.LENGTH_SHORT).show();
                 requestMovieDetail(id);
                 requestLatestReview(id);
             }
 
+            reviewViewModel.setData(id);
+            reviewViewModel.getData().observe(this, new Observer<List<ReviewEntity>>() {
+                @Override
+                public void onChanged(@Nullable List<ReviewEntity> reviewEntities) {
+                    if (reviewEntities != null && reviewEntities.size() > 1) {
+                        setContents(rootView.findViewById(R.id.item1), reviewEntities.get(0));
+                        setContents(rootView.findViewById(R.id.item2), reviewEntities.get(1));
+                    }
+                }
+            });
+
             viewModel.getData(id).observe(this, new Observer<MovieEntity>() {
                 @Override
                 public void onChanged(@Nullable MovieEntity movie) {
                     // DB 로부터 읽어온 데이터를 UI 에 set
-                    if(movie != null) {
+                    if (movie != null) {
                         Glide.with(getActivity()).load(movie.getThumb()).into(imageView);
                         textView.setText(movie.getTitle());
                         setIcon(movie.getGrade());
@@ -144,6 +159,7 @@ public class DetailFragment extends Fragment {
                     hateCount = Integer.parseInt(hateCountView.getText().toString());
                 }
             });
+
         } else {
             Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
         }
@@ -152,7 +168,7 @@ public class DetailFragment extends Fragment {
         thumbUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestProvider.isNetworkConnected(getContext())) {
+                if (RequestProvider.isNetworkConnected(getContext())) {
                     likeClick();
                 } else {
                     Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
@@ -164,7 +180,7 @@ public class DetailFragment extends Fragment {
         thumbDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestProvider.isNetworkConnected(getContext())) {
+                if (RequestProvider.isNetworkConnected(getContext())) {
                     dislikeClick();
                 } else {
                     Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
@@ -175,7 +191,7 @@ public class DetailFragment extends Fragment {
         rootView.findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestProvider.isNetworkConnected(getContext())) {
+                if (RequestProvider.isNetworkConnected(getContext())) {
                     Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
                     intent.putExtra(Constants.KEY_MOVIE_ID, id);
                     intent.putExtra(Constants.KEY_TITLE, title);
@@ -224,7 +240,7 @@ public class DetailFragment extends Fragment {
     }
 
     private void requestLatestReview(int id) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id + "&limit=2";
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id;
 
         StringRequest request = new StringRequest(
                 Request.Method.GET,
@@ -273,11 +289,20 @@ public class DetailFragment extends Fragment {
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
 
-        ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
+        final ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
         }.getType());
         if (info.getCode() == 200) {
-            setContents(rootView.findViewById(R.id.item1), info.getResult().get(0));
-            setContents(rootView.findViewById(R.id.item2), info.getResult().get(1));
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final ReviewEntity[] reviews = new ReviewEntity[info.getResult().size()];
+                    for (int i = 0; i < info.getResult().size(); i++) {
+                        reviews[i] = info.getResult().get(i);
+                    }
+                    AppDatabase.getInstance(getContext()).reviewDao().clear();
+                    AppDatabase.getInstance(getContext()).reviewDao().insertReviews(reviews);
+                }
+            }).start();
         }
     }
 
@@ -446,7 +471,7 @@ public class DetailFragment extends Fragment {
         recommend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestProvider.isNetworkConnected(getContext())) {
+                if (RequestProvider.isNetworkConnected(getContext())) {
                     final int v = Integer.parseInt(recommend.getText().toString().substring(3));
                     RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter(), new Runnable() {
                         @Override
