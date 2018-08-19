@@ -19,8 +19,8 @@ public interface ReviewDao {
     @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
     LiveData<List<ReviewEntity>> selectReviews(int id);
 
-    @Query("DELETE FROM Reviews")
-    void clear();
+    @Query("DELETE FROM Reviews WHERE movieId = :id")
+    void clear(int id);
 
     @Query("SELECT * FROM Reviews LIMIT 2")
     ReviewEntity[] selectLatestReviews();

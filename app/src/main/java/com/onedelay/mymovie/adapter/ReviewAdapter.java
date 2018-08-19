@@ -75,10 +75,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         this.listener = listener;
     }
 
-    public void itemClear(){
-        items.clear();
-    }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         private CircleImageView userImage;
         private TextView userId;

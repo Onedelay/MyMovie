@@ -1,8 +1,12 @@
 package com.onedelay.mymovie.activity;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,8 +31,10 @@ import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
+import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
+import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 
 import java.util.List;
 
@@ -38,6 +44,8 @@ public class AllReviewActivity extends AppCompatActivity {
     private float rating;
 
     private TextView score;
+
+    private ReviewListViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +82,22 @@ public class AllReviewActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
-        requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+        if(RequestProvider.isNetworkConnected(getBaseContext())) {
+            requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+        }
+
+        viewModel = ViewModelProviders.of(this).get(ReviewListViewModel.class);
+        viewModel.setData(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+        viewModel.getData().observe(this, new Observer<List<ReviewEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<ReviewEntity> reviews) {
+                if(reviews != null) {
+                    score.setText(String.format(getString(R.string.all_review_score), rating, reviews.size()));
+                    adapter.setItems(reviews);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
 
         TextView textView = findViewById(R.id.movie_title);
         textView.setText(getIntent().getStringExtra(Constants.KEY_TITLE));
@@ -154,12 +177,21 @@ public class AllReviewActivity extends AppCompatActivity {
 
     private void processReviewResponse(String response) {
         Gson gson = new Gson();
-        ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
+        final ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
         }.getType());
         if (info.getCode() == 200) {
-            score.setText(String.format(getString(R.string.all_review_score), rating, info.getResult().size()));
-            adapter.setItems(info.getResult());
-            adapter.notifyDataSetChanged();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final ReviewEntity[] reviews = new ReviewEntity[info.getResult().size()];
+                    for (int i = 0; i < info.getResult().size(); i++) {
+                        reviews[i] = info.getResult().get(i);
+                    }
+                    AppDatabase.getInstance(getBaseContext()).reviewDao().clear(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+                    AppDatabase.getInstance(getBaseContext()).reviewDao().insertReviews(reviews);
+                    viewModel.setData(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+                }
+            }).start();
         }
     }
 

@@ -299,7 +299,7 @@ public class DetailFragment extends Fragment {
                     for (int i = 0; i < info.getResult().size(); i++) {
                         reviews[i] = info.getResult().get(i);
                     }
-                    AppDatabase.getInstance(getContext()).reviewDao().clear();
+                    AppDatabase.getInstance(getContext()).reviewDao().clear(id);
                     AppDatabase.getInstance(getContext()).reviewDao().insertReviews(reviews);
                 }
             }).start();
