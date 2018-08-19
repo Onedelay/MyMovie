@@ -152,7 +152,11 @@ public class DetailFragment extends Fragment {
         thumbUpBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                likeClick();
+                if(RequestProvider.isNetworkConnected(getContext())) {
+                    likeClick();
+                } else {
+                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -160,18 +164,26 @@ public class DetailFragment extends Fragment {
         thumbDownBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dislikeClick();
+                if(RequestProvider.isNetworkConnected(getContext())) {
+                    dislikeClick();
+                } else {
+                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         rootView.findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
-                intent.putExtra(Constants.KEY_MOVIE_ID, id);
-                intent.putExtra(Constants.KEY_TITLE, title);
-                intent.putExtra(Constants.KEY_GRADE, grade);
-                startActivityForResult(intent, Constants.WRITE_REQUEST);
+                if(RequestProvider.isNetworkConnected(getContext())) {
+                    Intent intent = new Intent(getActivity(), WriteReviewActivity.class);
+                    intent.putExtra(Constants.KEY_MOVIE_ID, id);
+                    intent.putExtra(Constants.KEY_TITLE, title);
+                    intent.putExtra(Constants.KEY_GRADE, grade);
+                    startActivityForResult(intent, Constants.WRITE_REQUEST);
+                } else {
+                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -434,14 +446,17 @@ public class DetailFragment extends Fragment {
         recommend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int v = Integer.parseInt(recommend.getText().toString().substring(3));
-                recommend.setText(String.format(getString(R.string.detail_review_recommend), v + 1));
-                RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter(), new Runnable() {
-                    @Override
-                    public void run() {
-                        // Do nothing
-                    }
-                });
+                if(RequestProvider.isNetworkConnected(getContext())) {
+                    final int v = Integer.parseInt(recommend.getText().toString().substring(3));
+                    RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter(), new Runnable() {
+                        @Override
+                        public void run() {
+                            recommend.setText(String.format(getString(R.string.detail_review_recommend), v + 1));
+                        }
+                    });
+                } else {
+                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
