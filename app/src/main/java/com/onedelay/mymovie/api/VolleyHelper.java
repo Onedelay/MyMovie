@@ -15,4 +15,11 @@ public class VolleyHelper {
             requestQueue.add(request);
         }
     }
+
+    public static void requestServer(GsonRequest request) {
+        request.setShouldCache(false);
+        if (requestQueue != null) {
+            requestQueue.add(request);
+        }
+    }
 }
