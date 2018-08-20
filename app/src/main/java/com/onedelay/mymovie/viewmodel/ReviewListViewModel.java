@@ -5,6 +5,13 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.api.GsonRequest;
+import com.onedelay.mymovie.api.VolleyHelper;
+import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.ReviewEntity;
 
@@ -17,11 +24,33 @@ public class ReviewListViewModel extends AndroidViewModel {
         super(application);
     }
 
-    public void setData(int movieId){
+    public void setData(int movieId) {
         data = AppDatabase.getInstance(getApplication().getApplicationContext()).reviewDao().selectReviews(movieId);
     }
 
     public LiveData<List<ReviewEntity>> getData() {
         return data;
+    }
+
+    public void requestReviewList(final int movieId) {
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + movieId;
+        GsonRequest<ResponseInfo<List<ReviewEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
+        }, new Response.Listener<ResponseInfo<List<ReviewEntity>>>() {
+            @Override
+            public void onResponse(ResponseInfo<List<ReviewEntity>> response) {
+                final ReviewEntity[] reviews = new ReviewEntity[response.getResult().size()];
+                for (int i = 0; i < response.getResult().size(); i++) {
+                    reviews[i] = response.getResult().get(i);
+                }
+                AppDatabase.getInstance(getApplication()).reviewDao().clear(movieId);
+                AppDatabase.getInstance(getApplication()).reviewDao().insertReviews(reviews);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+        VolleyHelper.requestServer(request);
     }
 }
