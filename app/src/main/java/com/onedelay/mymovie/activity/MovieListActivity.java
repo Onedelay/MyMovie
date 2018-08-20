@@ -108,57 +108,14 @@ public class MovieListActivity extends AppCompatActivity
 
         adapter = new MovieListPagerAdapter(getSupportFragmentManager());
 
-        // 인터넷이 연결되었을 경우 서버로부터 데이터를 다운로드하여 내부 DB 에 저장
+        /* 인터넷이 연결되었을 경우 서버로부터 데이터를 다운로드하여 내부 DB 에 저장
+         * 연결되어있지 않을 경우에는 DB 에 저장된 내용을 불러옴. (ViewModel 생성 시 DB 처리) */
         if (RequestProvider.isNetworkConnected(this)) {
             Toast.makeText(this, "서버로부터 데이터를 요청합니다.", Toast.LENGTH_SHORT).show();
-            requestMovieList();
+            viewModel.requestMovieList();
         }
 
         detailFragment = new DetailFragment();
-    }
-
-    private void requestMovieList() {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList";
-        url += "?" + "type=1";
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        processResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getBaseContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        VolleyHelper.requestServer(request);
-    }
-
-    private void processResponse(String response) {
-        Gson gson = new Gson();
-
-        final ResponseInfo<List<MovieEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
-        }.getType());
-        if (info.getCode() == 200) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final MovieEntity[] array = new MovieEntity[info.getResult().size()];
-                    for (int i = 0; i < info.getResult().size(); i++) {
-                        array[i] = info.getResult().get(i);
-                    }
-                    database.movieDao().clear();
-                    database.movieDao().insertMovies(array);
-                }
-            }).start();
-        }
     }
 
     public int dpToPx(int dp) {
