@@ -42,9 +42,8 @@ import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 import java.util.List;
 
 public class DetailFragment extends Fragment {
-    private static final String TAG = "serverTest";
+    private static final String TAG = "DETAIL_FRAGMENT";
 
-    private MovieListViewModel viewModel;
     private ReviewListViewModel reviewViewModel;
 
     private ViewGroup rootView;
@@ -105,7 +104,7 @@ public class DetailFragment extends Fragment {
         likeCountView = rootView.findViewById(R.id.thumb_up_count_view);
         hateCountView = rootView.findViewById(R.id.thumb_down_count_view);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
+        MovieListViewModel viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
         reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
         if (getArguments() != null) {
@@ -117,9 +116,8 @@ public class DetailFragment extends Fragment {
 
             // 네트워크가 연결되어있으면 데이터 다운로드
             if (RequestProvider.isNetworkConnected(getContext())) {
-                Toast.makeText(getContext(), "데이터를 DB 에 저장했습니다.", Toast.LENGTH_SHORT).show();
-                requestMovieDetail(id);
-                requestLatestReview(id);
+                viewModel.requestMovieDetail(id);
+                reviewViewModel.requestReviewList(id);
             }
 
             reviewViewModel.setData(id);
@@ -237,85 +235,6 @@ public class DetailFragment extends Fragment {
         });
 
         return rootView;
-    }
-
-    private void requestLatestReview(int id) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id;
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        processReviewResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        VolleyHelper.requestServer(request);
-    }
-
-    public void requestMovieDetail(int id) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovie";
-        url += "?" + "id=" + id;
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        processResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        VolleyHelper.requestServer(request);
-    }
-
-    private void processReviewResponse(String response) {
-        Gson gson = new Gson();
-
-        final ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
-        }.getType());
-        if (info.getCode() == 200) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final ReviewEntity[] reviews = new ReviewEntity[info.getResult().size()];
-                    for (int i = 0; i < info.getResult().size(); i++) {
-                        reviews[i] = info.getResult().get(i);
-                    }
-                    AppDatabase.getInstance(getContext()).reviewDao().clear(id);
-                    AppDatabase.getInstance(getContext()).reviewDao().insertReviews(reviews);
-                }
-            }).start();
-        }
-    }
-
-    private void processResponse(String response) {
-        Gson gson = new Gson();
-
-        ResponseInfo<List<MovieEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
-        }.getType());
-
-        if (info.getCode() == 200) {
-            MovieEntity movie = info.getResult().get(0);
-            viewModel.updateMovieDetail(movie);
-        }
     }
 
     public void setIcon(int grade) {
@@ -500,7 +419,7 @@ public class DetailFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
-            requestLatestReview(id);
+            reviewViewModel.requestReviewList(id);
         }
     }
 

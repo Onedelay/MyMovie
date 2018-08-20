@@ -4,6 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.support.annotation.NonNull;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -18,6 +20,8 @@ import com.onedelay.mymovie.database.ReviewEntity;
 import java.util.List;
 
 public class ReviewListViewModel extends AndroidViewModel {
+    private static final String TAG = "REVIEW_LIST_VIEW_MODEL";
+
     private LiveData<List<ReviewEntity>> data;
 
     public ReviewListViewModel(@NonNull Application application) {
@@ -48,7 +52,8 @@ public class ReviewListViewModel extends AndroidViewModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, error.getMessage());
             }
         });
         VolleyHelper.requestServer(request);

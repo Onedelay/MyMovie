@@ -39,11 +39,10 @@ import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 import java.util.List;
 
 public class AllReviewActivity extends AppCompatActivity {
+    private TextView score;
     private ReviewAdapter adapter;
 
     private float rating;
-
-    private TextView score;
 
     private ReviewListViewModel viewModel;
 
@@ -63,11 +62,15 @@ public class AllReviewActivity extends AppCompatActivity {
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
-                intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
-                intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra(Constants.KEY_GRADE, 12));
-                intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra(Constants.KEY_TITLE));
-                startActivityForResult(intent, Constants.WRITE_REQUEST);
+                if(RequestProvider.isNetworkConnected(getBaseContext())) {
+                    Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
+                    intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+                    intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra(Constants.KEY_GRADE, 12));
+                    intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra(Constants.KEY_TITLE));
+                    startActivityForResult(intent, Constants.WRITE_REQUEST);
+                } else {
+                    Toast.makeText(AllReviewActivity.this, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -82,11 +85,11 @@ public class AllReviewActivity extends AppCompatActivity {
         RecyclerView.ItemDecoration dividerItemDecoration = new DividerItemDecorator(ContextCompat.getDrawable(getApplicationContext(), R.drawable.recyclerview_divider));
         recyclerView.addItemDecoration(dividerItemDecoration);
 
+        viewModel = ViewModelProviders.of(this).get(ReviewListViewModel.class);
         if(RequestProvider.isNetworkConnected(getBaseContext())) {
-            requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+            viewModel.requestReviewList(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         }
 
-        viewModel = ViewModelProviders.of(this).get(ReviewListViewModel.class);
         viewModel.setData(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         viewModel.getData().observe(this, new Observer<List<ReviewEntity>>() {
             @Override
@@ -152,49 +155,6 @@ public class AllReviewActivity extends AppCompatActivity {
         });
     }
 
-    private void requestAllReview(int id) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + id;
-
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        processReviewResponse(response);
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(AllReviewActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        VolleyHelper.requestServer(request);
-    }
-
-    private void processReviewResponse(String response) {
-        Gson gson = new Gson();
-        final ResponseInfo<List<ReviewEntity>> info = gson.fromJson(response, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
-        }.getType());
-        if (info.getCode() == 200) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final ReviewEntity[] reviews = new ReviewEntity[info.getResult().size()];
-                    for (int i = 0; i < info.getResult().size(); i++) {
-                        reviews[i] = info.getResult().get(i);
-                    }
-                    AppDatabase.getInstance(getBaseContext()).reviewDao().clear(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
-                    AppDatabase.getInstance(getBaseContext()).reviewDao().insertReviews(reviews);
-                    viewModel.setData(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
-                }
-            }).start();
-        }
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -208,7 +168,7 @@ public class AllReviewActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.WRITE_REQUEST && resultCode == Activity.RESULT_OK) {
-            requestAllReview(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
+            viewModel.requestReviewList(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         }
     }
 }
