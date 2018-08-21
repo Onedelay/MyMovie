@@ -16,6 +16,9 @@ public interface ReviewDao {
     @Update
     void updateReviews(ReviewEntity... reviews);
 
+    @Query("UPDATE Reviews SET recommend = recommend + 1 WHERE id = :reviewId")
+    void updateReviewRecommend(int reviewId);
+
     @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
     LiveData<List<ReviewEntity>> selectReviews(int id);
 

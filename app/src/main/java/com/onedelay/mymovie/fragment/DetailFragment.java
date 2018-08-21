@@ -391,13 +391,7 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (RequestProvider.isNetworkConnected(getContext())) {
-                    final int v = Integer.parseInt(recommend.getText().toString().substring(3));
-                    RequestProvider.requestRecommend(String.valueOf(data.getId()), data.getWriter(), new Runnable() {
-                        @Override
-                        public void run() {
-                            recommend.setText(String.format(getString(R.string.detail_review_recommend), v + 1));
-                        }
-                    });
+                    reviewViewModel.requestReviewRecommend(data.getId(), data.getWriter());
                 } else {
                     Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
                 }
