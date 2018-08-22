@@ -35,7 +35,7 @@ public class ReviewListViewModel extends AndroidViewModel {
     }
 
     public void setData(int movieId) {
-        data = AppDatabase.getInstance(getApplication().getApplicationContext()).reviewDao().selectReviews(movieId);
+        data = AppDatabase.getInstance(getApplication().getApplicationContext()).reviewDao().selectReviewsLiveData(movieId);
     }
 
     public LiveData<List<ReviewEntity>> getData() {
@@ -65,7 +65,13 @@ public class ReviewListViewModel extends AndroidViewModel {
         VolleyHelper.requestServer(request);
     }
 
-    public void requestReviewRecommend(final int reviewId, final String writer){
+    /**
+     * @param movieId 영화 ID. 리사이클러뷰 어댑터를 사용하지 않는 경우 필요없음.
+     * @param reviewId 한줄평 ID
+     * @param writer 한줄평 추천인
+     * @param adapter 갱신할 데이터를 가진 리사이클러뷰 어댑터.
+     */
+    public void requestReviewRecommend(final int movieId, final int reviewId, final String writer, final ReviewAdapter adapter){
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseRecommend";
 
         GsonRequest<ResponseInfo<String>> request = new GsonRequest<ResponseInfo<String>>(Request.Method.POST, url, new TypeToken<ResponseInfo<String>>() {
@@ -74,12 +80,14 @@ public class ReviewListViewModel extends AndroidViewModel {
             public void onResponse(ResponseInfo<String> response) {
                 // 성공적으로 추천되었을 경우.
                 AppDatabase.getInstance(getApplication()).reviewDao().updateReviewRecommend(reviewId);
+                if(adapter != null) adapter.updateItem(AppDatabase.getInstance(getApplication()).reviewDao().selectReviews(movieId));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                // onResponse 에서 처리 중에 에러가 날 경우 호출됨.
                 Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, error.getMessage());
+                //Log.d(TAG, error.getMessage());
             }
         }){ // Post 방식으로 서버에 요청하는 방법.
             @Override

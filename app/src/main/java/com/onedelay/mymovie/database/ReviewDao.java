@@ -20,7 +20,10 @@ public interface ReviewDao {
     void updateReviewRecommend(int reviewId);
 
     @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
-    LiveData<List<ReviewEntity>> selectReviews(int id);
+    LiveData<List<ReviewEntity>> selectReviewsLiveData(int id);
+
+    @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
+    List<ReviewEntity> selectReviews(int id);
 
     @Query("DELETE FROM Reviews WHERE movieId = :id")
     void clear(int id);

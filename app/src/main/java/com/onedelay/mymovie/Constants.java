@@ -3,6 +3,7 @@ package com.onedelay.mymovie;
 public class Constants {
     public static final String KEY_INDEX = "INDEX";
     public static final String KEY_MOVIE_ID = "MOVIE_ID";
+    public static final String KEY_REVIEW_ID = "REVIEW_ID";
     public static final String KEY_IMAGE_URL = "IMAGE_URL";
     public static final String KEY_TITLE = "TITLE";
     public static final String KEY_RATE = "RATE";

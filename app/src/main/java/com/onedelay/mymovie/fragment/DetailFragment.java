@@ -391,7 +391,7 @@ public class DetailFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 if (RequestProvider.isNetworkConnected(getContext())) {
-                    reviewViewModel.requestReviewRecommend(data.getId(), data.getWriter());
+                    reviewViewModel.requestReviewRecommend(-1, data.getId(), data.getWriter(), null);
                 } else {
                     Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
                 }
