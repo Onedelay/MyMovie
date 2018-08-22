@@ -18,21 +18,12 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activity.AllReviewActivity;
 import com.onedelay.mymovie.activity.WriteReviewActivity;
 import com.onedelay.mymovie.api.RequestProvider;
-import com.onedelay.mymovie.api.VolleyHelper;
-import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
@@ -45,6 +36,7 @@ public class DetailFragment extends Fragment {
     private static final String TAG = "DETAIL_FRAGMENT";
 
     private ReviewListViewModel reviewViewModel;
+    private MovieListViewModel viewModel;
 
     private ViewGroup rootView;
     private ImageButton thumbUpBtn;
@@ -79,7 +71,7 @@ public class DetailFragment extends Fragment {
         void onBackPressListener();
     }
 
-    interface RecommendCallback {
+    public interface RecommendCallback {
         void UpdateData();
     }
 
@@ -104,7 +96,7 @@ public class DetailFragment extends Fragment {
         likeCountView = rootView.findViewById(R.id.thumb_up_count_view);
         hateCountView = rootView.findViewById(R.id.thumb_down_count_view);
 
-        MovieListViewModel viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
+        viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
         reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
         if (getArguments() != null) {
@@ -253,73 +245,34 @@ public class DetailFragment extends Fragment {
         }
     }
 
-    private void requestRecommend(boolean check, String string, final RecommendCallback callback) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + id + "&" + string + "=";
-        url += check ? "Y" : "N";
-        StringRequest request = new StringRequest(
-                Request.Method.GET,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        ResponseInfo<String> info = gson.fromJson(response, new TypeToken<ResponseInfo<String>>() {
-                        }.getType());
-
-                        if (info.getCode() == 200) {
-                            callback.UpdateData();
-                        } else {
-                            Toast.makeText(getContext(), "서버 요청 실패. response code : " + info.getCode(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-
-        VolleyHelper.requestServer(request);
-    }
-
     public void likeClick() {
         String str = "likeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            requestRecommend(true, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, true, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    likeCount++;
                     thumbUpBtn.setSelected(true);
-                    likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
                 }
             });
         } else if (thumbUpBtn.isSelected()) {
-            requestRecommend(false, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, false, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    likeCount--;
                     thumbUpBtn.setSelected(false);
-                    likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
                 }
             });
 
         } else {
-            requestRecommend(true, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, true, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    requestRecommend(false, "dislikeyn", new RecommendCallback() {
-                        @Override
-                        public void UpdateData() {
-                            hateCount--;
-                            thumbDownBtn.setSelected(false);
-                            hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
-                            likeCount++;
-                            thumbUpBtn.setSelected(true);
-                            likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
-                        }
-                    });
+                    thumbUpBtn.setSelected(true); // 좋아요
+                }
+            });
+            viewModel.requestMovieRecommend(id, false, "dislikeyn", new RecommendCallback() {
+                @Override
+                public void UpdateData() {
+                    thumbDownBtn.setSelected(false); // 싫어요 취소
                 }
             });
         }
@@ -328,38 +281,30 @@ public class DetailFragment extends Fragment {
     public void dislikeClick() {
         String str = "dislikeyn";
         if (!thumbUpBtn.isSelected() && !thumbDownBtn.isSelected()) {
-            requestRecommend(true, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, true, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    hateCount++;
                     thumbDownBtn.setSelected(true);
-                    hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
                 }
             });
         } else if (thumbDownBtn.isSelected()) {
-            requestRecommend(false, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, false, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    hateCount--;
                     thumbDownBtn.setSelected(false);
-                    hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
                 }
             });
         } else {
-            requestRecommend(true, str, new RecommendCallback() {
+            viewModel.requestMovieRecommend(id, true, str, new RecommendCallback() {
                 @Override
                 public void UpdateData() {
-                    requestRecommend(false, "likeyn", new RecommendCallback() {
-                        @Override
-                        public void UpdateData() {
-                            likeCount--;
-                            thumbUpBtn.setSelected(false);
-                            likeCountView.setText(String.format(getString(R.string.int_value), likeCount));
-                            thumbDownBtn.setSelected(true);
-                            hateCount++;
-                            hateCountView.setText(String.format(getString(R.string.int_value), hateCount));
-                        }
-                    });
+                    thumbDownBtn.setSelected(true); // 좋아요
+                }
+            });
+            viewModel.requestMovieRecommend(id, false, "likeyn", new RecommendCallback() {
+                @Override
+                public void UpdateData() {
+                    thumbUpBtn.setSelected(false); // 좋아요 취소
                 }
             });
         }

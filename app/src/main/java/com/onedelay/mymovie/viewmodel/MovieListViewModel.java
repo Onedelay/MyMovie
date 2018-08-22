@@ -16,6 +16,7 @@ import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
+import com.onedelay.mymovie.fragment.DetailFragment;
 
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class MovieListViewModel extends AndroidViewModel {
     }
 
     public LiveData<MovieEntity> getData(int id) {
-        return AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(id);
+        return AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetailLive(id);
     }
 
     /**
@@ -87,6 +88,7 @@ public class MovieListViewModel extends AndroidViewModel {
 
     /**
      * 서버로부터 영화의 상세 데이터를 받아 DB 에 insert
+     *
      * @param movieId 영화 id
      */
     public void requestMovieDetail(int movieId) {
@@ -104,6 +106,70 @@ public class MovieListViewModel extends AndroidViewModel {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, error.getMessage());
+            }
+        });
+        VolleyHelper.requestServer(request);
+    }
+
+    private void updateMovieLike(int movieId, boolean check) {
+        final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);
+        if (check) {
+            movie.setLike(movie.getLike() + 1);
+        } else {
+            movie.setLike(movie.getLike() - 1);
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().updateMovies(movie);
+            }
+        }).start();
+    }
+
+    private void updateMovieDislike(int movieId, boolean check) {
+        final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);
+        if (check) {
+            movie.setDislike(movie.getDislike() + 1);
+        } else {
+            movie.setDislike(movie.getDislike() - 1);
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().updateMovies(movie);
+            }
+        }).start();
+    }
+
+    /**
+     * 영화 좋아요, 싫어요 서버 요청 메서드
+     *
+     * @param movieId  영화 ID
+     * @param check    좋아요, 싫어요 체크 여부
+     * @param string   좋아요, 싫어요 URL 결정을 위한 String
+     * @param callback 서버 요청 후 LiveData 의 Observer 에 종속되지 않은 UI 를 갱신하기 위한 콜백 메서드
+     */
+    public void requestMovieRecommend(final int movieId, final boolean check, final String string, final DetailFragment.RecommendCallback callback) {
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + movieId + "&" + string + "=";
+        url += check ? "Y" : "N";
+
+        GsonRequest<ResponseInfo<String>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<String>>() {
+        }, new Response.Listener<ResponseInfo<String>>() {
+            @Override
+            public void onResponse(ResponseInfo<String> response) {
+                if (response.getCode() == 200) {
+                    if (string.equals("likeyn")) {
+                        updateMovieLike(movieId, check);
+                    } else {
+                        updateMovieDislike(movieId, check);
+                    }
+                    callback.UpdateData();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
             }
         });
         VolleyHelper.requestServer(request);

@@ -111,4 +111,12 @@ public class MovieEntity {
     public String getThumb() {
         return thumb;
     }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
+    }
 }
