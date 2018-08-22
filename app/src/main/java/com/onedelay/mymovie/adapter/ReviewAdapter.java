@@ -1,7 +1,9 @@
 package com.onedelay.mymovie.adapter;
 
 import android.content.Context;
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.database.ReviewEntity;
+import com.onedelay.mymovie.utils.ListDiffCallback;
 import com.onedelay.mymovie.utils.TimeString;
 
 import java.util.ArrayList;
@@ -58,13 +61,27 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         items.add(item);
     }
 
-    public void changeItem(int position, ReviewEntity item){
-        items.set(position, item);
-    }
-
     public void setItems(List<ReviewEntity> items) {
         this.items.clear();
         this.items.addAll(items);
+    }
+
+    /**
+     * @param newList DB 로부터 새로 불러온 데이터
+     */
+    public void updateItem(List<ReviewEntity> newList){
+        ListDiffCallback callback = new ListDiffCallback(this.items, newList);
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(callback, false);
+
+        this.items.clear();
+        this.items.addAll(newList);
+
+        new android.os.Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                diffResult.dispatchUpdatesTo(ReviewAdapter.this);
+            }
+        });
     }
 
     public ReviewEntity getItem(int position) {

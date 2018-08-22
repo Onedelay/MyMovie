@@ -2,6 +2,7 @@ package com.onedelay.mymovie.database;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
+import android.text.TextUtils;
 
 @Entity(tableName = "Reviews")
 public class ReviewEntity {
@@ -70,5 +71,14 @@ public class ReviewEntity {
 
     public void setRecommend(int recommend) {
         this.recommend = recommend;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof ReviewEntity){
+            ReviewEntity another = (ReviewEntity) obj;
+            return this.id == ((ReviewEntity) obj).id;
+        }
+        return false;
     }
 }
