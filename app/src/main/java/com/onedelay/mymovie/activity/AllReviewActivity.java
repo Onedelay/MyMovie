@@ -2,7 +2,6 @@ package com.onedelay.mymovie.activity;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,19 +18,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.adapter.ReviewAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
-import com.onedelay.mymovie.api.VolleyHelper;
-import com.onedelay.mymovie.api.data.ResponseInfo;
-import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
 import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
@@ -62,7 +52,7 @@ public class AllReviewActivity extends AppCompatActivity {
         findViewById(R.id.btn_write).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(RequestProvider.isNetworkConnected(getBaseContext())) {
+                if (RequestProvider.isNetworkConnected(getBaseContext())) {
                     Intent intent = new Intent(AllReviewActivity.this, WriteReviewActivity.class);
                     intent.putExtra(Constants.KEY_MOVIE_ID, getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
                     intent.putExtra(Constants.KEY_GRADE, getIntent().getIntExtra(Constants.KEY_GRADE, 12));
@@ -86,7 +76,7 @@ public class AllReviewActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         viewModel = ViewModelProviders.of(this).get(ReviewListViewModel.class);
-        if(RequestProvider.isNetworkConnected(getBaseContext())) {
+        if (RequestProvider.isNetworkConnected(getBaseContext())) {
             viewModel.requestReviewList(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0));
         }
 
@@ -94,7 +84,7 @@ public class AllReviewActivity extends AppCompatActivity {
         viewModel.getData().observe(this, new Observer<List<ReviewEntity>>() {
             @Override
             public void onChanged(@Nullable List<ReviewEntity> reviews) {
-                if(reviews != null) {
+                if (reviews != null) {
                     score.setText(String.format(getString(R.string.all_review_score), rating, reviews.size()));
                     adapter.setItems(reviews);
                     adapter.notifyDataSetChanged();
@@ -137,7 +127,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
             @Override
             public void onRecommendClick(final int position, final int value) {
-                if(RequestProvider.isNetworkConnected(getBaseContext())) {
+                if (RequestProvider.isNetworkConnected(getBaseContext())) {
                     viewModel.requestReviewRecommend(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0), adapter.getItem(position).getId(), "onedelay", adapter);
                 } else {
                     Toast.makeText(getBaseContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();

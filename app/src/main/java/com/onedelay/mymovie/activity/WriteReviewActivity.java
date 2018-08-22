@@ -1,27 +1,20 @@
 package com.onedelay.mymovie.activity;
 
 import android.app.Activity;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.api.VolleyHelper;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 
 public class WriteReviewActivity extends AppCompatActivity {
     private RatingBar ratingBar;
@@ -29,10 +22,14 @@ public class WriteReviewActivity extends AppCompatActivity {
 
     private int id;
 
+    private ReviewListViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write_review);
+
+        viewModel = ViewModelProviders.of(this).get(ReviewListViewModel.class);
 
         id = getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0);
 
@@ -84,38 +81,7 @@ public class WriteReviewActivity extends AppCompatActivity {
     }
 
     private void returnToReviewList() {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
-
-        StringRequest request = new StringRequest(
-                Request.Method.POST,
-                url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        //Toast.makeText(WriteReviewActivity.this, response, Toast.LENGTH_SHORT).show();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(WriteReviewActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("id", String.valueOf(id));
-                params.put("writer", "onedelay");
-                params.put("rating", String.valueOf(ratingBar.getRating()));
-                params.put("contents", contentsEditText.getText().toString());
-
-                return params;
-            }
-        };
-
-        VolleyHelper.requestServer(request);
-
+        viewModel.requestCreateComment(id, "ffff", ratingBar.getRating(), contentsEditText.getText().toString());
         setResult(Activity.RESULT_OK);
         finish();
     }

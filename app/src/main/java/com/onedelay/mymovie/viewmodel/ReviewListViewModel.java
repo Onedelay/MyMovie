@@ -3,11 +3,7 @@ package com.onedelay.mymovie.viewmodel;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -19,7 +15,6 @@ import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.ReviewEntity;
-import com.onedelay.mymovie.utils.ListDiffCallback;
 
 import java.util.HashMap;
 import java.util.List;
@@ -58,20 +53,52 @@ public class ReviewListViewModel extends AndroidViewModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, error.getMessage());
+                //Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                //Log.d(TAG, error.getMessage());
             }
         });
         VolleyHelper.requestServer(request);
     }
 
+    public void requestCreateComment(final int movieId, final String writer, final float rating, final String contents) {
+        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
+
+        GsonRequest<ResponseInfo<String>> request = new GsonRequest<ResponseInfo<String>>(Request.Method.POST, url, new TypeToken<ResponseInfo<String>>() {
+        }, new Response.Listener<ResponseInfo<String>>() {
+            @Override
+            public void onResponse(ResponseInfo<String> response) {
+                if (response.getCode() == 200) {
+                    //Toast.makeText(getApplication(), "한줄평이 성공적으로 저장되었습니다.", Toast.LENGTH_SHORT).show();
+                    requestReviewList(movieId);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("id", String.valueOf(movieId));
+                params.put("writer", writer);
+                params.put("rating", String.valueOf(rating));
+                params.put("contents", contents);
+
+                return params;
+            }
+        };
+        VolleyHelper.requestServer(request);
+    }
+
     /**
-     * @param movieId 영화 ID. 리사이클러뷰 어댑터를 사용하지 않는 경우 필요없음.
+     * @param movieId  영화 ID. 리사이클러뷰 어댑터를 사용하지 않는 경우 필요없음.
      * @param reviewId 한줄평 ID
-     * @param writer 한줄평 추천인
-     * @param adapter 갱신할 데이터를 가진 리사이클러뷰 어댑터.
+     * @param writer   한줄평 추천인
+     * @param adapter  갱신할 데이터를 가진 리사이클러뷰 어댑터.
      */
-    public void requestReviewRecommend(final int movieId, final int reviewId, final String writer, final ReviewAdapter adapter){
+    public void requestReviewRecommend(final int movieId, final int reviewId, final String writer, final ReviewAdapter adapter) {
         String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseRecommend";
 
         GsonRequest<ResponseInfo<String>> request = new GsonRequest<ResponseInfo<String>>(Request.Method.POST, url, new TypeToken<ResponseInfo<String>>() {
@@ -80,16 +107,17 @@ public class ReviewListViewModel extends AndroidViewModel {
             public void onResponse(ResponseInfo<String> response) {
                 // 성공적으로 추천되었을 경우.
                 AppDatabase.getInstance(getApplication()).reviewDao().updateReviewRecommend(reviewId);
-                if(adapter != null) adapter.updateItem(AppDatabase.getInstance(getApplication()).reviewDao().selectReviews(movieId));
+                if (adapter != null)
+                    adapter.updateItem(AppDatabase.getInstance(getApplication()).reviewDao().selectReviews(movieId));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 // onResponse 에서 처리 중에 에러가 날 경우 호출됨.
-                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
                 //Log.d(TAG, error.getMessage());
             }
-        }){ // Post 방식으로 서버에 요청하는 방법.
+        }) { // Post 방식으로 서버에 요청하는 방법.
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
