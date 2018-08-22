@@ -22,6 +22,7 @@ public interface ReviewDao {
     @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
     LiveData<List<ReviewEntity>> selectReviewsLiveData(int id);
 
+    // LiveData 에 데이터가 set 되기 전에 List<ReviewEntity> 를 참조해 NPE 가 발생할 수 있기때문에 추가한 메서드
     @Query("SELECT * FROM Reviews WHERE movieId = :id ORDER BY timestamp DESC")
     List<ReviewEntity> selectReviews(int id);
 
