@@ -73,8 +73,7 @@ public class WriteReviewActivity extends AppCompatActivity {
         findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_CANCELED, returnIntent);
+                setResult(Activity.RESULT_CANCELED);
                 finish();
             }
         });
