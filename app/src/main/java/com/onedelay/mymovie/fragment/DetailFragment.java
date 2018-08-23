@@ -320,7 +320,7 @@ public class DetailFragment extends Fragment {
         idView.setText(data.getWriter());
 
         TextView timeView = contentView.findViewById(R.id.review_user_time);
-        timeView.setText(TimeString.formatTimeString(data.getTimestamp()));
+        timeView.setText(TimeString.formatTimeString(data.getTimestamp()*1000));
 
         RatingBar ratingBar = contentView.findViewById(R.id.review_rating_bar);
         ratingBar.setRating(data.getRating());

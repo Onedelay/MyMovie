@@ -139,7 +139,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
 
         void setItem(ReviewEntity item) {
             userId.setText(item.getWriter());
-            userTime.setText(TimeString.formatTimeString(item.getTimestamp()));
+            userTime.setText(TimeString.formatTimeString(item.getTimestamp()*1000));
             ratingBar.setRating(item.getRating());
             content.setText(item.getContents());
             recommend.setText(String.format("추천 %d", item.getRecommend())); // 뷰홀더에서 getString 을 어떻게 호출하나요?

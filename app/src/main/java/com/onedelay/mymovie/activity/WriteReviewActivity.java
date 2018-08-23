@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -17,6 +18,7 @@ import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
 
 public class WriteReviewActivity extends AppCompatActivity {
+    private final static String TAG = "WRITE_REVIEW_ACTIVITY";
     private RatingBar ratingBar;
     private EditText contentsEditText;
 
@@ -81,6 +83,7 @@ public class WriteReviewActivity extends AppCompatActivity {
 
     private void returnToReviewList() {
         viewModel.requestCreateComment(id, "ffff", ratingBar.getRating(), contentsEditText.getText().toString());
+        Log.d(TAG, System.currentTimeMillis()+"");
         setResult(Activity.RESULT_OK);
         finish();
     }
