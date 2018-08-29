@@ -43,8 +43,6 @@ public class MovieListActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        AppDatabase database = AppDatabase.getInstance(getBaseContext());
-
         /* ViewModel 은 자체적으로 어떤 기능도 포함하고 있지 않기때문에, 일반적인 객체처럼 new 키워드로 생성하는 것은 아무런 의미가 없다.
          * 따라서 ViewModelProvider 를 통해 객체를 생성해야 한다. */
         final MovieListViewModel viewModel = ViewModelProviders.of(this).get(MovieListViewModel.class);
