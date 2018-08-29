@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.viewmodel;
+package com.onedelay.mymovie.viewmodels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -16,7 +16,7 @@ import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
-import com.onedelay.mymovie.fragment.DetailFragment;
+import com.onedelay.mymovie.fragments.DetailFragment;
 
 import java.util.List;
 

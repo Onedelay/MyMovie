@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.fragment;
+package com.onedelay.mymovie.fragments;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
@@ -21,14 +21,14 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.activity.AllReviewActivity;
-import com.onedelay.mymovie.activity.WriteReviewActivity;
+import com.onedelay.mymovie.activities.AllReviewActivity;
+import com.onedelay.mymovie.activities.WriteReviewActivity;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.TimeString;
-import com.onedelay.mymovie.viewmodel.MovieListViewModel;
-import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
+import com.onedelay.mymovie.viewmodels.MovieListViewModel;
+import com.onedelay.mymovie.viewmodels.ReviewListViewModel;
 
 import java.util.List;
 

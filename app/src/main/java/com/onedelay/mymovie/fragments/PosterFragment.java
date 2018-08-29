@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.fragment;
+package com.onedelay.mymovie.fragments;
 
 import android.content.Context;
 import android.os.Bundle;

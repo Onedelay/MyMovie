@@ -13,10 +13,10 @@
         android:roundIcon="@drawable/ic_app"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.WriteReviewActivity" />
-        <activity android:name=".activity.AllReviewActivity"/>
+        <activity android:name=".activities.WriteReviewActivity" />
+        <activity android:name=".activities.AllReviewActivity"/>
         <activity
-            android:name=".activity.MovieListActivity"
+            android:name=".activities.MovieListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

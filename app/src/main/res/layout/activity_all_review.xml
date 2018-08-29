@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#e9e9e9"
     android:paddingTop="10dp"
-    tools:context=".activity.AllReviewActivity">
+    tools:context=".activities.AllReviewActivity">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/title_container"

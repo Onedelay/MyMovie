@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.activity;
+package com.onedelay.mymovie.activities;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -17,23 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.adapter.MovieListPagerAdapter;
+import com.onedelay.mymovie.adapters.MovieListPagerAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
-import com.onedelay.mymovie.api.VolleyHelper;
-import com.onedelay.mymovie.api.data.ResponseInfo;
 import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
-import com.onedelay.mymovie.fragment.DetailFragment;
-import com.onedelay.mymovie.fragment.PosterFragment;
-import com.onedelay.mymovie.viewmodel.MovieListViewModel;
+import com.onedelay.mymovie.fragments.DetailFragment;
+import com.onedelay.mymovie.fragments.PosterFragment;
+import com.onedelay.mymovie.viewmodels.MovieListViewModel;
 
 import java.util.List;
 

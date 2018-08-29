@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.viewmodel;
+package com.onedelay.mymovie.viewmodels;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
@@ -9,7 +9,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
-import com.onedelay.mymovie.adapter.ReviewAdapter;
+import com.onedelay.mymovie.adapters.ReviewAdapter;
 import com.onedelay.mymovie.api.GsonRequest;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;

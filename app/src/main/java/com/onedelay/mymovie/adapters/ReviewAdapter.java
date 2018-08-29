@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.adapter;
+package com.onedelay.mymovie.adapters;
 
 import android.content.Context;
 import android.os.Looper;

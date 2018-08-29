@@ -1,8 +1,7 @@
-package com.onedelay.mymovie.activity;
+package com.onedelay.mymovie.activities;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
+import com.onedelay.mymovie.viewmodels.ReviewListViewModel;
 
 public class WriteReviewActivity extends AppCompatActivity {
     private final static String TAG = "WRITE_REVIEW_ACTIVITY";

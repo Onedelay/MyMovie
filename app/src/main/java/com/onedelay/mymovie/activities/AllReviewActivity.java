@@ -1,4 +1,4 @@
-package com.onedelay.mymovie.activity;
+package com.onedelay.mymovie.activities;
 
 import android.app.Activity;
 import android.arch.lifecycle.Observer;
@@ -20,11 +20,11 @@ import android.widget.Toast;
 
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
-import com.onedelay.mymovie.adapter.ReviewAdapter;
+import com.onedelay.mymovie.adapters.ReviewAdapter;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.database.ReviewEntity;
 import com.onedelay.mymovie.utils.DividerItemDecorator;
-import com.onedelay.mymovie.viewmodel.ReviewListViewModel;
+import com.onedelay.mymovie.viewmodels.ReviewListViewModel;
 
 import java.util.List;
 

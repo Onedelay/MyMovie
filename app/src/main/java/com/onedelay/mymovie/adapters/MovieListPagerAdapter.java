@@ -1,13 +1,12 @@
-package com.onedelay.mymovie.adapter;
+package com.onedelay.mymovie.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.onedelay.mymovie.fragment.PosterFragment;
+import com.onedelay.mymovie.fragments.PosterFragment;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MovieListPagerAdapter extends FragmentStatePagerAdapter {
     private ArrayList<PosterFragment> items = new ArrayList<>();
