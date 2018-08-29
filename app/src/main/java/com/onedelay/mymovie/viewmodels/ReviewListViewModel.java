@@ -38,7 +38,7 @@ public class ReviewListViewModel extends AndroidViewModel {
     }
 
     public void requestReviewList(final int movieId) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + movieId;
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + movieId;
         GsonRequest<ResponseInfo<List<ReviewEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
         }, new Response.Listener<ResponseInfo<List<ReviewEntity>>>() {
             @Override
@@ -61,7 +61,7 @@ public class ReviewListViewModel extends AndroidViewModel {
     }
 
     public void requestCreateComment(final int movieId, final String writer, final float rating, final String contents) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
 
         GsonRequest<ResponseInfo<String>> request = new GsonRequest<ResponseInfo<String>>(Request.Method.POST, url, new TypeToken<ResponseInfo<String>>() {
         }, new Response.Listener<ResponseInfo<String>>() {
@@ -99,7 +99,7 @@ public class ReviewListViewModel extends AndroidViewModel {
      * @param adapter  갱신할 데이터를 가진 리사이클러뷰 어댑터.
      */
     public void requestReviewRecommend(final int movieId, final int reviewId, final String writer, final ReviewAdapter adapter) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseRecommend";
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseRecommend";
 
         GsonRequest<ResponseInfo<String>> request = new GsonRequest<ResponseInfo<String>>(Request.Method.POST, url, new TypeToken<ResponseInfo<String>>() {
         }, new Response.Listener<ResponseInfo<String>>() {

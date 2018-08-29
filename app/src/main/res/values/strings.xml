@@ -75,4 +75,10 @@
     <string name="appbar_review_list">한줄평 목록</string>
     <string name="appbar_review_write">한줄평 작성</string>
     <string name="appbar_movie_detail">영화 상세</string>
+    <string name="toast_network_error">인터넷 연결을 확인해주세요.</string>
+    <string name="toast_reporting">신고하기 버튼 클릭</string>
+    <string name="toast_reqeust_server">서버에 데이터를 요청합니다.</string>
+    <string name="toast_data_empty">데이터 없음</string>
+    <string name="toast_default">클릭</string>
+    <string name="toast_server_error">서버 통신 에러</string>
 </resources>

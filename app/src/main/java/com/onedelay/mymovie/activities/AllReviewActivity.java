@@ -59,7 +59,7 @@ public class AllReviewActivity extends AppCompatActivity {
                     intent.putExtra(Constants.KEY_TITLE, getIntent().getStringExtra(Constants.KEY_TITLE));
                     startActivityForResult(intent, Constants.WRITE_REQUEST);
                 } else {
-                    Toast.makeText(AllReviewActivity.this, "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AllReviewActivity.this, getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -122,7 +122,7 @@ public class AllReviewActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new ReviewAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Toast.makeText(AllReviewActivity.this, "신고하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AllReviewActivity.this, getResources().getString(R.string.toast_reporting), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -130,7 +130,7 @@ public class AllReviewActivity extends AppCompatActivity {
                 if (RequestProvider.isNetworkConnected(getBaseContext())) {
                     viewModel.requestReviewRecommend(getIntent().getIntExtra(Constants.KEY_MOVIE_ID, 0), adapter.getItem(position).getId(), "onedelay", adapter);
                 } else {
-                    Toast.makeText(getBaseContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getBaseContext(), getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });

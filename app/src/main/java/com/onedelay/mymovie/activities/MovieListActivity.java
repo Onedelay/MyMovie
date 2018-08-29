@@ -38,14 +38,12 @@ public class MovieListActivity extends AppCompatActivity
     private DetailFragment detailFragment;
     private MovieListPagerAdapter adapter;
 
-    private AppDatabase database;
-
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
 
-        database = AppDatabase.getInstance(getBaseContext());
+        AppDatabase database = AppDatabase.getInstance(getBaseContext());
 
         /* ViewModel 은 자체적으로 어떤 기능도 포함하고 있지 않기때문에, 일반적인 객체처럼 new 키워드로 생성하는 것은 아무런 의미가 없다.
          * 따라서 ViewModelProvider 를 통해 객체를 생성해야 한다. */
@@ -103,7 +101,7 @@ public class MovieListActivity extends AppCompatActivity
         /* 인터넷이 연결되었을 경우 서버로부터 데이터를 다운로드하여 내부 DB 에 저장
          * 연결되어있지 않을 경우에는 DB 에 저장된 내용을 불러옴. (ViewModel 생성 시 DB 처리) */
         if (RequestProvider.isNetworkConnected(this)) {
-            Toast.makeText(this, "서버로부터 데이터를 요청합니다.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.toast_reqeust_server), Toast.LENGTH_SHORT).show();
             viewModel.requestMovieList();
         }
 

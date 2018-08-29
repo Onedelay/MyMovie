@@ -57,9 +57,6 @@ public class DetailFragment extends Fragment {
     private TextView director;
     private TextView actor;
 
-    private int likeCount;
-    private int hateCount;
-
     private int id;
     private String title;
     private int grade;
@@ -144,14 +141,11 @@ public class DetailFragment extends Fragment {
                         likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
                         hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
                     }
-
-                    likeCount = Integer.parseInt(likeCountView.getText().toString());
-                    hateCount = Integer.parseInt(hateCountView.getText().toString());
                 }
             });
 
         } else {
-            Toast.makeText(getContext(), "데이터 없음", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getResources().getString(R.string.toast_data_empty), Toast.LENGTH_SHORT).show();
         }
 
         thumbUpBtn = rootView.findViewById(R.id.btn_thumb_up);
@@ -161,7 +155,7 @@ public class DetailFragment extends Fragment {
                 if (RequestProvider.isNetworkConnected(getContext())) {
                     likeClick();
                 } else {
-                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -173,7 +167,7 @@ public class DetailFragment extends Fragment {
                 if (RequestProvider.isNetworkConnected(getContext())) {
                     dislikeClick();
                 } else {
-                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -188,7 +182,7 @@ public class DetailFragment extends Fragment {
                     intent.putExtra(Constants.KEY_GRADE, grade);
                     startActivityForResult(intent, Constants.WRITE_REQUEST);
                 } else {
-                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -208,21 +202,21 @@ public class DetailFragment extends Fragment {
         rootView.findViewById(R.id.btn_facebook).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "페이스북 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.toast_default), Toast.LENGTH_SHORT).show();
             }
         });
 
         rootView.findViewById(R.id.btn_kakao).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "카카오톡 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.toast_default), Toast.LENGTH_SHORT).show();
             }
         });
 
         rootView.findViewById(R.id.btn_ticketing).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), "예매하기 버튼 클릭", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.toast_default), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -338,7 +332,7 @@ public class DetailFragment extends Fragment {
                 if (RequestProvider.isNetworkConnected(getContext())) {
                     reviewViewModel.requestReviewRecommend(-1, data.getId(), data.getWriter(), null);
                 } else {
-                    Toast.makeText(getContext(), "인터넷 연결을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), getResources().getString(R.string.toast_network_error), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -348,7 +342,7 @@ public class DetailFragment extends Fragment {
         declareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(getActivity(), data.getWriter() + "님을 신고합니다.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getResources().getString(R.string.toast_reporting), Toast.LENGTH_SHORT).show();
             }
         });
     }

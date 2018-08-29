@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.api.GsonRequest;
 import com.onedelay.mymovie.api.VolleyHelper;
 import com.onedelay.mymovie.api.data.ResponseInfo;
@@ -57,7 +58,7 @@ public class MovieListViewModel extends AndroidViewModel {
      * 해당 영화에 대한 상세 내용은 저장하지 않고, 상세보기 버튼을 눌렀을 경우에만 저장됨.
      */
     public void requestMovieList() {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList?type=1";
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList?type=1";
         GsonRequest<ResponseInfo<List<MovieEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
         }, new Response.Listener<ResponseInfo<List<MovieEntity>>>() {
             /**
@@ -79,7 +80,7 @@ public class MovieListViewModel extends AndroidViewModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.toast_server_error), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, error.getMessage());
             }
         });
@@ -92,7 +93,7 @@ public class MovieListViewModel extends AndroidViewModel {
      * @param movieId 영화 id
      */
     public void requestMovieDetail(int movieId) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovie?id=" + movieId;
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovie?id=" + movieId;
         GsonRequest<ResponseInfo<List<MovieEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
         }, new Response.Listener<ResponseInfo<List<MovieEntity>>>() {
             @Override
@@ -104,7 +105,7 @@ public class MovieListViewModel extends AndroidViewModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.toast_server_error), Toast.LENGTH_SHORT).show();
                 Log.d(TAG, error.getMessage());
             }
         });
@@ -150,7 +151,7 @@ public class MovieListViewModel extends AndroidViewModel {
      * @param callback 서버 요청 후 LiveData 의 Observer 에 종속되지 않은 UI 를 갱신하기 위한 콜백 메서드
      */
     public void requestMovieRecommend(final int movieId, final boolean check, final String string, final DetailFragment.RecommendCallback callback) {
-        String url = "http://" + VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + movieId + "&" + string + "=";
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/increaseLikeDisLike?id=" + movieId + "&" + string + "=";
         url += check ? "Y" : "N";
 
         GsonRequest<ResponseInfo<String>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<String>>() {
@@ -169,7 +170,7 @@ public class MovieListViewModel extends AndroidViewModel {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplication(), "네트워크 통신 에러", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplication(), getApplication().getResources().getString(R.string.toast_server_error), Toast.LENGTH_SHORT).show();
             }
         });
         VolleyHelper.requestServer(request);
