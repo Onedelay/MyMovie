@@ -66,6 +66,7 @@ public class DetailFragment extends Fragment {
 
     public interface OnBackPress {
         void onBackPressListener();
+        void onRemoveListener();
     }
 
     public interface RecommendCallback {
@@ -125,21 +126,27 @@ public class DetailFragment extends Fragment {
                 public void onChanged(@Nullable MovieEntity movie) {
                     // DB 로부터 읽어온 데이터를 UI 에 set
                     if (movie != null) {
-                        Glide.with(getActivity()).load(movie.getThumb()).into(imageView);
-                        textView.setText(movie.getTitle());
-                        setIcon(movie.getGrade());
-                        textRelease.setText(String.format(getString(R.string.detail_fragment_date), movie.getDate().replace('-', '.')));
-                        textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movie.getGenre(), movie.getDuration()));
-                        textRank.setText(String.format(getString(R.string.detail_fragment_rank), movie.getReservation_grade()));
-                        textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movie.getReservation_rate()));
-                        ratingBar.setRating(movie.getAudience_rating() / 2);
-                        totalRate.setText(String.format(getString(R.string.float_value), movie.getAudience_rating()));
-                        totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movie.getAudience()));
-                        synopsis.setText(movie.getSynopsis());
-                        director.setText(movie.getDirector());
-                        actor.setText(movie.getActor());
-                        likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
-                        hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
+                        if (movie.getGenre() == null && !RequestProvider.isNetworkConnected(getContext())) {
+                            // 상세 데이터가 없을 경우 동작. 상세화면이 한번 뜨기때문에 번쩍거리는데 PosterFragment 에서 처리할 방법을 고안해야할 듯
+                            Toast.makeText(getContext(), getResources().getString(R.string.toast_data_empty), Toast.LENGTH_SHORT).show();
+                            listener.onRemoveListener();
+                        } else {
+                            Glide.with(getActivity()).load(movie.getThumb()).into(imageView);
+                            textView.setText(movie.getTitle());
+                            setIcon(movie.getGrade());
+                            textRelease.setText(String.format(getString(R.string.detail_fragment_date), movie.getDate().replace('-', '.')));
+                            textGenre.setText(String.format(getString(R.string.detail_fragment_genre_time), movie.getGenre(), movie.getDuration()));
+                            textRank.setText(String.format(getString(R.string.detail_fragment_rank), movie.getReservation_grade()));
+                            textTicketRate.setText(String.format(getString(R.string.detail_fragment_rate), movie.getReservation_rate()));
+                            ratingBar.setRating(movie.getAudience_rating() / 2);
+                            totalRate.setText(String.format(getString(R.string.float_value), movie.getAudience_rating()));
+                            totalAudience.setText(String.format(getString(R.string.detail_fragment_audience), movie.getAudience()));
+                            synopsis.setText(movie.getSynopsis());
+                            director.setText(movie.getDirector());
+                            actor.setText(movie.getActor());
+                            likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
+                            hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
+                        }
                     }
                 }
             });
@@ -314,7 +321,7 @@ public class DetailFragment extends Fragment {
         idView.setText(data.getWriter());
 
         TextView timeView = contentView.findViewById(R.id.review_user_time);
-        timeView.setText(TimeString.formatTimeString(data.getTimestamp()*1000));
+        timeView.setText(TimeString.formatTimeString(data.getTimestamp() * 1000));
 
         RatingBar ratingBar = contentView.findViewById(R.id.review_rating_bar);
         ratingBar.setRating(data.getRating());

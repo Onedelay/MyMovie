@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
+import com.onedelay.mymovie.database.AppDatabase;
 import com.onedelay.mymovie.database.MovieEntity;
 
 public class PosterFragment extends Fragment {
@@ -62,9 +63,9 @@ public class PosterFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // 상세보기 버튼을 클릭하면 viewPager 를 숨기고 DetailFragment 를 띄우도록 콜백 메소드를 호출한다.
-                callback.onChangeFragment();
                 if (getArguments() != null) {
-                    Bundle bundle = getArguments();
+                    final Bundle bundle = getArguments();
+                    callback.onChangeFragment();
                     callback.setData(bundle.getInt(Constants.KEY_MOVIE_ID), bundle.getString(Constants.KEY_TITLE), bundle.getInt(Constants.KEY_GRADE), bundle.getFloat(Constants.KEY_RATING));
                 }
             }

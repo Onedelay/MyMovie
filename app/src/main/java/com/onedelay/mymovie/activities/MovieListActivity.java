@@ -170,4 +170,11 @@ public class MovieListActivity extends AppCompatActivity
         toolbar.setTitle(getString(R.string.str_movie_list));
         viewPager.setVisibility(View.VISIBLE);
     }
+
+    @Override
+    public void onRemoveListener() {
+        for (int i = 0; i < getSupportFragmentManager().getBackStackEntryCount(); i++) {
+            getSupportFragmentManager().popBackStack();
+        }
+    }
 }
