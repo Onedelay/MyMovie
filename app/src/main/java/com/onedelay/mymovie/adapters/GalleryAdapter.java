@@ -92,6 +92,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             Glide.with(context).load(item.getThumbUrl()).into(thumb);
             if (item.getType().equals(Constants.GALLERY_TYPE_MOVIE)) {
                 playIc.setVisibility(View.VISIBLE);
+            } else {
+                playIc.setVisibility(View.INVISIBLE);
             }
         }
 
