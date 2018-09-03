@@ -81,4 +81,5 @@
     <string name="toast_data_empty">데이터 없음</string>
     <string name="toast_default">클릭</string>
     <string name="toast_server_error">서버 통신 에러</string>
+    <string name="str_gallery">갤러리</string>
 </resources>

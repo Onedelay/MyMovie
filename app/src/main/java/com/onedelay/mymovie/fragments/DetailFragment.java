@@ -5,10 +5,13 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,8 @@ import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activities.AllReviewActivity;
 import com.onedelay.mymovie.activities.WriteReviewActivity;
+import com.onedelay.mymovie.adapters.GalleryAdapter;
+import com.onedelay.mymovie.adapters.GalleryItem;
 import com.onedelay.mymovie.api.RequestProvider;
 import com.onedelay.mymovie.database.MovieEntity;
 import com.onedelay.mymovie.database.ReviewEntity;
@@ -56,6 +61,8 @@ public class DetailFragment extends Fragment {
     private TextView synopsis;
     private TextView director;
     private TextView actor;
+
+    private GalleryAdapter adapter;
 
     private int id;
     private String title;
@@ -97,6 +104,21 @@ public class DetailFragment extends Fragment {
         viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
         reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
+        adapter = new GalleryAdapter(getContext());
+        adapter.addItem(new GalleryItem("https://img.youtube.com/vi/JNL44p5kzTk/0.jpg", Constants.GALLERY_TYPE_MOVIE, "https://www.youtube.com/watch?v=JNL44p5kzTk"));
+
+        adapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                String url = adapter.getItem(position).getUrl();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+        });
+
+        RecyclerView recyclerViewGallery = rootView.findViewById(R.id.recyclerViewGallery);
+        recyclerViewGallery.setAdapter(adapter);
+        recyclerViewGallery.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+
         if (getArguments() != null) {
             Bundle bundle = getArguments();
             id = bundle.getInt(Constants.KEY_MOVIE_ID);
@@ -108,6 +130,10 @@ public class DetailFragment extends Fragment {
             if (RequestProvider.isNetworkConnected(getContext())) {
                 viewModel.requestMovieDetail(id);
                 reviewViewModel.requestReviewList(id);
+            } else {
+                // 네트워크가 연결되어있지 않을 경우 갤러리 띄우지 않음
+                View view = rootView.findViewById(R.id.container_gallery);
+                view.setVisibility(View.GONE);
             }
 
             reviewViewModel.setData(id);

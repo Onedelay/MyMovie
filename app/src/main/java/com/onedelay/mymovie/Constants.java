@@ -11,5 +11,8 @@ public class Constants {
     public static final String KEY_DATE = "DATE";
     public static final String KEY_RATING = "RATING";
 
+    public static final String GALLERY_TYPE_MOVIE = "MOVIE";
+    public static final String GALLERY_TYPE_PHOTO = "PHOTO";
+
     public static final int WRITE_REQUEST = 100;
 }
