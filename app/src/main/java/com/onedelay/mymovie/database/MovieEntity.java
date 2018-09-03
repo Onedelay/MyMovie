@@ -23,8 +23,10 @@ public class MovieEntity {
     private String actor;               // 출연진
     private String image;               // 포스터 URL
     private String thumb;               // 썸네일 URL
+    private String photos;              // 갤러리 이미지
+    private String videos;              // 갤러리 동영상
 
-    public MovieEntity(int id, String title, float reservation_rate, int reservation_grade, int grade, String date, String genre, int duration, int like, int dislike, float audience_rating, int audience, String synopsis, String director, String actor, String image, String thumb) {
+    public MovieEntity(int id, String title, float reservation_rate, int reservation_grade, int grade, String date, String genre, int duration, int like, int dislike, float audience_rating, int audience, String synopsis, String director, String actor, String image, String thumb, String photos, String videos) {
         this.id = id;
         this.title = title;
         this.reservation_rate = reservation_rate;
@@ -42,6 +44,8 @@ public class MovieEntity {
         this.actor = actor;
         this.image = image;
         this.thumb = thumb;
+        this.photos = photos;
+        this.videos = videos;
     }
 
     public int getId() {
@@ -110,6 +114,14 @@ public class MovieEntity {
 
     public String getThumb() {
         return thumb;
+    }
+
+    public String getPhotos() {
+        return photos;
+    }
+
+    public String getVideos() {
+        return videos;
     }
 
     public void setLike(int like) {

@@ -35,6 +35,7 @@ import com.onedelay.mymovie.utils.TimeString;
 import com.onedelay.mymovie.viewmodels.MovieListViewModel;
 import com.onedelay.mymovie.viewmodels.ReviewListViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DetailFragment extends Fragment {
@@ -73,6 +74,7 @@ public class DetailFragment extends Fragment {
 
     public interface OnBackPress {
         void onBackPressListener();
+
         void onRemoveListener();
     }
 
@@ -105,7 +107,6 @@ public class DetailFragment extends Fragment {
         reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
         adapter = new GalleryAdapter(getContext());
-        adapter.addItem(new GalleryItem("https://img.youtube.com/vi/JNL44p5kzTk/0.jpg", Constants.GALLERY_TYPE_MOVIE, "https://www.youtube.com/watch?v=JNL44p5kzTk"));
 
         adapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
             @Override
@@ -172,6 +173,7 @@ public class DetailFragment extends Fragment {
                             actor.setText(movie.getActor());
                             likeCountView.setText(String.format(getString(R.string.int_value), movie.getLike()));
                             hateCountView.setText(String.format(getString(R.string.int_value), movie.getDislike()));
+                            setGalleryList(movie);
                         }
                     }
                 }
@@ -254,6 +256,25 @@ public class DetailFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    private void setGalleryList(MovieEntity movie) {
+        if (movie.getPhotos() != null && movie.getVideos() != null) {
+            String[] photos = movie.getPhotos().split(",");
+            String[] videos = movie.getVideos().split(",");
+            ArrayList<GalleryItem> items = new ArrayList<>();
+
+            for (String s : photos) {
+                items.add(new GalleryItem(s, Constants.GALLERY_TYPE_PHOTO, s));
+            }
+
+            for (String s : videos) {
+                String id = s.split("/")[3];
+                items.add(new GalleryItem("https://img.youtube.com/vi/" + id + "/0.jpg", Constants.GALLERY_TYPE_MOVIE, s));
+            }
+            adapter.addItems(items);
+            adapter.notifyDataSetChanged();
+        }
     }
 
     public void setIcon(int grade) {

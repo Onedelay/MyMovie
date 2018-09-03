@@ -54,8 +54,8 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
 
     public void addItems(List<GalleryItem> items) {
-        items.clear();
-        items.addAll(items);
+        this.items.clear();
+        this.items.addAll(items);
     }
 
     public void addItem(GalleryItem item) {
