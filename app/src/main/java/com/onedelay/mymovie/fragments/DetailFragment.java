@@ -116,7 +116,9 @@ public class DetailFragment extends Fragment {
                 if (adapter.getItem(position).getType().equals(Constants.GALLERY_TYPE_MOVIE)) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
                 } else {
-                    startActivity(new Intent(getActivity(), PhotoViewActivity.class));
+                    Intent intent = new Intent(getActivity(), PhotoViewActivity.class);
+                    intent.putExtra(Constants.KEY_IMAGE_URL, adapter.getItem(position).getThumbUrl());
+                    startActivity(intent);
                 }
             }
         });

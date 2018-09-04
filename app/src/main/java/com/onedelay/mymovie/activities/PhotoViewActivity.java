@@ -8,10 +8,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.FloatMath;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 
 public class PhotoViewActivity extends AppCompatActivity implements View.OnTouchListener {
@@ -48,7 +51,62 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnTouch
         }
 
         ImageView view = findViewById(R.id.imageView);
+        Glide.with(this).load(getIntent().getStringExtra(Constants.KEY_IMAGE_URL)).into(view);
         view.setOnTouchListener(this);
+    }
+
+
+    /**
+     * Description : check the spacing between the two fingers on touch
+     *
+     * @param event
+     * @return float
+     */
+
+    private float spacing(MotionEvent event) {
+        float x = event.getX(0) - event.getX(1);
+        float y = event.getY(0) - event.getY(1);
+        return (float) Math.sqrt(x * x + y * y);
+    }
+
+    /**
+     * Description : calculates the midpoint between the two fingers
+     *
+     * @param point
+     * @param event
+     */
+
+    private void midPoint(PointF point, MotionEvent event) {
+        float x = event.getX(0) + event.getX(1);
+        float y = event.getY(0) + event.getY(1);
+        point.set(x / 2, y / 2);
+    }
+
+    // Show an event in the ogCat view, for debugging
+    private void dumpEvent(MotionEvent motionEvent) {
+        String names[] = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
+        StringBuilder sb = new StringBuilder();
+        int action = motionEvent.getAction();
+        int actionCode = action & MotionEvent.ACTION_MASK;
+        sb.append("event ACTION_").append(names[actionCode]);
+
+        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP) {
+            sb.append("(pid ").append(action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
+            sb.append(")");
+        }
+        sb.append("[");
+        for (int i = 0; i < motionEvent.getPointerCount(); i++) {
+            sb.append("#").append(i);
+            sb.append("(pid ").append(motionEvent.getPointerId(i));
+            sb.append(")=").append((int) motionEvent.getX(i));
+            sb.append(",").append((int) motionEvent.getY(i));
+            if (i + 1 < motionEvent.getPointerCount()) {
+                sb.append(";");
+            }
+        }
+
+        sb.append("]");
+        Log.d("Touch Events ------", sb.toString());
     }
 
     @Override
@@ -112,56 +170,11 @@ public class PhotoViewActivity extends AppCompatActivity implements View.OnTouch
         return true; // indicate event was handled
     }
 
-    /**
-     * Description : check the spacing between the two fingers on touch
-     *
-     * @param event
-     * @return float
-     */
-
-    private float spacing(MotionEvent event) {
-        float x = event.getX(0) - event.getX(1);
-        float y = event.getY(0) - event.getY(1);
-        return (float) Math.sqrt(x * x + y * y);
-    }
-
-    /**
-     * Description : calculates the midpoint between the two fingers
-     *
-     * @param point
-     * @param event
-     */
-
-    private void midPoint(PointF point, MotionEvent event) {
-        float x = event.getX(0) + event.getX(1);
-        float y = event.getY(0) + event.getY(1);
-        point.set(x / 2, y / 2);
-    }
-
-    // Show an event in the ogCat view, for debugging
-    private void dumpEvent(MotionEvent motionEvent) {
-        String names[] = {"DOWN", "UP", "MOVE", "CANCEL", "OUTSIDE", "POINTER_DOWN", "POINTER_UP", "7?", "8?", "9?"};
-        StringBuilder sb = new StringBuilder();
-        int action = motionEvent.getAction();
-        int actionCode = action & MotionEvent.ACTION_MASK;
-        sb.append("event ACTION_").append(names[actionCode]);
-
-        if (actionCode == MotionEvent.ACTION_POINTER_DOWN || actionCode == MotionEvent.ACTION_POINTER_UP) {
-            sb.append("(pid ").append(action >> MotionEvent.ACTION_POINTER_ID_SHIFT);
-            sb.append(")");
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
         }
-        sb.append("[");
-        for (int i = 0; i < motionEvent.getPointerCount(); i++) {
-            sb.append("#").append(i);
-            sb.append("(pid ").append(motionEvent.getPointerId(i));
-            sb.append(")=").append((int) motionEvent.getX(i));
-            sb.append(",").append((int) motionEvent.getY(i));
-            if (i + 1 < motionEvent.getPointerCount()) {
-                sb.append(";");
-            }
-        }
-
-        sb.append("]");
-        Log.d("Touch Events ------", sb.toString());
+        return true;
     }
 }
