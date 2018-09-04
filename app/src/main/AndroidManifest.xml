@@ -2,11 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.onedelay.mymovie">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name="MyMovieApplication"
+        android:name=".MyMovieApplication"
         android:allowBackup="false"
         android:icon="@drawable/ic_app"
         android:label="@string/app_name"
@@ -14,15 +14,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.WriteReviewActivity" />
-        <activity android:name=".activities.AllReviewActivity"/>
+        <activity android:name=".activities.AllReviewActivity" />
         <activity
             android:name=".activities.MovieListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activities.PhotoViewActivity"></activity>
     </application>
 
 </manifest>

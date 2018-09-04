@@ -25,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.activities.AllReviewActivity;
+import com.onedelay.mymovie.activities.PhotoViewActivity;
 import com.onedelay.mymovie.activities.WriteReviewActivity;
 import com.onedelay.mymovie.adapters.GalleryAdapter;
 import com.onedelay.mymovie.adapters.GalleryItem;
@@ -112,7 +113,11 @@ public class DetailFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 String url = adapter.getItem(position).getUrl();
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                if (adapter.getItem(position).getType().equals(Constants.GALLERY_TYPE_MOVIE)) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+                } else {
+                    startActivity(new Intent(getActivity(), PhotoViewActivity.class));
+                }
             }
         });
 
