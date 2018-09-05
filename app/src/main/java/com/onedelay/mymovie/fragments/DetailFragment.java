@@ -107,7 +107,7 @@ public class DetailFragment extends Fragment {
         viewModel = ViewModelProviders.of(getActivity()).get(MovieListViewModel.class);
         reviewViewModel = ViewModelProviders.of(getActivity()).get(ReviewListViewModel.class);
 
-        adapter = new GalleryAdapter(getContext());
+        adapter = new GalleryAdapter();
 
         adapter.setOnItemClickListener(new GalleryAdapter.OnItemClickListener() {
             @Override
@@ -124,8 +124,8 @@ public class DetailFragment extends Fragment {
         });
 
         RecyclerView recyclerViewGallery = rootView.findViewById(R.id.recyclerViewGallery);
-        recyclerViewGallery.setAdapter(adapter);
         recyclerViewGallery.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        recyclerViewGallery.setAdapter(adapter);
 
         if (getArguments() != null) {
             Bundle bundle = getArguments();

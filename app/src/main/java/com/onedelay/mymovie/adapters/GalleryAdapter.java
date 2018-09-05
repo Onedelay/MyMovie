@@ -16,17 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHolder> {
-    private Context context;
     private ArrayList<GalleryItem> items = new ArrayList<>();
 
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
         void onItemClick(int position);
-    }
-
-    public GalleryAdapter(Context context) {
-        this.context = context;
     }
 
     public GalleryItem getItem(int position) {
@@ -36,7 +31,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View itemView = inflater != null ? inflater.inflate(R.layout.gallery_list_item, parent, false) : null;
 
         return new ViewHolder(itemView);
@@ -70,7 +65,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         private ImageView thumb;
         private ImageView playIc;
 
-        private Context context;
 
         OnItemClickListener listener;
 
@@ -78,7 +72,6 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             super(itemView);
             thumb = itemView.findViewById(R.id.thumb);
             playIc = itemView.findViewById(R.id.play_ic);
-            this.context = itemView.getContext();
 
             thumb.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +82,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         }
 
         void setItem(GalleryItem item) {
-            Glide.with(context).load(item.getThumbUrl()).into(thumb);
+            Glide.with(itemView.getContext()).load(item.getThumbUrl()).into(thumb);
             if (item.getType().equals(Constants.GALLERY_TYPE_MOVIE)) {
                 playIc.setVisibility(View.VISIBLE);
             } else {
