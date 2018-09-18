@@ -17,7 +17,13 @@ public interface MovieDao {
     void updateMovies(MovieEntity... movieEntities);
 
     @Query("SELECT * FROM Movies")
+    List<MovieEntity> selectDataMovies();
+
+    @Query("SELECT * FROM Movies")
     LiveData<List<MovieEntity>> selectMovies();
+
+    @Query("SELECT * FROM Movies ORDER BY :order")
+    LiveData<List<MovieEntity>> selectMovies(String order);
 
     @Query("SELECT * FROM Movies WHERE id = :id")
     LiveData<MovieEntity> selectMovieDetailLive(int id);

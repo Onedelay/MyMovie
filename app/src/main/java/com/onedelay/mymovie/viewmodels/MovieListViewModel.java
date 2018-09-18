@@ -71,8 +71,14 @@ public class MovieListViewModel extends AndroidViewModel {
                     for (int i = 0; i < response.getResult().size(); i++) {
                         array[i] = response.getResult().get(i);
                     }
-                    AppDatabase.getInstance(getApplication()).movieDao().clear();
-                    AppDatabase.getInstance(getApplication()).movieDao().insertMovies(array);
+                    List<MovieEntity> movies = AppDatabase.getInstance(getApplication()).movieDao().selectDataMovies();
+                    if (movies.size() == 0) { // 아무 데이터가 없을 경우 새로 DB 에 insert
+                        AppDatabase.getInstance(getApplication()).movieDao().insertMovies(array);
+                    } else {
+                        /* 현재 한번에 영화 목록 데이터를 받는데, 만약 5개가 아닌 1개가 더 추가되어온다면 작동이 안될 수도 있다.
+                         * 따라서 데이터를 따로 id 체크 후 없을 경우 insert, 있을 경우 update 를 하도록 하면 되지 않을까싶다. */
+                        AppDatabase.getInstance(getApplication()).movieDao().updateMovies(array);
+                    }
                 } else {
                     Toast.makeText(getApplication(), response.getMessage(), Toast.LENGTH_SHORT).show();
                 }

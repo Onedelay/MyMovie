@@ -66,7 +66,7 @@ public class AllReviewActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.review_list);
 
-        adapter = new ReviewAdapter(getApplicationContext());
+        adapter = new ReviewAdapter(getBaseContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setHasFixedSize(true);

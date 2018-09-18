@@ -59,10 +59,13 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
         this.listener = listener;
     }
 
+    // 참고 : https://stackoverflow.com/questions/31302341/what-difference-between-static-and-non-static-viewholder-in-recyclerview-adapter
+    /* non-static inner 클래스로 선언하였을 경우,
+     * 포함하는 클래스에 대한 참조를 가지고있기 때문에 더 많은 메모리를 사용한다.
+     * 뷰홀더를 정적으로 선언하면 다른 어댑터에서 다시 사용할 수 있다. (하지만 이해하기에는 어렵다) */
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView thumb;
         private ImageView playIc;
-
 
         OnItemClickListener listener;
 
