@@ -75,6 +75,8 @@ public class ReviewEntity {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ReviewEntity && this.id == ((ReviewEntity) obj).id;
+        return obj instanceof ReviewEntity
+                && this.id == ((ReviewEntity) obj).id
+                && this.recommend == ((ReviewEntity) obj).recommend;
     }
 }

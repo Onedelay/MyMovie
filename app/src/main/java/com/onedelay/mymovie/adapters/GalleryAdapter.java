@@ -1,6 +1,5 @@
 package com.onedelay.mymovie.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,8 +30,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View itemView = inflater != null ? inflater.inflate(R.layout.gallery_list_item, parent, false) : null;
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.gallery_list_item, parent, false);
 
         return new ViewHolder(itemView);
     }

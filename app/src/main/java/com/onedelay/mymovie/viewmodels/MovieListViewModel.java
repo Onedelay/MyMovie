@@ -27,17 +27,17 @@ public class MovieListViewModel extends AndroidViewModel {
      * DB 로부터 읽어온 데이터 저장.
      * 여기에 observer 를 달아서 데이터를 관찰하며, 내용이 변경되었을 때 화면 갱신을 하도록 함
      */
-    private LiveData<List<MovieEntity>> data;
+    private LiveData<List<MovieEntity>> mData;
 
     public MovieListViewModel(@NonNull Application application) {
         super(application);
 
         // Room DB 로부터 영화 목록 데이터를 읽어옴.
-        data = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMovies();
+        mData = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMovies();
     }
 
     public LiveData<List<MovieEntity>> getData() {
-        return data;
+        return mData;
     }
 
     private void updateMovieDetail(final MovieEntity movie) {
@@ -112,6 +112,11 @@ public class MovieListViewModel extends AndroidViewModel {
         VolleyHelper.requestServer(request);
     }
 
+    /**
+     * 영화 좋아요 서버 요청 후 성공적인 응답(200)을 받았을 경우 DB 갱신
+     * @param movieId 영화 id
+     * @param check 이미 누른 상태인지 확인
+     */
     private void updateMovieLike(int movieId, boolean check) {
         final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);
         if (check) {
@@ -127,6 +132,11 @@ public class MovieListViewModel extends AndroidViewModel {
         }).start();
     }
 
+    /**
+     * 영화 싫어요 서버 요청 후 성공적인 응답(200)을 받았을 경우 DB 갱신
+     * @param movieId 영화 id
+     * @param check 이미 누른 상태인지 확인
+     */
     private void updateMovieDislike(int movieId, boolean check) {
         final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);
         if (check) {

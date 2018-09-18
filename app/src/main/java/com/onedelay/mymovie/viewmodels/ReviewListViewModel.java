@@ -23,20 +23,24 @@ import java.util.Map;
 public class ReviewListViewModel extends AndroidViewModel {
     private static final String TAG = "REVIEW_LIST_VIEW_MODEL";
 
-    private LiveData<List<ReviewEntity>> data;
+    private LiveData<List<ReviewEntity>> mData;
 
     public ReviewListViewModel(@NonNull Application application) {
         super(application);
     }
 
     public void setData(int movieId) {
-        data = AppDatabase.getInstance(getApplication().getApplicationContext()).reviewDao().selectReviewsLiveData(movieId);
+        mData = AppDatabase.getInstance(getApplication().getApplicationContext()).reviewDao().selectReviewsLiveData(movieId);
     }
 
     public LiveData<List<ReviewEntity>> getData() {
-        return data;
+        return mData;
     }
 
+    /**
+     * 한줄평 리스트를 서버에 요청하는 메서드
+     * @param movieId 영화 정보
+     */
     public void requestReviewList(final int movieId) {
         String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readCommentList?id=" + movieId;
         GsonRequest<ResponseInfo<List<ReviewEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<ReviewEntity>>>() {
@@ -60,6 +64,13 @@ public class ReviewListViewModel extends AndroidViewModel {
         VolleyHelper.requestServer(request);
     }
 
+    /**
+     * 한줄평 작성 (무한정 작성 가능)
+     * @param movieId  영화 ID
+     * @param writer   작성자명
+     * @param rating   평점
+     * @param contents 한줄평 내용
+     */
     public void requestCreateComment(final int movieId, final String writer, final float rating, final String contents) {
         String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/createComment";
 
@@ -93,6 +104,7 @@ public class ReviewListViewModel extends AndroidViewModel {
     }
 
     /**
+     * 한줄평 추천 (무한정 추천 가능)
      * @param movieId  영화 ID. 리사이클러뷰 어댑터를 사용하지 않는 경우 필요없음.
      * @param reviewId 한줄평 ID
      * @param writer   한줄평 추천인
