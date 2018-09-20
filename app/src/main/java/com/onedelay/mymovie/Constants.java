@@ -15,4 +15,8 @@ public class Constants {
     public static final String GALLERY_TYPE_PHOTO = "PHOTO";
 
     public static final int WRITE_REQUEST = 100;
+
+    public static final int ORDER_TYPE_RATING = 1;
+    public static final int ORDER_TYPE_CURATION = 2;
+    public static final int ORDER_TYPE_SCHEDULED = 3;
 }

@@ -3,7 +3,10 @@ package com.onedelay.mymovie.viewmodels;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -11,6 +14,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.google.gson.reflect.TypeToken;
+import com.onedelay.mymovie.Constants;
 import com.onedelay.mymovie.R;
 import com.onedelay.mymovie.api.GsonRequest;
 import com.onedelay.mymovie.api.VolleyHelper;
@@ -26,18 +30,92 @@ public class MovieListViewModel extends AndroidViewModel {
     /**
      * DB 로부터 읽어온 데이터 저장.
      * 여기에 observer 를 달아서 데이터를 관찰하며, 내용이 변경되었을 때 화면 갱신을 하도록 함
+     * 영화 목록 정렬 옵션에 따라 각각 다른 LiveData 로 관찰할 것.
      */
-    private LiveData<List<MovieEntity>> mData;
+    private LiveData<List<MovieEntity>> mData1;
+    private LiveData<List<MovieEntity>> mData2;
+    private LiveData<List<MovieEntity>> mData3;
+
+    /**
+     * 3개의 LiveData 를 하나로 병합하여 관리
+     */
+    private MediatorLiveData<List<MovieEntity>> mDataMerger;
+
+    /**
+     * 보여줄 LiveData 를 설정하기 위한 변수
+     */
+    private int orderType;
 
     public MovieListViewModel(@NonNull Application application) {
         super(application);
 
+        mDataMerger = new MediatorLiveData<>();
+        mDataMerger.setValue(null);
+
+        orderType = Constants.ORDER_TYPE_RATING;
+
         // Room DB 로부터 영화 목록 데이터를 읽어옴.
-        mData = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMovies();
+        mData1 = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMoviesOrderByReservationRate();
+        mData2 = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMoviesOrderByAudienceRating();
+        mData3 = AppDatabase.getInstance(application.getApplicationContext()).movieDao().selectMoviesOrderByDate();
+
+        // LiveData 뭉치 만들기
+        mDataMerger.addSource(mData1, new Observer<List<MovieEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                if (orderType == Constants.ORDER_TYPE_RATING) {
+                    mDataMerger.setValue(movieEntities);
+                }
+            }
+        });
+
+        mDataMerger.addSource(mData2, new Observer<List<MovieEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                if (orderType == Constants.ORDER_TYPE_CURATION) {
+                    mDataMerger.setValue(movieEntities);
+                }
+            }
+        });
+
+        mDataMerger.addSource(mData3, new Observer<List<MovieEntity>>() {
+            @Override
+            public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                if (orderType == Constants.ORDER_TYPE_SCHEDULED) {
+                    mDataMerger.setValue(movieEntities);
+                }
+            }
+        });
     }
 
-    public LiveData<List<MovieEntity>> getData() {
-        return mData;
+    /**
+     * 영화 목록 화면(메인화면)에서 사용하는 메서드
+     *
+     * @return 영화 목록 LiveData (정렬 옵션에 따라 set 되는 LiveData 가 다름)
+     */
+    public MediatorLiveData<List<MovieEntity>> getDataMerger() {
+        return mDataMerger;
+    }
+
+    /**
+     * 영화 목록 정렬에 사용되는 메서드
+     *
+     * @param orderType 정렬 타입(Constants 에 정의)
+     */
+    public void updateMovieList(int orderType) {
+        this.orderType = orderType;
+
+        switch (orderType) {
+            case Constants.ORDER_TYPE_RATING:
+                mDataMerger.setValue(mData1.getValue());
+                break;
+            case Constants.ORDER_TYPE_CURATION:
+                mDataMerger.setValue(mData2.getValue());
+                break;
+            case Constants.ORDER_TYPE_SCHEDULED:
+                mDataMerger.setValue(mData3.getValue());
+                break;
+        }
     }
 
     private void updateMovieDetail(final MovieEntity movie) {
@@ -49,6 +127,12 @@ public class MovieListViewModel extends AndroidViewModel {
         }).start();
     }
 
+    /**
+     * 영화 상세보기 화면에서 사용하는 메서드
+     *
+     * @param id 영화 id
+     * @return 영화 상세가 포함된 데이터 (MovieEntity)
+     */
     public LiveData<MovieEntity> getData(int id) {
         return AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetailLive(id);
     }
@@ -57,8 +141,8 @@ public class MovieListViewModel extends AndroidViewModel {
      * 서버로부터 영화 목록 데이터를 받아 DB 에 insert.
      * 해당 영화에 대한 상세 내용은 저장하지 않고, 상세보기 버튼을 눌렀을 경우에만 저장됨.
      */
-    public void requestMovieList() {
-        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList?type=1";
+    public void requestMovieList(int orderType) {
+        String url = VolleyHelper.host + ":" + VolleyHelper.port + "/movie/readMovieList?type=" + orderType;
         GsonRequest<ResponseInfo<List<MovieEntity>>> request = new GsonRequest<>(Request.Method.GET, url, new TypeToken<ResponseInfo<List<MovieEntity>>>() {
         }, new Response.Listener<ResponseInfo<List<MovieEntity>>>() {
             /**
@@ -71,12 +155,10 @@ public class MovieListViewModel extends AndroidViewModel {
                     for (int i = 0; i < response.getResult().size(); i++) {
                         array[i] = response.getResult().get(i);
                     }
-                    List<MovieEntity> movies = AppDatabase.getInstance(getApplication()).movieDao().selectDataMovies();
-                    if (movies.size() == 0) { // 아무 데이터가 없을 경우 새로 DB 에 insert
+                    // 데이터가 없을 경우 insert
+                    if (AppDatabase.getInstance(getApplication()).movieDao().selectDataMovies().size() < 0) {
                         AppDatabase.getInstance(getApplication()).movieDao().insertMovies(array);
-                    } else {
-                        /* 현재 한번에 영화 목록 데이터를 받는데, 만약 5개가 아닌 1개가 더 추가되어온다면 작동이 안될 수도 있다.
-                         * 따라서 데이터를 따로 id 체크 후 없을 경우 insert, 있을 경우 update 를 하도록 하면 되지 않을까싶다. */
+                    } else { // 있을 경우 update
                         AppDatabase.getInstance(getApplication()).movieDao().updateMovies(array);
                     }
                 } else {
@@ -120,8 +202,9 @@ public class MovieListViewModel extends AndroidViewModel {
 
     /**
      * 영화 좋아요 서버 요청 후 성공적인 응답(200)을 받았을 경우 DB 갱신
+     *
      * @param movieId 영화 id
-     * @param check 이미 누른 상태인지 확인
+     * @param check   이미 누른 상태인지 확인
      */
     private void updateMovieLike(int movieId, boolean check) {
         final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);
@@ -140,8 +223,9 @@ public class MovieListViewModel extends AndroidViewModel {
 
     /**
      * 영화 싫어요 서버 요청 후 성공적인 응답(200)을 받았을 경우 DB 갱신
+     *
      * @param movieId 영화 id
-     * @param check 이미 누른 상태인지 확인
+     * @param check   이미 누른 상태인지 확인
      */
     private void updateMovieDislike(int movieId, boolean check) {
         final MovieEntity movie = AppDatabase.getInstance(getApplication().getApplicationContext()).movieDao().selectMovieDetail(movieId);

@@ -22,8 +22,16 @@ public interface MovieDao {
     @Query("SELECT * FROM Movies")
     LiveData<List<MovieEntity>> selectMovies();
 
-    @Query("SELECT * FROM Movies ORDER BY :order")
-    LiveData<List<MovieEntity>> selectMovies(String order);
+    /* Room 에서는 SQL 인젝션를 방지하기 위해 ORDER BY 를 파라미터로 넘길 수 없다.
+     * 참고 : https://stackoverflow.com/questions/44240906/android-room-order-by-not-working */
+    @Query("SELECT * FROM Movies ORDER BY reservation_rate DESC")
+    LiveData<List<MovieEntity>> selectMoviesOrderByReservationRate();
+
+    @Query("SELECT * FROM Movies ORDER BY audience_rating DESC")
+    LiveData<List<MovieEntity>> selectMoviesOrderByAudienceRating();
+
+    @Query("SELECT * FROM Movies ORDER BY date DESC")
+    LiveData<List<MovieEntity>> selectMoviesOrderByDate();
 
     @Query("SELECT * FROM Movies WHERE id = :id")
     LiveData<MovieEntity> selectMovieDetailLive(int id);

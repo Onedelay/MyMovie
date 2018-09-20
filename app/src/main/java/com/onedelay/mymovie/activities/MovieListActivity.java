@@ -14,12 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.onedelay.mymovie.Constants;
@@ -48,6 +48,7 @@ public class MovieListActivity extends AppCompatActivity
     private Animation menuDown;
 
     private View menuContainer;
+    private LinearLayout optionMenuLayout;
 
     private boolean isPopUp = false;
 
@@ -60,9 +61,6 @@ public class MovieListActivity extends AppCompatActivity
         menuUp = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate_up);
         menuDown = AnimationUtils.loadAnimation(getBaseContext(), R.anim.translate_down);
         menuContainer = findViewById(R.id.menu_container);
-        
-        // 정렬 옵션 메뉴 터치 이벤트
-        orderOptionChange();
 
         /* ViewModel 은 자체적으로 어떤 기능도 포함하고 있지 않기때문에, 일반적인 객체처럼 new 키워드로 생성하는 것은 아무런 의미가 없다.
          * 따라서 ViewModelProvider 를 통해 객체를 생성해야 한다. */
@@ -70,14 +68,16 @@ public class MovieListActivity extends AppCompatActivity
 
         /* ViewModel 의 멤버 LiveData 를 observe 하도록 한다.
          * 데이터 변화가 감지되었을 때, UI 의 내용을 갱신하도록 onChanged 메소드를 오버라이드한다. */
-        viewModel.getData().observe(this, new Observer<List<MovieEntity>>() {
+        viewModel.getDataMerger().observe(this, new Observer<List<MovieEntity>>() {
             @Override
             public void onChanged(@Nullable List<MovieEntity> movieEntities) {
-                adapter.itemClear();
-                for (int i = 0; i < (movieEntities != null ? movieEntities.size() : 0); i++) {
-                    adapter.addItem(PosterFragment.newInstance(i + 1, movieEntities.get(i)));
+                if (movieEntities != null) {
+                    adapter.itemClear();
+                    for (int i = 0; i < movieEntities.size(); i++) {
+                        adapter.addItem(PosterFragment.newInstance(i + 1, movieEntities.get(i)));
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
             }
         });
 
@@ -119,7 +119,7 @@ public class MovieListActivity extends AppCompatActivity
          * 연결되어있지 않을 경우에는 DB 에 저장된 내용을 불러옴. (ViewModel 생성 시 DB 처리) */
         if (RequestProvider.isNetworkConnected(this)) {
             Toast.makeText(this, getResources().getString(R.string.toast_request_server), Toast.LENGTH_SHORT).show();
-            viewModel.requestMovieList();
+            viewModel.requestMovieList(Constants.ORDER_TYPE_RATING);
         }
 
         detailFragment = new DetailFragment();
@@ -138,15 +138,16 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     private void orderOptionChange() {
-
-        Toast.makeText(this, getResources().getString(R.string.toast_request_server), Toast.LENGTH_SHORT).show();
+        final TextView buttonId = optionMenuLayout.findViewById(R.id.buttonId);
 
         // 예매율순
         menuContainer.findViewById(R.id.opt_rating).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.requestMovieList(Constants.ORDER_TYPE_RATING);
+                buttonId.setText(getResources().getString(R.string.order_reservation));
+                viewModel.updateMovieList(Constants.ORDER_TYPE_RATING);
                 startMenuAnimation();
+                viewPager.setCurrentItem(0);
             }
         });
 
@@ -154,8 +155,10 @@ public class MovieListActivity extends AppCompatActivity
         menuContainer.findViewById(R.id.opt_curation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.requestMovieList(Constants.ORDER_TYPE_CURATION);
+                buttonId.setText(getResources().getString(R.string.order_curation));
+                viewModel.updateMovieList(Constants.ORDER_TYPE_CURATION);
                 startMenuAnimation();
+                viewPager.setCurrentItem(0);
             }
         });
 
@@ -163,8 +166,10 @@ public class MovieListActivity extends AppCompatActivity
         menuContainer.findViewById(R.id.opt_scheduled).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                viewModel.requestMovieList(Constants.ORDER_TYPE_SCHEDULED);
+                buttonId.setText(getResources().getString(R.string.order_scheduled));
+                viewModel.updateMovieList(Constants.ORDER_TYPE_SCHEDULED);
                 startMenuAnimation();
+                viewPager.setCurrentItem(0);
             }
         });
     }
@@ -193,8 +198,8 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem menuItem = menu.findItem(R.id.menu_order);
-        LinearLayout linearLayout = (LinearLayout) menuItem.getActionView();
-        linearLayout.setOnClickListener(new View.OnClickListener() {
+        optionMenuLayout = (LinearLayout) menuItem.getActionView();
+        optionMenuLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onOptionsItemSelected(menuItem);
@@ -206,6 +211,8 @@ public class MovieListActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_order) {
+            // 정렬 옵션 메뉴 터치 이벤트
+            orderOptionChange();
             startMenuAnimation();
         }
         return super.onOptionsItemSelected(item);
@@ -244,6 +251,7 @@ public class MovieListActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.container, detailFragment).addToBackStack(null).commit();
         toolbar.setTitle(getString(R.string.appbar_movie_detail));
         viewPager.setVisibility(View.GONE);
+        optionMenuLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -260,6 +268,7 @@ public class MovieListActivity extends AppCompatActivity
     public void onBackPressListener() {
         toolbar.setTitle(getString(R.string.str_movie_list));
         viewPager.setVisibility(View.VISIBLE);
+        optionMenuLayout.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.onedelay.mymovie.adapters;
 
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -31,5 +32,10 @@ public class MovieListPagerAdapter extends FragmentStatePagerAdapter {
 
     public void itemClear(){
         items.clear();
+    }
+
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
     }
 }
