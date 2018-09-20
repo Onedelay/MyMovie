@@ -49,6 +49,7 @@ public class MovieListActivity extends AppCompatActivity
 
     private View menuContainer;
     private LinearLayout optionMenuLayout;
+    private TextView buttonId;
 
     private boolean isPopUp = false;
 
@@ -71,6 +72,7 @@ public class MovieListActivity extends AppCompatActivity
         viewModel.getDataMerger().observe(this, new Observer<List<MovieEntity>>() {
             @Override
             public void onChanged(@Nullable List<MovieEntity> movieEntities) {
+                setOptionTitle(viewModel.getOrderType()); // 화면 회전시에 원래대로 되돌아가므로 적용
                 if (movieEntities != null) {
                     adapter.itemClear();
                     for (int i = 0; i < movieEntities.size(); i++) {
@@ -125,6 +127,25 @@ public class MovieListActivity extends AppCompatActivity
         detailFragment = new DetailFragment();
     }
 
+    /**
+     * 옵션 메뉴의 타이틀을 바꿔주는 메서드
+     * @param orderType 정렬할 타입
+     */
+    private void setOptionTitle(int orderType) {
+        if (optionMenuLayout != null) {
+            switch (orderType) {
+                case Constants.ORDER_TYPE_RATING:
+                    buttonId.setText(getResources().getString(R.string.order_reservation));
+                    break;
+                case Constants.ORDER_TYPE_CURATION:
+                    buttonId.setText(getResources().getString(R.string.order_curation));
+                    break;
+                case Constants.ORDER_TYPE_SCHEDULED:
+                    buttonId.setText(getResources().getString(R.string.order_scheduled));
+            }
+        }
+    }
+
     private void startMenuAnimation() {
         if (!isPopUp) {
             menuContainer.setVisibility(View.VISIBLE);
@@ -138,13 +159,10 @@ public class MovieListActivity extends AppCompatActivity
     }
 
     private void orderOptionChange() {
-        final TextView buttonId = optionMenuLayout.findViewById(R.id.buttonId);
-
         // 예매율순
         menuContainer.findViewById(R.id.opt_rating).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonId.setText(getResources().getString(R.string.order_reservation));
                 viewModel.updateMovieList(Constants.ORDER_TYPE_RATING);
                 startMenuAnimation();
                 viewPager.setCurrentItem(0);
@@ -155,7 +173,6 @@ public class MovieListActivity extends AppCompatActivity
         menuContainer.findViewById(R.id.opt_curation).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonId.setText(getResources().getString(R.string.order_curation));
                 viewModel.updateMovieList(Constants.ORDER_TYPE_CURATION);
                 startMenuAnimation();
                 viewPager.setCurrentItem(0);
@@ -166,7 +183,6 @@ public class MovieListActivity extends AppCompatActivity
         menuContainer.findViewById(R.id.opt_scheduled).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                buttonId.setText(getResources().getString(R.string.order_scheduled));
                 viewModel.updateMovieList(Constants.ORDER_TYPE_SCHEDULED);
                 startMenuAnimation();
                 viewPager.setCurrentItem(0);
@@ -199,6 +215,8 @@ public class MovieListActivity extends AppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         final MenuItem menuItem = menu.findItem(R.id.menu_order);
         optionMenuLayout = (LinearLayout) menuItem.getActionView();
+        buttonId = optionMenuLayout.findViewById(R.id.buttonId);
+
         optionMenuLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

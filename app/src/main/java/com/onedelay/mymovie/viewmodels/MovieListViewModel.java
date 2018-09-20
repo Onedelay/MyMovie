@@ -97,6 +97,10 @@ public class MovieListViewModel extends AndroidViewModel {
         return mDataMerger;
     }
 
+    public int getOrderType() {
+        return orderType;
+    }
+
     /**
      * 영화 목록 정렬에 사용되는 메서드
      *
@@ -156,7 +160,7 @@ public class MovieListViewModel extends AndroidViewModel {
                         array[i] = response.getResult().get(i);
                     }
                     // 데이터가 없을 경우 insert
-                    if (AppDatabase.getInstance(getApplication()).movieDao().selectDataMovies().size() < 0) {
+                    if (AppDatabase.getInstance(getApplication()).movieDao().selectDataMovies().size() < 1) {
                         AppDatabase.getInstance(getApplication()).movieDao().insertMovies(array);
                     } else { // 있을 경우 update
                         AppDatabase.getInstance(getApplication()).movieDao().updateMovies(array);
