@@ -1,4 +1,7 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
     compileSdkVersion 27
@@ -19,6 +22,8 @@ android {
 }
 
 dependencies {
+    def aac_version = "1.1.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
@@ -36,17 +41,17 @@ dependencies {
 
     implementation 'com.github.bumptech.glide:glide:3.8.0'
 
-    // room database
-    implementation "android.arch.persistence.room:runtime:1.1.1"
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.1"
-
-    // viewModel
-    implementation "android.arch.lifecycle:extensions:1.1.1"
-    annotationProcessor "android.arch.lifecycle:compiler:1.1.1"
-
-    // LiveData
-    implementation "android.arch.lifecycle:livedata:1.1.1"
+    // AAC
+    implementation "android.arch.persistence.room:runtime:${aac_version}"
+    kapt "android.arch.persistence.room:compiler:${aac_version}"
+    implementation "android.arch.lifecycle:extensions:${aac_version}"
+    kapt "android.arch.lifecycle:compiler:${aac_version}"
+    implementation "android.arch.lifecycle:livedata:${aac_version}"
 
     // PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.1.4'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
